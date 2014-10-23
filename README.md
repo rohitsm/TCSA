@@ -15,4 +15,4 @@ Dr. Anwitaman Datta (anwitaman@ntu.edu.sg)
 
 ### Helpful links ###
 
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+* [Learn Markdown](https://help.github.com/articles/markdown-basics/)
