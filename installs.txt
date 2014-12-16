@@ -1,0 +1,4 @@
+List of softwares and packages or frameworks that have been installed on the server.
+
+1. 	Apache Web server 
+	- Running on port 22 (by Ross)
