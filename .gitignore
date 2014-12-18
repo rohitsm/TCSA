@@ -1,0 +1,5 @@
+Code/bin/*
+Code/include/*
+Code/lib/*
+*.Python
+*.pyc
