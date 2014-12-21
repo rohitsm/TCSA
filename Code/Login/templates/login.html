@@ -1,3 +1,7 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{% block content %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -11,10 +15,13 @@
     <title>TCSA</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="static/css/login.css" rel="stylesheet">
+    <link href="../static/css/login.css" rel="stylesheet">
+
+    <!-- Custom JS for this template -->
+    <link href="../static/js/login.js" type="text/javascript">
 
   </head>
 
@@ -37,14 +44,42 @@
             <form class="form-signin" role="form" method="post" action="">
 
               <h2 class="form-signin-heading">Please sign in</h2>
+
+              <!-- CSRF Prevention -->
+              {{ form.hidden_tag() }}
               
-              <input type="email" class="form-control" placeholder="Email address" name="email" required autofocus>
-              <input type="password" class="form-control" placeholder="Password" name="password" required>
+              <!-- Email ID -->
+              <!-- <input type="email" class="form-control" placeholder="Email address" name="email" required autofocus> -->
+              <div class="form-control" name="email" >
+                {{ form.email(size=80) }}
+                <br>
+                {% for error in form.email.errors %}
+                  <span style="color: red;"> 
+                  [{{ error }}]
+                  </span>
+                {% endfor %}
+                | {% for pr in providers %}
+                  <a href="javascript:set_openid('{{ pr.url }}', '{{ pr.name }}');">{{ pr.name }}</a> |
+                  {% endfor %}
+
+              </div>             
+
+              <!-- Password -->
+              <!-- <input type="password" class="form-control" placeholder="Password" name="password" required> -->
+
+              <div class="form-control" name="password" >
+                {{ form.password(size=80) }}
+              </div>            
+
               
+              <!-- Remember Me -->
+
+
               <label class="checkbox">
-                <input type="checkbox" value="remember-me"> Remember me
+              <!--   <input type="checkbox" value="remember-me">
+                 Remember Me -->
+              {{ form.remember_me }} Remember Me
               </label>
-              
               
               <div class="col-sm-6">
                 <button type="submit" name="Submit" class="btn-block btn-primary btn">Sign In</button>
@@ -54,6 +89,7 @@
               </div>
             </form>  
           </div> 
+{% endblock %}
 
           <!-- Copyright and Footer-->
 
@@ -70,7 +106,6 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="static/js/bootstrap.min.js"></script>
-    <script src="static/js/docs.min.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
   </body>
 </html>

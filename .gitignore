@@ -3,3 +3,4 @@ Code/include/*
 Code/lib/*
 *.Python
 *.pyc
+config.py
