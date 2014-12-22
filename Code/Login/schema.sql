@@ -6,6 +6,6 @@ create table login1(
 
 create table login2(
 	email VARCHAR(120) NOT NULL UNIQUE PRIMARY KEY,
-	-- Hashed password
+	-- Hashed passphrase
 	passphrase VARCHAR(100) NOT NULL,
 );
