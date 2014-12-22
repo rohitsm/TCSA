@@ -3,7 +3,7 @@ from werkzeug import generate_password_hash, check_password_hash
 
 
 # Table 1
-class Login_1(db.Model):
+class User_1(db.Model):
 
 	# Setting the table name
 	__tablename__ = 'Login_1'
@@ -23,7 +23,7 @@ class Login_1(db.Model):
 		return check_password_hash(self.password, password)
 
 # Table 2
-class Login_2(db.Model):
+class User_2(db.Model):
 
 	# Setting the table name
 	__tablename__ = 'Login_2'

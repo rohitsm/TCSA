@@ -6,7 +6,7 @@ from wtforms.validators import DataRequired, Required, Email
 
 # Models
 from login import db
-from models import Login_1, Login_2
+from models import User_1, User_2
 
 
 # Stage 1
@@ -23,13 +23,12 @@ class LoginForm_1(Form):
 		if not Form.validate(self):
 			return False
 
-		email = Login_1.query.filter_by(email = self.email.data.lower()).first()
-		if email:
-			# check password
-			if password:
-				return True
-
-		return self.email.errors.append("Incorrect email or password")
+		user = User_1.query.filter_by(email = self.email.data.lower()).first()
+		if user and user.check_password(self.password.data):
+			return True
+		else:
+			self.email.errors.append("Invalid email or password")
+			return False
 
 
 # Stage 2
@@ -41,15 +40,15 @@ class LoginForm_2(Form):
 	def __init__(self, *args, **kwargs):
 		Form.__init__(self, *args, **kwargs)
 
-	def validate(self, email):
+	# Takes email ID as argument
+	def validate(self, eml):
 		if not Form.validate(self):
 			return False
 
-		email = Login_1.query.filter_by(email = self.email.data.lower()).first()
-		# validate passphrase here! 
-		if passphrase:
-			# check password
-			if password:
-				return True
+		user = User_2.query.filter_by(email = eml.lower()).first()
+		if user and user.check_passphrase(self.passphrase.data):
+			return True
+		else:
+			self.email.errors.append("Incorrect passphrase")
+			return False
 
-		return self.email.errors.append("Incorrect passphrase")
