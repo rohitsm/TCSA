@@ -2,7 +2,7 @@
 # Flask
 from flask import render_template, flash, redirect, request, url_for
 from login import app
-from forms import LoginForm_1, LoginForm_2
+from forms import SignupForm, LoginForm_1, LoginForm_2
 from models import User_1, User_2
 from flask import session
 
@@ -22,6 +22,32 @@ def testdb():
 		return "Not Working"
 
 
+@app.route('/signup', methods=['GET', "POST"])
+def signup():
+	form = SignupForm()
+
+	if request.method == 'POST':
+		if form.validate() == False:
+			return render_template('signup.html', form=form)
+
+		else:
+			new_user1 = User_1(form.email.data, form.password.data)
+			new_user2 = User_2(form.email.data, form.passphrase.data)
+			
+			# Insert into DBs
+			db.session.add(new_user1)
+			db.session.add(new_user2)
+			
+			# Update the DB by commiting the transaction
+			db.session.commit()
+
+			session['email'] = new_user1.email
+			return redirect(url_for('profile'))
+
+	# GET request
+	return render_template('signup.html', form=form)
+
+
 @app.route('/login1', methods=['GET', 'POST'])
 def login1():
 
@@ -35,9 +61,7 @@ def login1():
 			return render_template('signin.html', form=form)
 		
 		else:
-			session['email'] = form.email.data
-			
-			user = User_1(form.email.data)
+			# user = User_1(form.email.data)
 			return redirect(url_for('login2'))
 
 	# GET request
@@ -56,10 +80,11 @@ def login2():
 		if form.validate() == False:
 			return render_template('signin.html', form=form)
 		else:
-			return "Success"
+			session['email'] = form.email.data
+			return redirect(url_for('profile'))
 
 	# GET requests
-	return render_template('signin.html', form=form)
+	return redirect(url_for('login1'))
 
 
 @app.route('/profile')
