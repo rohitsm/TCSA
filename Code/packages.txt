@@ -1,4 +1,0 @@
-pip install flask
-pip install flask-script
-pip install WTForms
-pip install flask-sqlalchemy
