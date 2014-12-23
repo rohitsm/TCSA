@@ -12,7 +12,8 @@ db = SQLAlchemy(app)
 # Login App
 from login import views, models
 
-app.run(debug = True)
+app.run()
+app.debug = True
 
 if not app.debug:
     import logging
