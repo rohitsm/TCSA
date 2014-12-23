@@ -61,8 +61,9 @@ def login1():
 			return render_template('signin.html', form=form)
 		
 		else:
-			# user = User_1(form.email.data)
-			return redirect(url_for('login2'))
+			user = User_1(form.email.data)
+			print "inside login1: user_email= ", str(user.email)
+			return redirect(url_for('login2', email=user.email))
 
 	# GET request
 	return render_template('signin.html', form=form)
@@ -77,7 +78,7 @@ def login2():
 		return redirect(url_for('profile'))
 
 	if request.method == 'POST':
-		if form.validate() == False:
+		if form.validate(email) == False:
 			return render_template('signin.html', form=form)
 		else:
 			session['email'] = form.email.data

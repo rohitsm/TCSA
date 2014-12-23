@@ -32,6 +32,7 @@ class User_2(db.Model):
 	passphrase = db.Column('passphrase', db.String(100))
 
 	def __init__(self, email, passphrase):
+		# Create object from Login
 		eml = Login_1()
 		self.email = eml.email
 		self.set_passphrase(passphrase)

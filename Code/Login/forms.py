@@ -63,9 +63,9 @@ class LoginForm_1(Form):
 # Stage 2
 class LoginForm_2(Form):
 
-	em = LoginForm_1()
+	# em = LoginForm_1()
 	
-	self.email = em.email #Get email from LoginForm1
+	# self.email = em.email #Get email from LoginForm1
 	passphrase = PasswordField('Passphrase', [Required(message='Must provide a passphrase!')])
 	submit = SubmitField("Sign In")
 
@@ -73,11 +73,11 @@ class LoginForm_2(Form):
 		Form.__init__(self, *args, **kwargs)
 
 	# Takes email ID as argument
-	def validate(self):
+	def validate(self, eml):
 		if not Form.validate(self):
 			return False
 
-		user = User_2.query.filter_by(email = self.email.lower()).first()
+		user = User_2.query.filter_by(email = eml.lower()).first()
 		if user and user.check_passphrase(self.passphrase.data):
 			return True
 		else:
