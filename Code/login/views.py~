@@ -33,9 +33,9 @@ def signup():
 
 	if request.method == 'GET':
 		if form.validate() == False:
-			return render_template('signup.html', form=form)
-			#print "Dies here"
-			#return redirect(url_for('index'))
+			#return render_template('signup.html', form=form)
+			print "Dies here"
+			return redirect(url_for('index'))
 
 		else:
 			print "form valid"
@@ -53,8 +53,8 @@ def signup():
 			return redirect(url_for('profile'))
 
 	# GET request
-	print "form type = ", type(form)
-	return render_template('signup.html', form=form)
+	return redirect(url_for('home'))
+	#return render_template('signup.html', form=form)
 
 
 @app.route('/signin', methods=['GET', 'POST'])
@@ -63,21 +63,19 @@ def login1():
 	form = LoginForm_1()
 
 	if 'email' in session:
-		print "breaks here 1"
 		return redirect(url_for('profile'))
 
 	if request.method == 'POST':
 		if form.validate() == False:
-			return render_template('signin.html', form=form)
+			return render_template('login.html', form=form)
 		
 		else:
 			user = User_1(form.email.data)
 			print "inside login1: user_email= ", str(user.email)
-			return redirect(url_for('login2'))#, email=user.email))
+			return redirect(url_for('login2', email=user.email))
 
 	# GET request
-	print "breaks here"
-	return render_template('signin.html', form=form)
+	return render_template('login.html', form=form)
 
 
 @app.route('/login2', methods=['GET', 'POST'])
@@ -90,13 +88,13 @@ def login2():
 
 	if request.method == 'POST':
 		if form.validate(email) == False:
-			return render_template('signin.html', form=form)
+			return render_template('login.html', form=form)
 		else:
 			session['email'] = form.email.data
 			return redirect(url_for('profile'))
 
 	# GET requests
-	return render_template('signin.html', form=form)
+	return render_template('login.html', form=form)
 
 
 @app.route('/profile')

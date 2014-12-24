@@ -10,9 +10,12 @@ from models import User_1, User_2
 
 # Stage 0
 class SignupForm(Form):
-	email = TextField('Email Address', [Email("Please enter your email address"), Required(message='Forgot your email address?')])
-	password = PasswordField('Password', [Required(message='Must provide a password!')])
-	passphrase = PasswordField('Passphrase', [Required(message='Must provide a passphrase!')])
+	email = TextField(	'Email Address', [Email("Please enter your email address"),
+						 Required(message='Forgot your email address?')])
+	password = PasswordField(	'Password', 
+								[Required(message='Must provide a password!')])
+	passphrase = PasswordField(	'Passphrase', 
+								[Required(message='Must provide a passphrase!')])
 	submit = SubmitField('Create account')
 
 	def __init__(self, *args, **kwargs):
