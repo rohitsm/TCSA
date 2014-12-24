@@ -3,5 +3,5 @@
 This folder contains all the source code for the project.
 
 *	**login** - Contains the related HTML and CSS code for the login page
-	__*	Ross' Development Branch: `ross_v1`
+  *	Ross' Development Branch: `ross_v1`
 
