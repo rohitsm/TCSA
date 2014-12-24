@@ -33,6 +33,7 @@ class LoginForm_1(Form):
 		Form.__init__(self, *args, **kwargs)
 
 	def validate(self, eml, pwdhash):
+		print "inside LoginForm_1.validate()"
 		if not Form.validate(self):
 			return False
 

@@ -64,6 +64,7 @@ def signup():
 @app.route('/signin', methods=['GET', 'POST'])
 def login1():
 	form = LoginForm_1
+	print "inside login2"
 
 	if 'email' in session:
 		return redirect(url_for('profile'))
@@ -72,21 +73,28 @@ def login1():
 		email = cgi.escape(request.form['Email'], True).lower()
 		pwd_hash = set_pass(request.form['Password'])
 
+		print "email: ", str(email)
+		print "pwd_hash", str(pwd_hash)
+
 		# Verify 1st stage of login using email + pwd_hash
 		if form.validate(email, pwd_hash) == False:
+			print "form validate = false"
 			return render_template('login.html')
 
 		else:
 			# Pass email to second stage of login as arg
+			print "to login2"
 			return redirect(url_for('login2', email=email))
 
 	# GET request:
+	print "GET seen"
 	return render_template('login.html')
 
 
 @app.route('/login2', methods=['GET', 'POST'])
 def login2():
 	form = LoginForm_2
+	print "inside login2"
 
 	if 'email' in session:
 		return redirect(url_for('profile'))
