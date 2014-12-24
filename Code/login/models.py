@@ -1,5 +1,6 @@
 from login import db
 from werkzeug import generate_password_hash, check_password_hash
+from sqlalchemy import Table, Column, String, ForeignKey
 
 
 # Sets salted hash of the password
@@ -29,7 +30,7 @@ class User_2(db.Model):
 	# Setting the table name
 	__tablename__ = 'Login_2'
 
-	email 		=	db.Column('email', db.String(120), primary_key=True, unique=True, ForeignKey('User_1.email'))
+	email 		=	db.Column('email', db.String(120), ForeignKey('User_1.email'), primary_key=True, unique=True)
 	passphrase 	= 	db.Column('passphrase', db.String(100))
 
 	def __init__(self, email, passphrase):

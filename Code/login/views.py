@@ -74,14 +74,14 @@ def login1():
 
 		# Verify 1st stage of login using email + pwd_hash
 		if form.validate(email, pwd_hash) == False:
-			return render_template('signin.html')
+			return render_template('login.html')
 
 		else:
 			# Pass email to second stage of login as arg
 			return redirect(url_for('login2', email=email))
 
 	# GET request:
-	return render_template('signin.html')
+	return render_template('login.html')
 
 
 @app.route('/login2', methods=['GET', 'POST'])
