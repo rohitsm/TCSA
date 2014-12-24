@@ -64,7 +64,7 @@ def signup():
 @app.route('/signin', methods=['GET', 'POST'])
 def login1():
 	form = LoginForm_1
-	print "inside login2"
+	print "inside login1"
 
 	if 'email' in session:
 		return redirect(url_for('profile'))
@@ -102,17 +102,22 @@ def login2():
 	if request.method == 'POST':
 		email = request.args['email']
 		passphrase_hash = set_pass(request.form['Passphrase'])
+		print "email (login2): ", str(email)
+		print "passphrase (login2):", str(passphrase_hash)
 
 		# Verify 2nd stage of login using email + passphrase_hash
 		if (form.validate(email, passphrase_hash)) == False:
+			print "form validate 2 = false"
 			return redirect(url_for('login1'))
 
 		else:
+			print "to profile"
 			session['email'] = email
 			return redirect(url_for('profile'))
 
 	# GET requests
-	return render_template(url_for('login1'))
+	print "GET login2"
+	return redirect(url_for('login1'))
 
 
 @app.route('/profile')
