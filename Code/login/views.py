@@ -1,12 +1,14 @@
 
 # Flask
 from flask import render_template, flash, redirect, request, url_for
-from login import app
 from forms import SignupForm, LoginForm_1, LoginForm_2
-from models import User_1, User_2
 from flask import session
 
+# App
+from login import app
+
 # DB
+from models import User_1, User_2
 from login import db
 
 @app.route('/')
@@ -58,7 +60,7 @@ def login1():
 
 	if request.method == 'POST':
 		if form.validate() == False:
-			return render_template('signin.html', form=form)
+			return render_template('login.html', form=form)
 		
 		else:
 			user = User_1(form.email.data)
@@ -66,7 +68,7 @@ def login1():
 			return redirect(url_for('login2', email=user.email))
 
 	# GET request
-	return render_template('signin.html', form=form)
+	return render_template('login.html', form=form)
 
 
 @app.route('/login2', methods=['GET', 'POST'])
@@ -79,13 +81,13 @@ def login2():
 
 	if request.method == 'POST':
 		if form.validate(email) == False:
-			return render_template('signin.html', form=form)
+			return render_template('login.html', form=form)
 		else:
 			session['email'] = form.email.data
 			return redirect(url_for('profile'))
 
 	# GET requests
-	return redirect(url_for('login1'))
+	return render_template('login.html', form=form)
 
 
 @app.route('/profile')
@@ -108,7 +110,7 @@ def signout():
 		return redirect(url_for('login1'))
 
 	session.pop('email', None)
-	return redirect(url_for('home'))
+	return redirect(url_for('index'))
 
 @app.errorhandler(404)
 def internal_error(exception):

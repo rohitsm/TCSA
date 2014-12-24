@@ -1,4 +1,4 @@
-#!Code/bin/python
+#! Code/bin/python
 
 from login import app
 
