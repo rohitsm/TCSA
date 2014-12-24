@@ -70,6 +70,7 @@ def login1():
 		return redirect(url_for('profile'))
 	
 	if request.method == 'POST':
+		print "inside post"
 		email = cgi.escape(request.form['Email'], True).lower()
 		pwd_hash = set_pass(request.form['Password'])
 
@@ -84,7 +85,7 @@ def login1():
 		else:
 			# Pass email to second stage of login as arg
 			print "to login2"
-			return redirect(url_for('login2', email=email))
+			return render_template('login2.html', email=email)
 
 	# GET request:
 	print "GET seen"
