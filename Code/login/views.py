@@ -71,7 +71,6 @@ def login1():
 	if request.method == 'POST':
 		email = cgi.escape(request.form['Email'], True).lower()
 		pwd_hash = set_pass(request.form['Password'])
-		
 
 		# Verify 1st stage of login using email + pwd_hash
 		if form.validate(email, pwd_hash) == False:
@@ -79,7 +78,6 @@ def login1():
 
 		else:
 			# Pass email to second stage of login as arg
-			# session['email'] = email
 			return redirect(url_for('login2', email=email))
 
 	# GET request:
@@ -97,6 +95,7 @@ def login2():
 		email = request.args['email']
 		passphrase_hash = set_pass(request.form['Passphrase'])
 
+		# Verify 2nd stage of login using email + passphrase_hash
 		if (form.validate(email, passphrase_hash)) == False:
 			return redirect(url_for('login1'))
 

@@ -21,7 +21,6 @@ class User_1(db.Model):
 	def __init__(self, email, password):
 		self.email = email.lower()
 		self.password = set_pass(password)
-
 	
 
 # Table 2
@@ -35,16 +34,6 @@ class User_2(db.Model):
 
 	def __init__(self, email, passphrase):
 		# Create object from Login
-		eml = Login_1()
-		self.email = eml.email
+		
+		self.email = email.lower()
 		self.passphrase = set_pass(passphrase)
-
-	# Sets salted hash of the passphrase
-	# def set_passphrase(seld, passphrase):
-	# 	self.passphrase = generate_password_hash(passphrase)
-
-	# def check_passphrase(self, passphrase):
-	# 	return check_password_hash(self.passphrase, passphrase)
-
-
-

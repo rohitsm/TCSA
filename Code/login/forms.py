@@ -6,11 +6,11 @@ from wtforms.validators import DataRequired, Required, Email
 
 # Models
 from login import db
-from models import User_1, User_2, check_pass, set_pass
+from models import User_1, User_2, check_pass
 
 # Stage 0
 class SignupForm(Form):
-	
+
 	def __init__(self, *args, **kwargs):
 		Form.__init__(self, *args, **kwargs)
 
@@ -36,9 +36,8 @@ class LoginForm_1(Form):
 		if not Form.validate(self):
 			return False
 
-		user = User_1.query.filter_by(email = eml.lower()).first()
-		pwd = User_1.query.filter_by()
-		if user and user.check_password():
+		user = User_1.query.filter_by(email = eml).first()
+		if user and user.check_pass(user.password, pwdhash):
 			return True
 		else:
 			self.email.errors.append("Invalid email or password")
@@ -48,12 +47,6 @@ class LoginForm_1(Form):
 # Stage 2
 class LoginForm_2(Form):
 
-	# em = LoginForm_1()
-	
-	# self.email = em.email #Get email from LoginForm1
-	# passphrase = PasswordField('Passphrase', [Required(message='Must provide a passphrase!')])
-	# submit = SubmitField("Sign In")
-
 	def __init__(self, *args, **kwargs):
 		Form.__init__(self, *args, **kwargs)
 
@@ -62,8 +55,8 @@ class LoginForm_2(Form):
 		if not Form.validate(self):
 			return False
 
-		user = User_2.query.filter_by(email = eml.lower()).first()
-		if user and user.check_passphrase(self.passphrase.data):
+		user = User_2.query.filter_by(email = eml).first()
+		if user and user.check_pass(user.passphrase, pp_hash):
 			return True
 		else:
 			self.email.errors.append("Incorrect passphrase")
