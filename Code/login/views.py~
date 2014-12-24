@@ -33,9 +33,15 @@ def signup():
 
 	if request.method == 'GET':
 		if form.validate() == False:
+<<<<<<< HEAD
+			return render_template('signup.html', form=form)
+			#print "Dies here"
+			#return redirect(url_for('index'))
+=======
 			#return render_template('signup.html', form=form)
 			print "Dies here"
 			return redirect(url_for('index'))
+>>>>>>> e2ed4c1177d772bc6bb6bc9ff2991e37804ec83d
 
 		else:
 			print "form valid"
@@ -53,8 +59,13 @@ def signup():
 			return redirect(url_for('profile'))
 
 	# GET request
+<<<<<<< HEAD
+	print "form type = ", type(form)
+	return render_template('signup.html', form=form)
+=======
 	return redirect(url_for('home'))
 	#return render_template('signup.html', form=form)
+>>>>>>> e2ed4c1177d772bc6bb6bc9ff2991e37804ec83d
 
 
 @app.route('/signin', methods=['GET', 'POST'])
