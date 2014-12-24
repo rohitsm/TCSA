@@ -10,16 +10,7 @@ from models import User_1, User_2, check_pass, set_pass
 
 # Stage 0
 class SignupForm(Form):
-	# email 	= 	TextField(	'Email Address', [Email("Please enter your email address"),
-	# 					 	Required(message='Forgot your email address?')])
-	# password = 	PasswordField('Password', [Required(message='Must provide a password!')])
-	# re_password = PasswordField('Re-enter Password',[Required(message="Must re-enter password!")])
-
-	# passphrase = PasswordField('Passphrase', [Required(message='Must provide a passphrase!')])
-	# re_passphrase = PasswordField('Re-enter Passphrase',[Required(message="Must re-enter passphrase!")])
-
-	# submit = 	SubmitField('Create account')
-
+	
 	def __init__(self, *args, **kwargs):
 		Form.__init__(self, *args, **kwargs)
 
@@ -37,10 +28,6 @@ class SignupForm(Form):
 
 # Stage 1
 class LoginForm_1(Form):
-
-	# email = TextField('Email Address', [Email("Please enter your email address"), Required(message='Forgot your email address?')])
-	# password = PasswordField('Password', [Required(message='Must provide a password!')])
-	# submit = SubmitField("Proceed")
 
 	def __init__(self, *args, **kwargs):
 		Form.__init__(self, *args, **kwargs)
@@ -64,14 +51,14 @@ class LoginForm_2(Form):
 	# em = LoginForm_1()
 	
 	# self.email = em.email #Get email from LoginForm1
-	passphrase = PasswordField('Passphrase', [Required(message='Must provide a passphrase!')])
-	submit = SubmitField("Sign In")
+	# passphrase = PasswordField('Passphrase', [Required(message='Must provide a passphrase!')])
+	# submit = SubmitField("Sign In")
 
 	def __init__(self, *args, **kwargs):
 		Form.__init__(self, *args, **kwargs)
 
 	# Takes email ID as argument
-	def validate(self, eml):
+	def validate(self, eml, pp_hash):
 		if not Form.validate(self):
 			return False
 

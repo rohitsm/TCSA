@@ -30,7 +30,7 @@ class User_2(db.Model):
 	# Setting the table name
 	__tablename__ = 'Login_2'
 
-	email 		=	db.Column('email', db.String(120), primary_key=True, unique=True)
+	email 		=	db.Column('email', db.String(120), primary_key=True, unique=True, ForeignKey('User_1.email'))
 	passphrase 	= 	db.Column('passphrase', db.String(100))
 
 	def __init__(self, email, passphrase):

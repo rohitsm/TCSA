@@ -4,15 +4,14 @@ import cgi
 # Flask
 from flask import render_template, flash, redirect, request, url_for
 from forms import SignupForm 
-#from forms import LoginForm_1, LoginForm_2
 from flask import session
-from werkzeug.security import generate_password_hash #, check_password_hash
 
 # App
 from login import app
+from forms import LoginForm_1, LoginForm_2
 
 # DB
-from models import User_1, User_2
+from models import User_1, User_2, set_pass
 from login import db
 
 @app.route('/')
@@ -64,60 +63,65 @@ def signup():
 
 @app.route('/signin', methods=['GET', 'POST'])
 def login1():
+	form = LoginForm_1
 
 	if 'email' in session:
-		print "breaks here 1"
 		return redirect(url_for('profile'))
 	
 	if request.method == 'POST':
 		email = cgi.escape(request.form['Email'], True).lower()
-		pwdhash = generate_password_hash(request.form['Password'])
+		pwd_hash = set_pass(request.form['Password'])
 		
 
-		# Verify 1st stage of login using email + pwdhash
-		if form.validate(email, pwdhash) == False:
+		# Verify 1st stage of login using email + pwd_hash
+		if form.validate(email, pwd_hash) == False:
 			return render_template('signin.html')
 
 		else:
-			# Pass email to second stage of login
-			session['email'] = email
-			return redirect(url_for('login2'))
+			# Pass email to second stage of login as arg
+			# session['email'] = email
+			return redirect(url_for('login2', email=email))
 
 	# GET request:
 	return render_template('signin.html')
 
 
-# @app.route('/login2', methods=['GET', 'POST'])
-# def login2():
+@app.route('/login2', methods=['GET', 'POST'])
+def login2():
+	form = LoginForm_2
 
-# 	form = LoginForm_2()
+	if 'email' in session:
+		return redirect(url_for('profile'))
 
-# 	if 'email' in session:
-# 		return redirect(url_for('profile'))
+	if request.method == 'POST':
+		email = request.args['email']
+		passphrase_hash = set_pass(request.form['Passphrase'])
 
-# 	if request.method == 'POST':
-# 		if form.validate(email) == False:
-# 			return render_template('signin.html', form=form)
-# 		else:
-# 			session['email'] = form.email.data
-# 			return redirect(url_for('profile'))
+		if (form.validate(email, passphrase_hash)) == False:
+			return redirect(url_for('login1'))
 
-# 	# GET requests
-# 	return render_template('signin.html', form=form)
+		else:
+			session['email'] = email
+			return redirect(url_for('profile'))
+
+	# GET requests
+	return render_template(url_for('login1'))
 
 
-# @app.route('/profile')
-# def profile():
+@app.route('/profile')
+def profile():
 
-# 	if 'email' not in session:
-# 		return redirect(url_for('login1'))
+	return "Login Successful!"
 
-# 	user = User_1.query.filter_by(email = session['email']).first()
+	# if 'email' not in session:
+	# 	return redirect(url_for('login1'))
 
-# 	if user is None:
-# 		return redirect(url_for('login1'))
-# 	else:
-# 		return render_template('profile.html')
+	# user = User_1.query.filter_by(email = session['email']).first()
+
+	# if user is None:
+	# 	return redirect(url_for('login1'))
+	# else:
+	# 	return render_template('profile.html')
 
 # @app.route('/signout')
 # def signout():
