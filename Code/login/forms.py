@@ -35,6 +35,7 @@ class LoginForm_1(Form):
 	def validate(self, eml, pwdhash):
 		print "inside LoginForm_1.validate()"
 		if not Form.validate(self):
+			print "form invalid"
 			return False
 
 		user = User_1.query.filter_by(email = eml).first()

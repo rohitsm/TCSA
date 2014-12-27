@@ -34,26 +34,16 @@
           
           <div>
             <!-- Call corresponding form action here -->
-            <form class="form-signin" role="form" method="POST" action="/login2">
 
-              <h2 class="form-signin-heading">Enter passphrase</h2>
-              <!-- <p class="form-control form-control-static" name="Email" id="Email">{{email}}
-              </p> -->
-              <input type="email" class="form-control" placeholder="{{email}}" value="{{email}}" name="Email" id="disabledInput" disabled >
-              <input type="password" class="form-control" placeholder="Passphrase" name="Passphrase" id="Passphrase" required autofocus>
+              <h2 class="form-signin-heading text-center">Welcome! </h2>
+              <h3> <a href="signup.html" class="label label-primary " >Sign Up
+              </a> </h3>
+
+              <br /><br />
               
-              <label class="checkbox">
-                <input type="checkbox" value="remember-me"> Remember me
-              </label>
+              <h3><a href="{{url_for('login1')}}" class="label label-danger" >Login In
+              </a></h3>
               
-              
-              <div class="col-sm-6">
-                <button type="submit" id="Submit" name="Submit" class="btn-block btn-primary btn">Sign In</button>
-              </div>
-              <div class="col-sm-6">
-                <button type="submit" class="btn-block btn-default btn">Forgot Password</button>
-              </div>
-            </form>  
           </div> 
 
           <!-- Copyright and Footer-->

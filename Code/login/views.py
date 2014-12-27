@@ -16,7 +16,7 @@ from login import db
 
 @app.route('/')
 def index():
-	return "hello"
+	return render_template('index.html')
 
 @app.route('/testdb')
 def testdb():
@@ -70,9 +70,8 @@ def login1():
 	form = LoginForm_1()
 	print "inside login1"
 
-	# if 'email' in session:
-	# 	print "email in session"
-	# 	return redirect(url_for('profile'))
+	if 'email_auth' not in session:
+		return redirect(url_for('login1', email=email))
 	
 	if request.method == 'POST':
 		print "inside post"
@@ -104,25 +103,28 @@ def login2():
 	form = LoginForm_2()
 	print "inside login2"
 
-	# if 'email' in session:
-	# 	return redirect(url_for('profile', email=email))
+	if 'email_auth' not in session:
+		return redirect(url_for('login1', email=email))
 
 	if request.method == 'POST':
-		email = session['email']
-		# email = email
-		passphrase_hash = set_pass(request.form['Passphrase'])
-		print "email (login2): ", str(email)
-		print "passphrase (login2):", str(passphrase_hash)
+		if (session['email']):
+			email = session['email']
+			passphrase_hash = set_pass(request.form['Passphrase'])
+			print "email (login2): ", str(email)
+			print "passphrase (login2):", str(passphrase_hash)
 
-		# Verify 2nd stage of login using email + passphrase_hash
-		if (form.validate(email, passphrase_hash)) != False:
-			print "form validate 2 = false"
-			return redirect(url_for('login'))
+			# Verify 2nd stage of login using email + passphrase_hash
+			if (form.validate(email, passphrase_hash)) != False:
+				print "form validate 2 = false"
+				return redirect(url_for('login'))
+
+			else:
+				print "to profile"
+				session['email_auth'] = email
+				return redirect(url_for('profile', email = email))
 
 		else:
-			print "to profile"
-			session['status'] = 'validated'
-			return redirect(url_for('profile', email = email))
+			return redirect(url_for('login1'))
 
 	# GET requests
 	print "GET login2"
@@ -133,10 +135,10 @@ def login2():
 def profile():
 	# print "Email = ", str(email)
 
-	if (session['status'] == 'validated'):
-		return "Login Successful!"
+	if 'email_auth' not in session:
+		return redirect(url_for('login1', email=email))
 	else:
-		return "Login unsuccessful"
+		return "Login Successful"
 
 	# if 'email' not in session:
 	# 	return redirect(url_for('login1'))
