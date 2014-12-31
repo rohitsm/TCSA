@@ -2,6 +2,7 @@
 # Flask
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.login import LoginManager, login_required
 
 app = Flask(__name__)
 
@@ -10,6 +11,11 @@ app.config.from_object('config')
 
 # Connect to MySQL with the defaults
 db = SQLAlchemy(app)
+
+# Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+
 
 # Login App
 from login import views, models

@@ -3,16 +3,24 @@ import cgi
 
 # Flask
 from flask import render_template, flash, redirect, request, url_for
-from forms import SignupForm 
 from flask import session
 
 # App
 from login import app
-from forms import LoginForm_1, LoginForm_2
+from login import login_manager
+
+from forms import SignupForm, LoginForm_1, LoginForm_2
 
 # DB
 from models import User_1, User_2, set_pass
 from login import db
+
+
+login_manager.login_view = 'login'
+
+@login_manager.user_loader
+def load_user(email):
+	return User_1.query.get(email)
 
 @app.route('/')
 def index():
@@ -27,34 +35,30 @@ def testdb():
 
 # ================ SIGN UP SECTION ====================== #
 
-# @app.route('/signup', methods=['GET', "POST"])
-# def signup():
-# 	form = SignupForm()
+@app.route('/signup', methods=['GET', "POST"])
+def signup():
 
-# 	if request.method == 'POST':
-# 		if form.validate() == False:
-# 			return render_template('signup.html', form=form)
-# 			#print "Dies here"
-# 			#return redirect(url_for('index'))
+	msg = {}
+	form = SignupForm()
 
-# 		else:
-# 			print "form valid"
-# 			new_user1 = User_1(form.email.data, form.password.data)
-# 			new_user2 = User_2(form.email.data, form.passphrase.data)
-			
-# 			# Insert into DBs
-# 			db.session.add(new_user1)
-# 			db.session.add(new_user2)
-			
-# 			# Update the DB by commiting the transaction
-# 			db.session.commit()
+	if request.method == 'POST':
 
-# 			session['email'] = new_user1.email
-# 			return redirect(url_for('profile'))
+		# Get form data
+		email = email = cgi.escape(request.form['Email'], True).lower()
+		pwd_hash = set_pass(request.form['Password'])
+		passphrase_hash = set_pass(request.form['Passphrase'])
 
-# 	# GET request
-# 	print "form type = ", type(form)
-# 	return render_template('signup.html', form=form)
+		if form.verify() == False:			
+			return render_template('signup.html', msg=msg)
+
+		else:
+			form.add_entry(email, pwd_hash, passphrase_hash)
+			session['email_auth'] = email
+			return redirect(url_for('profile'))
+
+	# GET request
+	print "form type = ", type(form)
+	return render_template('signup.html', form=form)
 
 
 # ============= LOGIN/SIGN IN SECTION =================== #
@@ -82,8 +86,8 @@ def login1():
 		print "pwd_hash", str(pwd_hash)
 
 		# Verify 1st stage of login using email + pwd_hash
-		if form.validate(email, pwd_hash) != False:
-			print "form validate = false"
+		if form.verify(email, pwd_hash) != False:
+			print "form verify = false"
 			return redirect(url_for('login'))
 
 		else:
@@ -114,8 +118,8 @@ def login2():
 			print "passphrase (login2):", str(passphrase_hash)
 
 			# Verify 2nd stage of login using email + passphrase_hash
-			if (form.validate(email, passphrase_hash)) != False:
-				print "form validate 2 = false"
+			if (form.verify(email, passphrase_hash)) != False:
+				print "form verify 2 = false"
 				return redirect(url_for('login'))
 
 			else:

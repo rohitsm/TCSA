@@ -19,10 +19,16 @@ class User_1(db.Model):
 	email 	= 	db.Column('email', db.String(120), primary_key=True, unique=True)
 	password = 	db.Column('password', db.String(100))
 
+	# Defining One-One relationship with Login_2
+	child = relationship("User_2", uselist=False, backref='Login_1')
+
 	def __init__(self, email, password):
 		self.email = email.lower()
 		self.password = set_pass(password)
-	
+
+	def __repr__(self):
+		return <'User %r>' % self.email
+
 
 # Table 2
 class User_2(db.Model):
@@ -38,3 +44,16 @@ class User_2(db.Model):
 		
 		self.email = email.lower()
 		self.passphrase = set_pass(passphrase)
+
+
+	def is_authenticated(self):
+		return True
+
+	def is_active(self):
+		return True
+
+	def is_anonymous(self):
+		return False
+
+	def get_id(self):
+		return self.email
