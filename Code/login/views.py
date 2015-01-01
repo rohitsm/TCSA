@@ -4,10 +4,11 @@ import cgi
 # Flask
 from flask import render_template, flash, redirect, request, url_for
 from flask import session
+from flask.ext.login import login_user, logout_user, login_required, current_user
 
 # App
 from login import app
-from login import login_manager
+from login import login_manager 
 
 from forms import SignupForm, LoginForm_1, LoginForm_2
 

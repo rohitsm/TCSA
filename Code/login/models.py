@@ -1,6 +1,7 @@
 from login import db
 from werkzeug import generate_password_hash, check_password_hash
 from sqlalchemy import Table, Column, String, ForeignKey
+from sqlalchemy.orm import relationship, backref
 
 
 # Sets salted hash of the password
@@ -20,14 +21,14 @@ class User_1(db.Model):
 	password = 	db.Column('password', db.String(100))
 
 	# Defining One-One relationship with Login_2
-	child = relationship("User_2", uselist=False, backref='Login_1')
+	child = relationship("User_2", uselist=False, backref=backref('Login_1'))
 
 	def __init__(self, email, password):
 		self.email = email.lower()
 		self.password = set_pass(password)
 
 	def __repr__(self):
-		return <'User %r>' % self.email
+		return '<User %r>' % self.email
 
 
 # Table 2
@@ -36,7 +37,7 @@ class User_2(db.Model):
 	# Setting the table name
 	__tablename__ = 'Login_2'
 
-	email 		=	db.Column('email', db.String(120), ForeignKey('User_1.email'), primary_key=True, unique=True)
+	email 		=	db.Column('email', db.String(120), ForeignKey('Login_1.email'), primary_key=True, unique=True)
 	passphrase 	= 	db.Column('passphrase', db.String(100))
 
 	def __init__(self, email, passphrase):
