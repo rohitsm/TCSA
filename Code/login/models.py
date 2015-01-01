@@ -45,15 +45,20 @@ class User_2(db.Model):
 		self.email = email.lower()
 		self.passphrase = set_pass(passphrase)
 
+	def get_id(self):
+		# For Flask-Login
+		return self.email
+		# return unicode(self.email)		--->Check functionality
 
 	def is_authenticated(self):
+		# Return True if user is authenticated
 		return True
 
 	def is_active(self):
+		# True, as all users are active
 		return True
 
 	def is_anonymous(self):
+		# Anonymous users are not supported
 		return False
 
-	def get_id(self):
-		return self.email

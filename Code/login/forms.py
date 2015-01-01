@@ -17,7 +17,6 @@ class SignupForm(Form):
 	def verify(self, email):
 		user = User_1.query.filter_by(email = eml).first()
 		if user:
-			self.email.errors.append("That email is already taken")
 			return False
 		else:
 			return True
@@ -38,13 +37,12 @@ class LoginForm_1(Form):
 		Form.__init__(self, *args, **kwargs)
 
 	def verify(self, eml, pwdhash):
+		# Checks if email and password match in records
 		print "inside LoginForm_1.verify()"
-
 		user = User_1.query.filter_by(email = eml).first()
-		if user and user.check_pass(user.password, pwdhash):
+		if user.check_pass(user.password, pwdhash):
 			return True
-		else:
-			self.email.errors.append("Invalid email or password")
+		else:			
 			return False
 
 
@@ -56,11 +54,10 @@ class LoginForm_2(Form):
 
 	# Takes email ID as argument
 	def verify(self, eml, pp_hash):
-		
+		# Checks if email and passphrase match in records		
 		user = User_2.query.filter_by(email = eml).first()
-		if user and user.check_pass(user.passphrase, pp_hash):
+		if user.check_pass(user.passphrase, pp_hash):
 			return True
 		else:
-			self.email.errors.append("Incorrect passphrase")
 			return False
 
