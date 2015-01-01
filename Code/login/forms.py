@@ -29,7 +29,6 @@ class SignupForm(Form):
 		db.session.append(entry_1)
 		db.session.commit()
 
-
 # Stage 1
 class LoginForm_1(Form):
 
@@ -44,7 +43,6 @@ class LoginForm_1(Form):
 			return True
 		else:			
 			return False
-
 
 # Stage 2
 class LoginForm_2(Form):

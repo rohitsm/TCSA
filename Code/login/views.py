@@ -46,7 +46,6 @@ def login():
 
 @app.route('/signup', methods=['GET', "POST"])
 def signup():
-
 	form = SignupForm()
 
 	# GET request

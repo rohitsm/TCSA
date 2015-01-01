@@ -1,31 +1,90 @@
-{% extends "layout.html" %}
- 
-{% block content %}
-  <h2>Sign up</h2>
-    
-  {% for message in form.email.errors %}
-    <div class="flash">{{ message }}</div>
-  {% endfor %}
-   
-  {% for message in form.password.errors %}
-    <div class="flash">{{ message }}</div>
-  {% endfor %}
 
-  {% for message in form.passphrase.errors %}
-    <div class="flash">{{ message }}</div>
-  {% endfor %}
-   
-  <form action="{{ url_for('signup') }}" method="POST">     
-    {{ form.email.label }}
-    {{ form.email }}
-     
-    {{ form.password.label }}
-    {{ form.password }}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="The TCSA Project">
+    <meta name="author" content="Rohit Menon">
 
-    {{ form.passphrase.label }}
-    {{ form.passphrase}}
-     
-    {{ form.submit }}
-  </form>
-     
-{% endblock %}
+    <title>TCSA</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../static/css/signup.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+    <div class="site-wrapper">
+      <div class="site-wrapper-inner">
+        <div class="cover-container">
+          <div class="masthead clearfix">
+            <div class="inner">
+              <h3 class="masthead-brand ">TCSA Inc.</h3>
+              <ul class="nav masthead-nav">
+                <h3 class="masthead-brand">Cloud Storage Aggregator</h3>
+              </ul>
+            </div>
+          </div>
+
+          
+          <div>
+            <!-- Call corresponding form action here -->
+            <form class="form-horizontal" role="form" method="POST" action="/signup">
+              <br><br><br><br>
+              <div class="form-group">
+                <label for="exampleInputEmail1">Choose your email address</label>
+                <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+              </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1">Create a password</label>
+                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+              </div>
+
+              <div class="form-group">
+                <label for="exampleInputPassword1">Confirm your password</label>
+                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+              </div>
+
+              <hr>
+
+              <div class="form-group">
+                <label for="exampleInputPassword1">Create a passphrase (min 8 characters)</label>
+                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+              </div>
+
+              <div class="form-group">
+                <label for="exampleInputPassword1">Confirm your passphrase </label>
+                <input type="password" class="form-control col-sm-10" id="exampleInputPassword1" placeholder="Password">
+              </div>
+
+              <div class="form-group">
+                <label for="exampleInputFile">Upload your public key here </label>
+                <input type="file" id="exampleInputFile">
+              </div>
+              <button type="submit" class="btn btn-danger text-center">Submit</button>
+            </form>  
+          </div> 
+
+          <!-- Copyright and Footer-->
+
+          <div class="mastfoot">
+            <div class="inner">
+              <p>Copyright © 2014 The TCSA Project. All rights reserved</p>
+            </div>  
+          </div>
+
+        </div><!-- cover-container -->
+      </div><!-- site-wrapper-inner -->
+    </div><!-- site-wrapper -->
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+  </body>
+</html>
