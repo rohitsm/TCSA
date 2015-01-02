@@ -5,10 +5,11 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="The TCSA Project">
-    <meta name="author" content="Rohit Menon">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
 
-    <title>TCSA</title>
+    <title>TCSA Sign Up</title>
 
     <!-- Bootstrap core CSS -->
     <link href="../static/css/bootstrap.min.css" rel="stylesheet">
@@ -19,72 +20,66 @@
   </head>
 
   <body>
-    <div class="site-wrapper">
-      <div class="site-wrapper-inner">
-        <div class="cover-container">
-          <div class="masthead clearfix">
-            <div class="inner">
-              <h3 class="masthead-brand ">TCSA Inc.</h3>
-              <ul class="nav masthead-nav">
-                <h3 class="masthead-brand">Cloud Storage Aggregator</h3>
-              </ul>
-            </div>
-          </div>
 
+    <div class="container">
+      <div class="header">
+        <nav>
+          <ul class="nav nav-pills pull-right">
+            
+            <li ><h4 id="header4">Existing User? </h4></li>
+            <li role="presentation" class="active"><a href="login.html">Login</a></li>
+
+          </ul>
+        </nav>
+        <h3 >TCSA Inc.</h3>
+      </div>
+
+      <form method="POST" action="">
+        <div class="row marketing" id="form-bg">
+          <h3 id="form-header" class="text-center block-center">New User Registration!</h3>
           
-          <div>
-            <!-- Call corresponding form action here -->
-            <form class="form-horizontal" role="form" method="POST" action="/signup">
-              <br><br><br><br>
-              <div class="form-group">
-                <label for="exampleInputEmail1">Choose your email address</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
-              </div>
-              <div class="form-group">
-                <label for="exampleInputPassword1">Create a password</label>
-                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-              </div>
+          <div class="col-md-6 col-md-offset-3">
+            <div class="form-group">
+              <label for="EmailAddress">Choose your email address</label>
+              <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email" required>
+            </div>
+            <div class="form-group">
+              <label for="Password1">Create a password</label>
+              <input type="password" class="form-control" id="Password1" placeholder="Password" minlength="5" required>
+            </div>
 
-              <div class="form-group">
-                <label for="exampleInputPassword1">Confirm your password</label>
-                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-              </div>
+            <div class="form-group">
+              <label for="Password2">Confirm your password</label>
+              <input type="password" class="form-control" id="Password2" placeholder="Re-enter Password" minlength="5"required>
+            </div>
 
-              <hr>
+            <div class="form-group">
+              <label for="Passphrase1">Create a passphrase (min. 8 characters)</label>
+              <input type="password" class="form-control" id="Passphrase1" placeholder="Passphrase" minlength="8" required>
+            </div>
 
-              <div class="form-group">
-                <label for="exampleInputPassword1">Create a passphrase (min 8 characters)</label>
-                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-              </div>
+            <div class="form-group">
+              <label for="Passphrase2">Confirm your passphrase </label>
+              <input type="password" class="form-control" id="Passphrase2" placeholder="Re-enter Passphrase" minlength="8" required>
+            </div>
 
-              <div class="form-group">
-                <label for="exampleInputPassword1">Confirm your passphrase </label>
-                <input type="password" class="form-control col-sm-10" id="exampleInputPassword1" placeholder="Password">
-              </div>
+            <div class="form-group">
+              <label id="file-upload" for="exampleInputFile">Upload your public key here </label>
+              <input type="file" id="exampleInputFile" required>
+            </div>            
 
-              <div class="form-group">
-                <label for="exampleInputFile">Upload your public key here </label>
-                <input type="file" id="exampleInputFile">
-              </div>
-              <button type="submit" class="btn btn-danger text-center">Submit</button>
-            </form>  
-          </div> 
+            <button type="submit" class="btn btn-danger col-md-offset-4 col-xs-offset-4">Submit</button>
+        </div>
+      </form>
 
-          <!-- Copyright and Footer-->
+    </div> <!-- /container -->
 
-          <div class="mastfoot">
-            <div class="inner">
-              <p>Copyright © 2014 The TCSA Project. All rights reserved</p>
-            </div>  
-          </div>
+    <!-- Copyright and Footer-->
+    <footer>
+      <div class="inner text-center" id="ftr">
+        <p>Copyright © 2014 The TCSA Project. All rights reserved</p>
+      </div>  
+    </footer>
 
-        </div><!-- cover-container -->
-      </div><!-- site-wrapper-inner -->
-    </div><!-- site-wrapper -->
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="../static/js/bootstrap.min.js"></script>
   </body>
 </html>
