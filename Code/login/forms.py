@@ -22,12 +22,13 @@ class SignupForm(Form):
 			return True
 
 	def add_entry(self, email, pwdhash, passphrase_hash):
-		entry_1 = User_1(email, pwdhash)
-		entry_2 = User_2(email, passphrase_hash)
-		entry_1.child.append(entry_2)
+		print "inside add_entry"
+		# entry_1 = User_1(email, pwdhash)
+		# entry_2 = User_2(email, passphrase_hash)
+		# entry_1.child.append(entry_2)
 
-		db.session.append(entry_1)
-		db.session.commit()
+		# db.session.append(entry_1)
+		# db.session.commit()
 
 # Stage 1
 class LoginForm_1(Form):

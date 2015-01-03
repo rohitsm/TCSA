@@ -1,3 +1,5 @@
+# Python
+import os
 
 # Flask
 from flask import Flask
@@ -19,3 +21,7 @@ login_manager.login_view = 'login'
 
 # Login App
 from login import views, models
+
+# Create directory to store public keys
+if not os.path.exists('../pb_keys'):
+	os.makedirs('../pb_keys')

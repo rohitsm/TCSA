@@ -17,6 +17,9 @@
     <!-- Custom styles for this template -->
     <link href="../static/css/signup.css" rel="stylesheet">
 
+    <!-- Custom JS for this template -->
+    <script type="text/javascript" src="../static/js/signup.js"></script>
+
   </head>
 
   <body>
@@ -34,38 +37,39 @@
         <h3 >TCSA Inc.</h3>
       </div>
 
-      <form method="POST" action="">
+      <form name="signupForm" onSubmit="return validateForm();" enctype="multipart/form-data" role="form" method="POST" action="/signup">
+        
         <div class="row marketing" id="form-bg">
           <h3 id="form-header" class="text-center block-center">New User Registration!</h3>
           
-          <div class="col-md-6 col-md-offset-3">
+          <div class="col-md-6 col-xs-6 col-md-offset-3 col-xs-offset-3">
             <div class="form-group">
               <label for="EmailAddress">Choose your email address</label>
-              <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email" required>
+              <input type="email" class="form-control" name="Email" placeholder="Enter email" onblur="validateEmail();" required>
             </div>
             <div class="form-group">
-              <label for="Password1">Create a password</label>
-              <input type="password" class="form-control" id="Password1" placeholder="Password" minlength="5" required>
+              <label for="Password1">Create a password <small>(min. 5 characters)</small></label>
+              <input type="password" class="form-control" name="Password1" placeholder="Password" pattern=".{5,}" required>
             </div>
 
             <div class="form-group">
               <label for="Password2">Confirm your password</label>
-              <input type="password" class="form-control" id="Password2" placeholder="Re-enter Password" minlength="5"required>
+              <input type="password" class="form-control" name="Password2" placeholder="Re-enter Password" pattern=".{5,}"required>
             </div>
 
             <div class="form-group">
-              <label for="Passphrase1">Create a passphrase (min. 8 characters)</label>
-              <input type="password" class="form-control" id="Passphrase1" placeholder="Passphrase" minlength="8" required>
+              <label for="Passphrase1">Create a passphrase <small>(min. 8 characters)</small></label>
+              <input type="password" class="form-control" name="Passphrase1" placeholder="Passphrase" pattern=".{8,}"required>
             </div>
 
             <div class="form-group">
               <label for="Passphrase2">Confirm your passphrase </label>
-              <input type="password" class="form-control" id="Passphrase2" placeholder="Re-enter Passphrase" minlength="8" required>
+              <input type="password" class="form-control" name="Passphrase2" placeholder="Re-enter Passphrase" pattern=".{8,}" required>
             </div>
 
             <div class="form-group">
               <label id="file-upload" for="exampleInputFile">Upload your public key here </label>
-              <input type="file" id="exampleInputFile" required>
+              <input type="file" name="PB_Key" >
             </div>            
 
             <button type="submit" class="btn btn-danger col-md-offset-4 col-xs-offset-4">Submit</button>

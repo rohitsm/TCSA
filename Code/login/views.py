@@ -1,5 +1,6 @@
 # Python
 import cgi
+import os
 
 # Flask
 from flask import render_template, flash, redirect, request, url_for
@@ -9,7 +10,6 @@ from flask.ext.login import login_user, logout_user, login_required, current_use
 # App
 from login import app
 from login import login_manager 
-
 from forms import SignupForm, LoginForm_1, LoginForm_2
 
 # DB
@@ -53,11 +53,32 @@ def signup():
 		return render_template('signup.html')
 		
 	# Get form data
+	print "Inside signup()"
+	
 	email = cgi.escape(request.form['Email'], True).lower()
-	pwd_hash = set_pass(request.form['Password'])
-	passphrase_hash = set_pass(request.form['Passphrase'])
+	print "email = ", str(email)
 
-	if form.verify(email) == False:		
+	pwd_hash = set_pass(request.form['Password1'])
+	print "pwd_hash = ", str(pwd_hash)
+
+	passphrase_hash = set_pass(request.form['Passphrase1'])
+	print "passphrase_hash = ", str(passphrase_hash)
+
+	fn = request.files['PB_Key']
+	print "filename = ", str(fn.filename)
+
+
+	# Validates extension of file uploaded and renames the file
+	# based on email address: 
+	# <name before '@' in email>.pub 
+
+	if (fn.filename).endswith('.pub'):
+		new_fn = str(email.split('@')[0]).replace('.','') + '.pub'
+		print "new_fn = ", str(new_fn)
+		print os.getcwd()
+		fn.save(os.path.join(app.config['UPLOAD_FOLDER'] , new_fn))
+
+	if form.verify(email) != False:		
 		flash('That email is already registered')	
 		return render_template('signup.html')
 
