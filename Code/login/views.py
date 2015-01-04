@@ -4,7 +4,7 @@ import os
 
 # Flask
 from flask import render_template, flash, redirect, request, url_for
-from flask import session
+from flask import session, abort
 from flask.ext.login import login_user, logout_user, login_required, current_user
 
 # App
@@ -20,7 +20,7 @@ login_manager.login_view = 'login'
 
 @login_manager.user_loader
 def load_user(email):
-	# Must be contained int he file where routes are defined (views.py)
+	# Must be contained in the file where routes are defined (views.py)
 	# Returns the associated User object form DB
 	return User_1.query.get(email)
 
@@ -33,9 +33,9 @@ def index():
 
 	return render_template('profile.html', user=user)
 
+# To test DB connection
 @app.route('/testdb')
 def testdb():
-	# To test DB connection
 	if db.session.query("1").from_statement("SELECT 1").all():
 		return "Works"
 	else:
@@ -219,6 +219,7 @@ def logout():
 
 	if 'email' not in session:
 		return redirect(url_for('login1'))
+	
 	# session.pop('user', None)
 	logout_user()
 	return redirect(url_for('index'))
