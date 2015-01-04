@@ -15,20 +15,25 @@ class SignupForm(Form):
 		Form.__init__(self, *args, **kwargs)
 
 	def verify(self, email):
+		print "Inside SignupForm.veriyu(), Email = ", email
 		user = User_1.query.filter_by(email = email).first()
 		if user:
-			return False
-		else:
+			#Email already exists in records
 			return True
+		else:
+			return False
 
 	def add_entry(self, email, pwdhash, passphrase_hash):
 		print "inside add_entry"
-		# entry_1 = User_1(email, pwdhash)
-		# entry_2 = User_2(email, passphrase_hash)
-		# entry_1.child.append(entry_2)
+		entry_1 = User_1(email, pwdhash)
+		entry_2 = User_2(email, passphrase_hash)
+		print "entry_1", entry_1
+		print "entry_2", entry_2
+		
+		entry_1.child.append(entry_2)
 
-		# db.session.append(entry_1)
-		# db.session.commit()
+		db.session.append(entry_1)
+		db.session.commit()
 
 # Stage 1
 class LoginForm_1(Form):

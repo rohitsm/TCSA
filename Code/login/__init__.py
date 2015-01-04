@@ -23,5 +23,5 @@ login_manager.login_view = 'login'
 from login import views, models
 
 # Create directory to store public keys
-if not os.path.exists('../pb_keys'):
-	os.makedirs('../pb_keys')
+if not os.path.exists('pb_keys'):
+	os.makedirs('pb_keys')

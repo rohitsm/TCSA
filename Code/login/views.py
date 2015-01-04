@@ -80,17 +80,24 @@ def signup():
 	if (fn.filename).endswith('.pub'):
 		new_fn = str(email.split('@')[0]).replace('.','') + '.pub'
 		print "new_fn = ", str(new_fn)
-		print os.getcwd()
+		print "current WD = ", os.getcwd()
+		print "UPLOAD_FOLDER = ", app.config['UPLOAD_FOLDER']
 		fn.save(os.path.join(app.config['UPLOAD_FOLDER'] , new_fn))
 
-	if form.verify(email) != False:		
+	print "Uploaded pub key "
+
+	if form.verify(email):	#Email exists in records
 		flash('That email is already registered')	
+		print "That email is already registered"
 		return render_template('signup.html')
+
 
 	else:
 		form.add_entry(email, pwd_hash, passphrase_hash)
 		flash('New account created successfully ')
 		return redirect(url_for('login'))
+
+	print "something here!"
 
 # ============= LOGIN/SIGN IN SECTION =================== #
 
@@ -120,7 +127,7 @@ def login1():
 	user = User_1.query.filter_by(email = email).first()
 	if user:			
 		# Change this to '==''
-		if form.verify(email, pwd_hash) != False:
+		if form.verify(email, pwd_hash):
 			print "form verify = false"
 			# Invalid login. Return error
 			error = 'Invalid password'
@@ -170,7 +177,7 @@ def login2():
 		user = User_1.query.filter_by(email = session['email']).first()
 		if user:				
 			# Change this to '==''
-			if (form.verify(email, passphrase_hash)) != False:
+			if (form.verify(email, passphrase_hash)):
 				print "form verify 2 = false"
 				# Invalid login. Return error
 				error = 'Invalid passphrase'
