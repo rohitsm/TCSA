@@ -101,7 +101,7 @@ def login1():
 	print "inside login1"
 
 	if 'user' not in session:
-		return redirect(url_for('login', email=email))
+		return redirect(url_for('login'))
 	
 	# GET requests
 	if request.method == 'GET':
