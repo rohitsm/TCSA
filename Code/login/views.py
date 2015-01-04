@@ -26,7 +26,12 @@ def load_user(email):
 
 @app.route('/')
 def index():
-	return render_template('index.html')
+	if 'user' not in session:
+		return render_template('index.html')
+
+	# Add Dropbox authentication here
+
+	return render_template('profile.html', user=user)
 
 @app.route('/testdb')
 def testdb():
@@ -92,11 +97,11 @@ def signup():
 @app.route('/login1', methods=['GET', 'POST'])
 def login1():
 	form = LoginForm_1()
-	msg = None
+	error = None
 	print "inside login1"
 
-	if 'email_auth' not in session:
-		return redirect(url_for('login1', email=email))
+	if 'user' not in session:
+		return redirect(url_for('login', email=email))
 	
 	# GET requests
 	if request.method == 'GET':
@@ -114,43 +119,49 @@ def login1():
 	# Checks if email/pwd exists in DB records
 	user = User_1.query.filter_by(email = email).first()
 	if user:			
+		# Change this to '==''
 		if form.verify(email, pwd_hash) != False:
 			print "form verify = false"
 			# Invalid login. Return error
-			msg = 'Invalid password'
-			return redirect(url_for('login', msg=msg))
+			error = 'Invalid password'
+			return redirect(url_for('login', error=error))
 
-		else: #Success; Pass email to second stage of login as arg
-			print "to login2 (else)"
+		# Success; Pass email to second stage of login as arg
+		# Session used to pass email to second stage of login
+		else:
+			print "to login2 (else)"			
 			session['email'] = email
-			return render_template('login2.html', email=email)
-			# return redirect(url_for('login2', email=email))
+			return render_template('login2.html')
+	else:
+		flash("Email not found in records.")
 	
 	# if user doesn't exist in records.
-	msg = 'No record found. Create new account?'
-	return redirect(url_for('login', msg = msg))
+	error = 'No record found. Create new account?'
+	return redirect(url_for('login', error = error))
 
 
 @app.route('/login2', methods=['GET', 'POST'])
 def login2():
 	form = LoginForm_2()
-	msg = None
+	error = None
 	print "inside login2"
 
-	if 'email_auth' not in session:
-		return redirect(url_for('login1', email=email))
+	# Check if login1 was completed
+	if 'email' not in session:
+		return redirect(url_for('login'))
 
 	# GET requests
 	if request.method == 'GET':
 		print "GET login2"
 		return redirect(url_for('login'))
 
-	if (session['email']):
-		email = session['email']
+	email = session['email']
+	if (email):
 		passphrase_hash = set_pass(request.form['Passphrase'])
 		remember_me = False
 		if 'remember_me' in request.form:
 			remember_me = True
+		
 		# DEBUG
 		print "email (login2): ", str(email)
 		print "passphrase (login2):", str(passphrase_hash)
@@ -158,34 +169,39 @@ def login2():
 		# Verify 2nd stage of login using email + passphrase_hash
 		user = User_1.query.filter_by(email = session['email']).first()
 		if user:				
+			# Change this to '==''
 			if (form.verify(email, passphrase_hash)) != False:
 				print "form verify 2 = false"
 				# Invalid login. Return error
-				msg = 'Invalid passphrase'
-				return redirect(url_for('login', msg=msg))
+				error = 'Invalid passphrase'
+				return redirect(url_for('login', error=error))
 
-			else: #Success; Redirect to profile page
+			#Success; Redirect to profile page
+			else: 
+				session.pop('email', None)
 				print "to profile"
-				session['email_auth'] = user.get_id
+				session['user'] = user.get_id
 				login_user(user, remember = remember_me)
 				flash('You were successfully logged in')
 				return redirect(url_for('profile', email = email))
 
 		else:
 			# if user doesn't exist in records.
-			msg = 'Email not found (login2)'
-			return redirect(url_for('login1', msg = msg))
-
+			error = 'Email not found (login2)'
+			return redirect(url_for('login', error = error))
+	else:
+		flash("Email not found (login2)")
+	return redirect(url_for('login', error = error))
 	
 
 @app.route('/user')
 @login_required
 def profile():
 
-	if 'email_auth' not in session:
-		return redirect(url_for('login1', email=email))
+	if 'user' not in session:
+		return redirect(url_for('home'))
 	else:
-		return "Login Successful"
+		return render_template('profile.html', user=user)
 
 	# if 'email' not in session:
 	# 	return redirect(url_for('login1'))
@@ -203,7 +219,7 @@ def logout():
 
 	if 'email' not in session:
 		return redirect(url_for('login1'))
-	# session.pop('email', None)
+	# session.pop('user', None)
 	logout_user()
 	return redirect(url_for('index'))
 
