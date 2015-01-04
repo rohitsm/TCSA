@@ -15,7 +15,7 @@ class SignupForm(Form):
 		Form.__init__(self, *args, **kwargs)
 
 	def verify(self, email):
-		user = User_1.query.filter_by(email = eml).first()
+		user = User_1.query.filter_by(email = email).first()
 		if user:
 			return False
 		else:
