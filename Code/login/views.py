@@ -46,67 +46,64 @@ def testdb():
 def login():
 	return render_template('login.html')
 
-
 # ================ SIGN UP SECTION ====================== #
 
 @app.route('/signup', methods=['GET', "POST"])
 def signup():
 	form = SignupForm()
 
-	# GET request
-	if request.method == 'GET':
-		return render_template('signup.html')
+	if request.method == 'POST':
+
+		# Get form data
+		print "Inside signup()"
 		
-	# Get form data
-	print "Inside signup()"
-	
-	email = cgi.escape(request.form['Email'], True).lower()
-	print "email = ", str(email)
+		email = cgi.escape(request.form['Email'], True).lower()
+		print "email = ", str(email)
 
-	pwd_hash = set_pass(request.form['Password1'])
-	print "pwd_hash = ", str(pwd_hash)
+		pwd_hash = set_pass(request.form['Password1'])
+		print "pwd_hash = ", str(pwd_hash)
 
-	passphrase_hash = set_pass(request.form['Passphrase1'])
-	print "passphrase_hash = ", str(passphrase_hash)
+		passphrase_hash = set_pass(request.form['Passphrase1'])
+		print "passphrase_hash = ", str(passphrase_hash)
 
-	fn = request.files['PB_Key']
-	print "filename = ", str(fn.filename)
+		fn = request.files['PB_Key']
+		print "filename = ", str(fn.filename)
 
+		# Validates extension of file uploaded and renames the file
+		# based on email address: 
+		# <name before '@' in email>.pub 
 
-	# Validates extension of file uploaded and renames the file
-	# based on email address: 
-	# <name before '@' in email>.pub 
+		if (fn.filename).endswith('.pub'):
+			new_fn = str(email.split('@')[0]).replace('.','') + '.pub'
+			print "new_fn = ", str(new_fn)
+			print "current WD = ", os.getcwd()
+			print "UPLOAD_FOLDER = ", app.config['UPLOAD_FOLDER']
+			fn.save(os.path.join(app.config['UPLOAD_FOLDER'] , new_fn))
 
-	if (fn.filename).endswith('.pub'):
-		new_fn = str(email.split('@')[0]).replace('.','') + '.pub'
-		print "new_fn = ", str(new_fn)
-		print "current WD = ", os.getcwd()
-		print "UPLOAD_FOLDER = ", app.config['UPLOAD_FOLDER']
-		fn.save(os.path.join(app.config['UPLOAD_FOLDER'] , new_fn))
+		print "Uploaded pub key "
 
-	print "Uploaded pub key "
+		if form.verify(email):	#Email exists in records
+			flash('That email is already registered')	
+			print "That email is already registered"
+			return render_template('signup.html')
 
-	if form.verify(email):	#Email exists in records
-		flash('That email is already registered')	
-		print "That email is already registered"
-		return render_template('signup.html')
+		else:
+			# Add entry into the DB
+			entry_1 = User_1(email, pwd_hash)
+			entry_2 = User_2(email, passphrase_hash)
+			print "entry_1", entry_1
+			print "entry_2", entry_2
+			
+			entry_1.child.append(entry_2)
+			db.session.add(entry_1)
+			db.session.commit()
 
+			flash('New account created successfully ')
+			return redirect(url_for('login'))
 
-	else:
-		# Add entry into the DB
-		entry_1 = User_1(email, pwd_hash)
-		entry_2 = User_2(email, passphrase_hash)
-		print "entry_1", entry_1
-		print "entry_2", entry_2
-		
-		entry_1.child.append(entry_2)
-		db.session.add(entry_1)
-		db.session.commit()
-
-		flash('New account created successfully ')
-		return redirect(url_for('login'))
-
-	print "something here!"
+	# GET Requests
+	print "GET Signup"
+	return render_template('signup.html')
 
 # ============= LOGIN/SIGN IN SECTION =================== #
 
@@ -120,41 +117,43 @@ def login1():
 		print "user in session"
 		return redirect(url_for('profile'))
 	
-	# GET requests
-	if request.method == 'GET':
-		print "GET seen"
-		return redirect(url_for('login'))
-	
-	print "inside post"
-	email = cgi.escape(request.form['Email'], True).lower()
-	password = request.form['Password']
+	if request.method == 'POST':
+		
+		print "inside post"
+		email = cgi.escape(request.form['Email'], True).lower()
+		password = request.form['Password']
 
-	# DEBUG
-	print "email: ", str(email)
-	print "password", str(password)
+		# DEBUG
+		print "email: ", str(email)
+		print "password", str(password)
 
-	# Checks if email/pwd exists in DB records
-	user = User_1.query.filter_by(email = email).first()
-	if user:			
-		# Change this to '==''
-		if not form.verify(email, password):
-			print "form verify = false"
-			# Invalid login. Return error
-			error = 'Invalid password'
-			return redirect(url_for('login', error=error))
+		# Checks if email/pwd exists in DB records
+		user = User_1.query.filter_by(email = email).first()
+		if user:			
+			# Change this to '==''
+			if not form.verify(email, password):
+				print "form verify = false"
+				# Invalid login. Return error
+				error = 'Invalid password'
+				return redirect(url_for('login', error=error))
 
-		# Success; Pass email to second stage of login as arg
-		# Session used to pass email to second stage of login
+			# Success; Pass email to second stage of login as arg
+			# Session used to pass email to second stage of login
+			else:
+				print "to login2 (else)"			
+				session['email'] = email
+				return render_template('login2.html', email=session['email'])
 		else:
-			print "to login2 (else)"			
-			session['email'] = email
-			return render_template('login2.html', email=session['email'])
-	else:
-		flash("Email not found in records.")
+			flash("Email not found in records.")
+		
+		# if user doesn't exist in records.
+		error = 'No record found. Create new account?'
+		return redirect(url_for('login', error = error))
+
+	# GET requests
+	print "GET seen"
+	return redirect(url_for('login'))
 	
-	# if user doesn't exist in records.
-	error = 'No record found. Create new account?'
-	return redirect(url_for('login', error = error))
 
 
 @app.route('/login2', methods=['GET', 'POST'])
@@ -167,49 +166,49 @@ def login2():
 	if 'email' not in session:
 		return redirect(url_for('login'))
 
-	# GET requests
-	if request.method == 'GET':
-		print "GET login2"
-		return redirect(url_for('login'))
+	if request.method == 'POST':
 
-	email = session['email']
-	if (email):
-		passphrase = request.form['Passphrase']
-		remember_me = False
-		if 'remember_me' in request.form:
-			remember_me = True
-		
-		# DEBUG
-		print "email (login2): ", str(email)
-		print "passphrase (login2):", str(passphrase)
+		email = session['email']
+		if (email):
+			passphrase = request.form['Passphrase']
+			remember_me = False
+			if 'remember_me' in request.form:
+				remember_me = True
+			
+			# DEBUG
+			print "email (login2): ", str(email)
+			print "passphrase (login2):", str(passphrase)
 
-		# Verify 2nd stage of login using email + passphrase
-		user = User_2.query.filter_by(email = session['email']).first()
-		if user:				
-			# Change this to '==''
-			if not form.verify(email, passphrase):
-				print "form verify 2 = false"
-				# Invalid login. Return error
-				error = 'Invalid passphrase'
-				return redirect(url_for('login', error=error))
+			# Verify 2nd stage of login using email + passphrase
+			user = User_2.query.filter_by(email = session['email']).first()
+			if user:				
+				# Change this to '==''
+				if not form.verify(email, passphrase):
+					print "form verify 2 = false"
+					# Invalid login. Return error
+					error = 'Invalid passphrase'
+					return redirect(url_for('login', error=error))
 
-			#Success; Redirect to profile page
-			else: 
-				session.pop('email', None)
-				print "to profile"
-				session['user'] = str(user.get_id())
-				login_user(user, remember = remember_me)
-				flash('You were successfully logged in')
-				return redirect(url_for('profile', email = email))
+				#Success; Redirect to profile page
+				else: 
+					session.pop('email', None)
+					print "to profile"
+					session['user'] = str(user.get_id())
+					login_user(user, remember = remember_me)
+					flash('You were successfully logged in')
+					return redirect(url_for('profile', email = email))
 
+			else:
+				# if user doesn't exist in records.
+				error = 'Email not found (login2)'
+				return redirect(url_for('login', error = error))
 		else:
-			# if user doesn't exist in records.
-			error = 'Email not found (login2)'
+			flash("Email not found (login2)")
 			return redirect(url_for('login', error = error))
-	else:
-		flash("Email not found (login2)")
-	return redirect(url_for('login', error = error))
 	
+	# GET requests
+	print "GET login2"
+	return redirect(url_for('login'))
 
 @app.route('/user')
 @login_required
