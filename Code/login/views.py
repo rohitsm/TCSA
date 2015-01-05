@@ -22,7 +22,7 @@ login_manager.login_view = 'login'
 def load_user(email):
 	# Must be contained in the file where routes are defined (views.py)
 	# Returns the associated User object form DB
-	return User_1.query.get(email)
+	return User_2.query.get(email)
 
 @app.route('/')
 def index():
@@ -31,7 +31,7 @@ def index():
 
 	# Add Dropbox authentication here
 
-	return render_template('profile.html', user=user)
+	return render_template('profile.html')
 
 # To test DB connection
 @app.route('/testdb')
@@ -116,7 +116,7 @@ def login1():
 	error = None
 	print "inside login1"
 
-	if 'user' in session:
+	if current_user.is_authenticated():
 		print "user in session"
 		return redirect(url_for('profile'))
 	
@@ -127,17 +127,17 @@ def login1():
 	
 	print "inside post"
 	email = cgi.escape(request.form['Email'], True).lower()
-	pwd_hash = set_pass(request.form['Password'])
+	password = request.form['Password']
 
 	# DEBUG
 	print "email: ", str(email)
-	print "pwd_hash", str(pwd_hash)
+	print "password", str(password)
 
 	# Checks if email/pwd exists in DB records
 	user = User_1.query.filter_by(email = email).first()
 	if user:			
 		# Change this to '==''
-		if form.verify(email, pwd_hash):
+		if not form.verify(email, password):
 			print "form verify = false"
 			# Invalid login. Return error
 			error = 'Invalid password'
@@ -174,20 +174,20 @@ def login2():
 
 	email = session['email']
 	if (email):
-		passphrase_hash = set_pass(request.form['Passphrase'])
+		passphrase = request.form['Passphrase']
 		remember_me = False
 		if 'remember_me' in request.form:
 			remember_me = True
 		
 		# DEBUG
 		print "email (login2): ", str(email)
-		print "passphrase (login2):", str(passphrase_hash)
+		print "passphrase (login2):", str(passphrase)
 
-		# Verify 2nd stage of login using email + passphrase_hash
+		# Verify 2nd stage of login using email + passphrase
 		user = User_2.query.filter_by(email = session['email']).first()
 		if user:				
 			# Change this to '==''
-			if (form.verify(email, passphrase_hash)):
+			if not form.verify(email, passphrase):
 				print "form verify 2 = false"
 				# Invalid login. Return error
 				error = 'Invalid passphrase'
@@ -218,27 +218,19 @@ def profile():
 	if 'user' not in session:
 		return redirect(url_for('home'))
 	else:
-		return render_template('profile.html', user=user)
-
-	# if 'email' not in session:
-	# 	return redirect(url_for('login1'))
-
-	# user = User_1.query.filter_by(email = session['email']).first()
-
-	# if user is None:
-	# 	return redirect(url_for('login1'))
-	# else:
-	# 	return render_template('profile.html')
+		return render_template('profile.html', user=session['user'])
 
 @app.route('/logout')
-# @login_required
+@login_required
 def logout():
 
-	if 'email' not in session:
+	if 'user' not in session:
+		print "user not in session"
 		return redirect(url_for('login1'))
 	
-	# session.pop('user', None)
+	session.pop('user', None)
 	logout_user()
+	print "session popped"
 	return redirect(url_for('index'))
 
 # @app.errorhandler(404)

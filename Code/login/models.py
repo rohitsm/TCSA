@@ -23,9 +23,9 @@ class User_1(db.Model):
 	# Defining One-One relationship with Login_2
 	child = relationship("User_2", backref=backref('Login_1',  uselist=False))
 
-	def __init__(self, email, password):
+	def __init__(self, email, pwdhash):
 		self.email = email.lower()
-		self.password = set_pass(password)
+		self.password = pwdhash
 
 	def __repr__(self):
 		return '<User %r>' % self.email
@@ -40,11 +40,11 @@ class User_2(db.Model):
 	email 		=	db.Column('email', db.String(120), ForeignKey('Login_1.email'), primary_key=True, unique=True)
 	passphrase 	= 	db.Column('passphrase', db.String(100))
 
-	def __init__(self, email, passphrase):
+	def __init__(self, email, passphrase_hash):
 		# Create object from Login
 		
 		self.email = email.lower()
-		self.passphrase = set_pass(passphrase)
+		self.passphrase = passphrase_hash
 
 	def get_id(self):
 		# For Flask-Login

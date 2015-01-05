@@ -24,34 +24,21 @@ class SignupForm(Form):
 		else:
 			return False
 
-	# def add_entry(self, email, pwdhash, passphrase_hash):
-	# 	print "inside add_entry"
-	# 	print "email = ", email
-	# 	print "pwd", pwdhash
-	# 	print "passphrase", passphrase_hash
-	# 	entry_1 = User_1(email, pwdhash)
-	# 	entry_2 = User_2(email, passphrase_hash)
-	# 	print "entry_1", entry_1
-	# 	print "entry_2", entry_2
-		
-	# 	entry_1.child.append(entry_2)
-
-	# 	db.session.append(entry_1)
-	# 	db.session.commit()
-
 # Stage 1
 class LoginForm_1(Form):
 
 	def __init__(self, *args, **kwargs):
 		Form.__init__(self, *args, **kwargs)
 
-	def verify(self, eml, pwdhash):
+	def verify(self, eml, pwd):
 		# Checks if email and password match in records
 		print "inside LoginForm_1.verify()"
 		user = User_1.query.filter_by(email = eml).first()
-		if check_pass(user.password, pwdhash):
+		if check_pass(user.password, pwd):
+			print "true"
 			return True
-		else:			
+		else:		
+			print "False"	
 			return False
 
 # Stage 2
@@ -61,11 +48,13 @@ class LoginForm_2(Form):
 		Form.__init__(self, *args, **kwargs)
 
 	# Takes email ID as argument
-	def verify(self, eml, pp_hash):
+	def verify(self, eml, passph):
 		# Checks if email and passphrase match in records		
 		user = User_2.query.filter_by(email = eml).first()
-		if check_pass(user.passphrase, pp_hash):
+		if check_pass(user.passphrase, passph):
+			print "true"
 			return True
 		else:
+			return "False"
 			return False
 

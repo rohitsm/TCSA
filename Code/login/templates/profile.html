@@ -39,7 +39,8 @@
             <!-- <div class="form-group">
               <button type="submit" class="btn btn-success">Sign in</button>
             </div> -->
-            <button type="submit" class="btn btn-primary">Sign Out</button>
+  <!--           <button type="submit" class="btn btn-primary"></button> -->
+              <a href="{{url_for('logout')}}">Sign Out</a>
           </form>
         </div><!--/.navbar-collapse -->
       </div>
@@ -48,7 +49,7 @@
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
       <div class="container text-center">
-        <h1>Hello, {{email}}!</h1>
+        <h1>Hello, {{user}}!</h1>
         <p>The TCSA User Portal</p>
         <!-- <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p> -->
       </div>
