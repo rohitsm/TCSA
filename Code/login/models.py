@@ -8,7 +8,7 @@ from sqlalchemy.orm import relationship, backref
 def set_pass(password):
 	return generate_password_hash(password)
 
-def check_pass(password):
+def check_pass(pass_1, pass_2):
 	return check_password_hash(pass_1, pass_2)
 
 # Table 1
@@ -21,7 +21,7 @@ class User_1(db.Model):
 	password = 	db.Column('password', db.String(100))
 
 	# Defining One-One relationship with Login_2
-	child = relationship("User_2", uselist=False, backref=backref('Login_1'))
+	child = relationship("User_2", backref=backref('Login_1',  uselist=False))
 
 	def __init__(self, email, password):
 		self.email = email.lower()
@@ -48,8 +48,8 @@ class User_2(db.Model):
 
 	def get_id(self):
 		# For Flask-Login
-		return self.email
-		# return unicode(self.email)		--->Check functionality
+		#return self.email
+		return unicode(self.email)		#--->Check functionality
 
 	def is_authenticated(self):
 		# Return True if user is authenticated

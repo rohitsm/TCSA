@@ -93,7 +93,16 @@ def signup():
 
 
 	else:
-		form.add_entry(email, pwd_hash, passphrase_hash)
+		# Add entry into the DB
+		entry_1 = User_1(email, pwd_hash)
+		entry_2 = User_2(email, passphrase_hash)
+		print "entry_1", entry_1
+		print "entry_2", entry_2
+		
+		entry_1.child.append(entry_2)
+		db.session.add(entry_1)
+		db.session.commit()
+
 		flash('New account created successfully ')
 		return redirect(url_for('login'))
 
@@ -107,8 +116,9 @@ def login1():
 	error = None
 	print "inside login1"
 
-	if 'user' not in session:
-		return redirect(url_for('login'))
+	if 'user' in session:
+		print "user in session"
+		return redirect(url_for('profile'))
 	
 	# GET requests
 	if request.method == 'GET':
@@ -138,7 +148,7 @@ def login1():
 		else:
 			print "to login2 (else)"			
 			session['email'] = email
-			return render_template('login2.html')
+			return render_template('login2.html', email=session['email'])
 	else:
 		flash("Email not found in records.")
 	
@@ -174,7 +184,7 @@ def login2():
 		print "passphrase (login2):", str(passphrase_hash)
 
 		# Verify 2nd stage of login using email + passphrase_hash
-		user = User_1.query.filter_by(email = session['email']).first()
+		user = User_2.query.filter_by(email = session['email']).first()
 		if user:				
 			# Change this to '==''
 			if (form.verify(email, passphrase_hash)):
@@ -187,7 +197,7 @@ def login2():
 			else: 
 				session.pop('email', None)
 				print "to profile"
-				session['user'] = user.get_id
+				session['user'] = str(user.get_id())
 				login_user(user, remember = remember_me)
 				flash('You were successfully logged in')
 				return redirect(url_for('profile', email = email))

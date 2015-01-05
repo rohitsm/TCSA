@@ -3,6 +3,7 @@
 from flask.ext.wtf import Form
 from wtforms import TextField, PasswordField, BooleanField, SubmitField, ValidationError
 from wtforms.validators import DataRequired, Required, Email
+from flask import session
 
 # Models
 from login import db
@@ -23,17 +24,20 @@ class SignupForm(Form):
 		else:
 			return False
 
-	def add_entry(self, email, pwdhash, passphrase_hash):
-		print "inside add_entry"
-		entry_1 = User_1(email, pwdhash)
-		entry_2 = User_2(email, passphrase_hash)
-		print "entry_1", entry_1
-		print "entry_2", entry_2
+	# def add_entry(self, email, pwdhash, passphrase_hash):
+	# 	print "inside add_entry"
+	# 	print "email = ", email
+	# 	print "pwd", pwdhash
+	# 	print "passphrase", passphrase_hash
+	# 	entry_1 = User_1(email, pwdhash)
+	# 	entry_2 = User_2(email, passphrase_hash)
+	# 	print "entry_1", entry_1
+	# 	print "entry_2", entry_2
 		
-		entry_1.child.append(entry_2)
+	# 	entry_1.child.append(entry_2)
 
-		db.session.append(entry_1)
-		db.session.commit()
+	# 	db.session.append(entry_1)
+	# 	db.session.commit()
 
 # Stage 1
 class LoginForm_1(Form):
@@ -45,7 +49,7 @@ class LoginForm_1(Form):
 		# Checks if email and password match in records
 		print "inside LoginForm_1.verify()"
 		user = User_1.query.filter_by(email = eml).first()
-		if user.check_pass(user.password, pwdhash):
+		if check_pass(user.password, pwdhash):
 			return True
 		else:			
 			return False
@@ -60,7 +64,7 @@ class LoginForm_2(Form):
 	def verify(self, eml, pp_hash):
 		# Checks if email and passphrase match in records		
 		user = User_2.query.filter_by(email = eml).first()
-		if user.check_pass(user.passphrase, pp_hash):
+		if check_pass(user.passphrase, pp_hash):
 			return True
 		else:
 			return False
