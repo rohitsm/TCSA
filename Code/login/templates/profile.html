@@ -36,11 +36,15 @@
             <div class="form-group">
               <h4 id="welcome"> Welcome </h4>
             </div>
-            <!-- <div class="form-group">
-              <button type="submit" class="btn btn-success">Sign in</button>
-            </div> -->
-  <!--           <button type="submit" class="btn btn-primary"></button> -->
-              <a href="{{url_for('logout')}}">Sign Out</a>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+              <span class="caret"></span>          
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a href="#">Change password</a></li>
+              <li><a href="#">Change public key</a></li>
+              <li class="divider"></li>
+              <li><a href="{{url_for('logout')}}">Sign Out</a></li>
+            </ul>
           </form>
         </div><!--/.navbar-collapse -->
       </div>
