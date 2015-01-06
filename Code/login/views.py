@@ -16,6 +16,10 @@ from forms import SignupForm, LoginForm_1, LoginForm_2
 from models import User_1, User_2, set_pass
 from login import db
 
+# Dropbox Connectors
+from dropbox_conn import dropbox_connect(), dropbox_auth_finish(), dropbox_auth_start()
+
+
 login_manager.login_view = 'login'
 
 @login_manager.user_loader
@@ -129,8 +133,7 @@ def login1():
 
 		# Checks if email/pwd exists in DB records
 		user = User_1.query.filter_by(email = email).first()
-		if user:			
-			# Change this to '==''
+		if user:
 			if not form.verify(email, password):
 				print "form verify = false"
 				# Invalid login. Return error
@@ -154,8 +157,6 @@ def login1():
 	print "GET seen"
 	return redirect(url_for('login'))
 	
-
-
 @app.route('/login2', methods=['GET', 'POST'])
 def login2():
 	form = LoginForm_2()
@@ -182,7 +183,6 @@ def login2():
 			# Verify 2nd stage of login using email + passphrase
 			user = User_2.query.filter_by(email = session['email']).first()
 			if user:				
-				# Change this to '==''
 				if not form.verify(email, passphrase):
 					print "form verify 2 = false"
 					# Invalid login. Return error
@@ -213,7 +213,6 @@ def login2():
 @app.route('/user')
 @login_required
 def profile():
-
 	if 'user' not in session:
 		return redirect(url_for('home'))
 	else:

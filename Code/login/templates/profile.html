@@ -69,7 +69,13 @@
 			  <div class="panel-body">
 			    Connect your Dropbox account here!
 			    <br>
-			    <img src="../static/images/db_logo.png" alt="..." class="img-rounded">
+          {% block %}
+            {% if db_conn %}
+              <img src="../static/images/gd_logo.png" <a href="{{ url_for('dropbox_logout') }} " method="post" class="img-rounded">
+            {% else %}
+              <img src="../static/images/db_logo.png" <a href="{{ url_for('dropbox_auth_start') }} " method="post" class="img-rounded">
+            {% endif %}
+          {% endblock %}
 			  </div>
 			</div>
         </div>

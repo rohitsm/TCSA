@@ -21,8 +21,8 @@ CREATE TABLE Profile(
 	email VARCHAR(120) NOT NULL UNIQUE PRIMARY KEY,
 	
 	-- Columns for access_tokens
-	dropbox VARCHAR(200),
-	gdrive VARCHAR(200),
+	dropbox BLOB,
+	gdrive BLOB,
 	
 	FOREIGN KEY email(email) REFERENCES Login_1(email)
 	ON UPDATE CASCADE

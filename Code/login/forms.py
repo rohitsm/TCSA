@@ -1,8 +1,8 @@
 
 # Flask
 from flask.ext.wtf import Form
-from wtforms import TextField, PasswordField, BooleanField, SubmitField, ValidationError
-from wtforms.validators import DataRequired, Required, Email
+# from wtforms import TextField, PasswordField, BooleanField, SubmitField, ValidationError
+# from wtforms.validators import DataRequired, Required, Email
 from flask import session
 
 # Models

@@ -11,34 +11,62 @@ def set_pass(password):
 def check_pass(pass_1, pass_2):
 	return check_password_hash(pass_1, pass_2)
 
-# Table 1
+# # Sets the access tokens for the services in the DB
+# def set_token(self, email, service, access_token):
+
+
+# 	if service.lower() == 'dropbox':
+# 		# Add to column dropbox
+# 		return True
+	
+# 	if service.lower() == 'gdrive':
+# 		# Add to column gdrive
+# 		return True
+	
+# 	else:
+# 		return False
+
+# # Returns the access tokens for the services in the DB
+# def get_token(self, email, service):
+
+# 	if service.lower() == 'dropbox':
+# 		# return dropbox token	
+
+	
+# 	if service.lower() == 'gdrive':
+# 		# return gdrive token
+
+# 	return None
+
+# Table 1 (Email + password)
 class User_1(db.Model):
 
 	# Setting the table name
 	__tablename__ = 'Login_1'
 
-	email 	= 	db.Column('email', db.String(120), primary_key=True, unique=True)
-	password = 	db.Column('password', db.String(100))
+	email 	= 	Column('email', String(120), primary_key=True, unique=True)
+	password = 	Column('password', String(100))
 
 	# Defining One-One relationship with Login_2
 	child = relationship("User_2", backref=backref('Login_1',  uselist=False))
+	child = relationship("User_Profile", backref=backref('Login_1',  uselist=False))
 
 	def __init__(self, email, pwdhash):
 		self.email = email.lower()
 		self.password = pwdhash
 
-	def __repr__(self):
-		return '<User %r>' % self.email
+	# def __repr__(self):
+	# 	return '<User %r>' % self.email
 
 
-# Table 2
+# Table 2 (Email + passphrase)
 class User_2(db.Model):
 
 	# Setting the table name
 	__tablename__ = 'Login_2'
 
-	email 		=	db.Column('email', db.String(120), ForeignKey('Login_1.email'), primary_key=True, unique=True)
-	passphrase 	= 	db.Column('passphrase', db.String(100))
+	email 		=	Column('email', String(120), ForeignKey('Login_1.email'), primary_key=True, unique=True)
+	passphrase 	= 	Column('passphrase', String(100))
 
 	def __init__(self, email, passphrase_hash):
 		# Create object from Login
@@ -49,7 +77,7 @@ class User_2(db.Model):
 	def get_id(self):
 		# For Flask-Login
 		#return self.email
-		return unicode(self.email)		#--->Check functionality
+		return unicode(self.email)		
 
 	def is_authenticated(self):
 		# Return True if user is authenticated
@@ -62,4 +90,24 @@ class User_2(db.Model):
 	def is_anonymous(self):
 		# Anonymous users are not supported
 		return False
+
+# Table 3 - Email + various Access Tokens
+class User_Profile(db.model):
+
+	# Setting the table name
+	__tablename__ = 'Profile'
+
+	email =	Column('email', String(120), ForeignKey('Login_1.email'), primary_key=True, unique=True)
+	dropbox = Column(BLOB)
+	gdrive = Column(BLOB)
+
+	def __init__(self, email):
+		self.email = email.lower()
+
+
+
+
+
+
+
 
