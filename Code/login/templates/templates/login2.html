@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="The TCSA Project">
+    <meta name="author" content="Rohit Menon">
+
+    <title>TCSA</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../static/css/login.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+    <div class="site-wrapper">
+      <div class="site-wrapper-inner">
+        <div class="cover-container">
+          <div class="masthead clearfix">
+            <div class="inner">
+              <h3 class="masthead-brand ">TCSA Inc.</h3>
+              <ul class="nav masthead-nav">
+                <h3 class="masthead-brand">Cloud Storage Aggregator</h3>
+              </ul>
+            </div>
+          </div>
+          
+          <!-- Flash messages -->
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              <div class="alert alert-danger text-center" role="alert">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                {% for message in messages %}
+                  {{message}}
+                {% endfor %}
+              </div>
+            {% endif %}
+          {% endwith %}
+          
+          <div>
+            <form class="form-signin" role="form" method="POST" action="/login2">
+
+              <h2 class="form-signin-heading" id="form-h2">Enter passphrase</h2>
+              
+              <input type="email" class="form-control" placeholder="{{email}}" value="{{email}}" name="Email" id="Email" required>
+
+              <input type="password" class="form-control" placeholder="Passphrase" name="Passphrase" id="Passphrase" required autofocus>
+              
+              <label class="checkbox">
+                <input type="checkbox" value="remember-me"> Remember me
+              </label>
+              
+              
+              <div class="col-sm-6 col-xs-12" id="btns">
+                <button type="submit" id="Submit" name="Submit" class="btn-block btn-primary btn">Sign In</button>
+              </div>
+              <div class="col-sm-6 col-sm-6" id="btns">
+                <button type="submit" class="btn-block btn-default btn">Forgot Password</button>
+              </div>
+
+              <div id="create-account" class="col-sm-6 col-xs-12 text-center ">
+                <button class="btn btn-lg btn-success"><a href="signup.html">Create an account</a></button>
+              </div>
+            </form>  
+            
+          </div> 
+
+          <!-- Copyright and Footer-->
+
+          <footer>
+            <div class="mastfoot inner">
+              Copyright © 2014 The TCSA Project. All rights reserved
+            </div>  
+          </footer>
+
+        </div><!-- cover-container -->
+      </div><!-- site-wrapper-inner -->
+    </div><!-- site-wrapper -->
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+  </body>
+</html>

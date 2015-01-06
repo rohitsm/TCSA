@@ -1,6 +1,6 @@
 from login import db
 from werkzeug import generate_password_hash, check_password_hash
-from sqlalchemy import Table, Column, String, ForeignKey
+from sqlalchemy import Table, Column, String, ForeignKey, BLOB
 from sqlalchemy.orm import relationship, backref
 
 
@@ -92,7 +92,7 @@ class User_2(db.Model):
 		return False
 
 # Table 3 - Email + various Access Tokens
-class User_Profile(db.model):
+class User_Profile(db.Model):
 
 	# Setting the table name
 	__tablename__ = 'Profile'
