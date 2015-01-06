@@ -37,6 +37,17 @@
         <h3>TCSA Inc.</h3>
       </div>
 
+      <!-- Flash messages -->
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <p class="flashes">
+            {% for message in messages %}
+              {{message}}
+            {% endfor %}
+          </p>
+        {% endif %}
+      {{% endwith %}}
+
       <form name="signupForm" onSubmit="return validateForm();" enctype="multipart/form-data" role="form" method="POST" action="/signup">
         
         <div class="row marketing" id="form-bg">
