@@ -40,13 +40,13 @@
       <!-- Flash messages -->
       {% with messages = get_flashed_messages() %}
         {% if messages %}
-          <p class="flashes">
+          <div class="alert alert-warning text-center" role="alert">
             {% for message in messages %}
               {{message}}
             {% endfor %}
-          </p>
+          </div>
         {% endif %}
-      {{% endwith %}}
+      {% endwith %}
 
       <form name="signupForm" onSubmit="return validateForm();" enctype="multipart/form-data" role="form" method="POST" action="/signup">
         
