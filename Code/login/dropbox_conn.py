@@ -8,6 +8,7 @@ from flask.ext.login import login_user, logout_user, login_required, current_use
 # App
 from login import app
 from login import login_manager 
+from .. import config
 
 # DB
 from models import User_Profile #, set_access_token, get_access_token
@@ -16,6 +17,8 @@ from login import db
 # Dropbox API
 from dropbox.client import DropboxClient, DropboxOAuth2Flow
 
+DROPBOX_APP_KEY = app.config['DROPBOX_APP_KEY']
+DROPBOX_APP_SECRET = app.config['DROPBOX_APP_SECRET']
 
 # Get access token from DB
 def get_access_token():

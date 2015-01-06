@@ -17,7 +17,7 @@ from models import User_1, User_2, set_pass
 from login import db
 
 # Dropbox Connectors
-from dropbox_conn import dropbox_connect, dropbox_auth_finish(), dropbox_auth_start()
+from dropbox_conn import dropbox_connect, dropbox_auth_finish, dropbox_auth_start
 
 
 login_manager.login_view = 'login'
