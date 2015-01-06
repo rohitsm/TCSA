@@ -30,10 +30,19 @@
               </ul>
             </div>
           </div>
-
+          
+          <!-- Flash messages -->
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              <div class="alert alert-danger text-center" role="alert">
+                {% for message in messages %}
+                  {{message}}
+                {% endfor %}
+              </div>
+            {% endif %}
+          {% endwith %}
           
           <div>
-            <!-- Call corresponding form action here -->
             <form class="form-signin" role="form" method="POST" action="/login2">
 
               <h2 class="form-signin-heading" id="form-h2">Enter passphrase</h2>

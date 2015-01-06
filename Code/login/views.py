@@ -83,7 +83,7 @@ def signup():
 		print "Uploaded pub key "
 
 		if form.verify(email):	#Email exists in records
-			flash('That email is already registered')	
+			flash('That email is already registered!')	
 			print "That email is already registered"
 			return render_template('signup.html')
 
@@ -98,7 +98,7 @@ def signup():
 			db.session.add(entry_1)
 			db.session.commit()
 
-			flash('New account created successfully ')
+			flash('New account created successfully!')
 			return redirect(url_for('login'))
 
 	# GET Requests
@@ -144,10 +144,10 @@ def login1():
 				session['email'] = email
 				return render_template('login2.html', email=session['email'])
 		else:
-			flash("Email not found in records.")
+			flash("Incorrect email/password")
 		
 		# if user doesn't exist in records.
-		error = 'No record found. Create new account?'
+		flash('No record found. Please signup for a new account.')
 		return redirect(url_for('login', error = error))
 
 	# GET requests
