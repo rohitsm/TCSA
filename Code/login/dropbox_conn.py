@@ -8,7 +8,6 @@ from flask.ext.login import login_user, logout_user, login_required, current_use
 # App
 from login import app
 from login import login_manager 
-from .. import config
 
 # DB
 from models import User_Profile #, set_access_token, get_access_token
@@ -63,7 +62,8 @@ def dropbox_connect():
 		client = DropboxClient(access_token)
 		account_info = client.account_info()
 		real_name = account_info["display_name"]
-	return redirect(url_for('profile.html', db_conn=real_name))
+        print real_name
+	return render_template('profile.html', db_conn=real_name)
 
 @app.route('/dropbox-auth-finish')
 def dropbox_auth_finish():
@@ -127,7 +127,7 @@ def dropbox_logout():
     # db = get_db()
     # db.execute('UPDATE users SET access_token = NULL WHERE username = ?', [username])
     # db.commit()
-    # return redirect(url_for('home'))
+    return redirect(url_for('profile'))
 
 def get_auth_flow():
     redirect_uri = url_for('dropbox_auth_finish', _external=True)

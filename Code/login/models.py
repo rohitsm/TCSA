@@ -48,8 +48,8 @@ class User_1(db.Model):
 	password = 	Column('password', String(100))
 
 	# Defining One-One relationship with Login_2
-	child = relationship("User_2", backref=backref('Login_1',  uselist=False))
-	child = relationship("User_Profile", backref=backref('Login_1',  uselist=False))
+	child_1 = relationship("User_2", backref=backref('Login_1',  uselist=False))
+	child_2 = relationship("User_Profile", backref=backref('Login_1',  uselist=False))
 
 	def __init__(self, email, pwdhash):
 		self.email = email.lower()

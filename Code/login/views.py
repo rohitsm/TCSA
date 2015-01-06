@@ -13,7 +13,7 @@ from login import login_manager
 from forms import SignupForm, LoginForm_1, LoginForm_2
 
 # DB
-from models import User_1, User_2, set_pass
+from models import User_1, User_2, User_Profile, set_pass
 from login import db
 
 # Dropbox Connectors
@@ -95,11 +95,16 @@ def signup():
 			# Add entry into the DB
 			entry_1 = User_1(email, pwd_hash)
 			entry_2 = User_2(email, passphrase_hash)
+			entry_3 = User_Profile(email)
 			print "entry_1", entry_1
 			print "entry_2", entry_2
+			print "entry_3", entry_3
 			
-			entry_1.child.append(entry_2)
+			entry_1.child_1.append(entry_2)
+			entry_1.child_2.append(entry_3)
 			db.session.add(entry_1)
+			#db.session.add(entry_1)
+			
 			db.session.commit()
 
 			flash('New account created successfully!')
