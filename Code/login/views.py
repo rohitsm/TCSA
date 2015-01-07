@@ -6,15 +6,15 @@ import os
 from flask import render_template, flash, redirect, request, url_for
 from flask import session, abort
 from flask.ext.login import login_user, logout_user, login_required, current_user
-
-# App
-from login import app
-from login import login_manager 
 from forms import SignupForm, LoginForm_1, LoginForm_2
 
 # DB
 from models import User_1, User_2, User_Profile, set_pass
 from login import db
+
+# App
+from login import app
+from login import login_manager 
 
 # Dropbox Connectors
 from dropbox_conn import dropbox_connect
