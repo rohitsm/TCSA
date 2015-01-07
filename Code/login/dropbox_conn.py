@@ -96,7 +96,7 @@ def dropbox_auth_finish():
         user.dropbox = access_token
         db.session.commit()
         print "added access_token to DB"
-        flash('Connected')
+        #flash('Connected')
         return redirect(url_for('profile'))
 
     # if set_access_token(email, 'dropbox', access_token):
@@ -142,8 +142,7 @@ def dropbox_disconnect():
     if user:
         user.dropbox = None #corresponds to 'NULL' in SQL
         db.session.commit()
-        print "remomved token from DB"
-        flash('Dropbox Disconnected')
+        print "Disconnected Dropbox. remomved token from DB"
         return redirect(url_for('profile'))
 
     flash("Disconnect error, Try again")

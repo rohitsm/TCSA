@@ -30,12 +30,11 @@ def load_user(email):
 
 @app.route('/')
 def index():
-	if 'user' not in session:
-		return render_template('index.html')
-
-	# Add Dropbox authentication here
-
-	return render_template('profile.html')
+	if 'user' in session:
+		print "user in session"
+		return redirect(url_for('profile'))
+	
+	return render_template('index.html')
 
 # To test DB connection
 @app.route('/testdb')
@@ -48,6 +47,10 @@ def testdb():
 @app.route('/login', methods=['GET', 'POST'])
 @app.route('/signin', methods=['GET', 'POST'])
 def login():
+	if 'user' in session:
+		print "user in session"
+		return redirect(url_for('profile'))
+
 	return render_template('login.html')
 
 # ================ SIGN UP SECTION ====================== #
@@ -103,7 +106,6 @@ def signup():
 			entry_1.child_1.append(entry_2)
 			entry_1.child_2.append(entry_3)
 			db.session.add(entry_1)
-			#db.session.add(entry_1)
 			
 			db.session.commit()
 
@@ -121,7 +123,7 @@ def login1():
 	form = LoginForm_1()
 	print "inside login1"
 
-	if current_user.is_authenticated():
+	if 'user' in session:
 		print "user in session"
 		return redirect(url_for('profile'))
 	
@@ -175,9 +177,9 @@ def login2():
 		email = session['email']
 		if (email):
 			passphrase = request.form['Passphrase']
-			remember_me = False
-			if 'remember_me' in request.form:
-				remember_me = True
+			#remember_me = False
+			#if 'remember_me' in request.form:
+			#	remember_me = True
 			
 			# DEBUG
 			print "email (login2): ", str(email)
@@ -185,6 +187,7 @@ def login2():
 
 			# Verify 2nd stage of login using email + passphrase
 			user = User_2.query.filter_by(email = session['email']).first()
+			print "user.email (login2) : ", user.email
 			if user:				
 				if not form.verify(email, passphrase):
 					print "form verify 2 = false"
@@ -196,7 +199,7 @@ def login2():
 				else: 
 					session.pop('email', None)
 					print "to profile"
-					session['user'] = str(user.get_id())
+					session['user'] = email
 					# login_user(user, remember = remember_me)
 					flash('You were successfully logged in')
 					return redirect(url_for('profile', email = email))
@@ -217,10 +220,12 @@ def login2():
 @login_required
 def profile():
 	if 'user' not in session:
-		return redirect(url_for('home'))
+		return redirect(url_for('login'))
 	else:
+		# Dropbox Authentication; returns 'None' if access_token not found in DB
 		real_name = dropbox_connect()
 		print "real_name", real_name
+		
 		return render_template('profile.html', user=session['user'], db_conn=real_name)
 
 @app.route('/logout')

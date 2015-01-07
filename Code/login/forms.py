@@ -52,9 +52,10 @@ class LoginForm_2(Form):
 		# Checks if email and passphrase match in records		
 		user = User_2.query.filter_by(email = eml).first()
 		if check_pass(user.passphrase, passph):
-			print "true"
+			print "==true"
 			return True
+
 		else:
-			return "False"
+			print "==False"
 			return False
 
