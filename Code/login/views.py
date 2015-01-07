@@ -197,7 +197,7 @@ def login2():
 					session.pop('email', None)
 					print "to profile"
 					session['user'] = str(user.get_id())
-					login_user(user, remember = remember_me)
+					# login_user(user, remember = remember_me)
 					flash('You were successfully logged in')
 					return redirect(url_for('profile', email = email))
 
@@ -232,7 +232,7 @@ def logout():
 		return redirect(url_for('login1'))
 	
 	session.pop('user', None)
-	logout_user()
+	# logout_user()
 	print "session popped"
 	return redirect(url_for('index'))
 
