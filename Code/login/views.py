@@ -119,7 +119,6 @@ def signup():
 @app.route('/login1', methods=['GET', 'POST'])
 def login1():
 	form = LoginForm_1()
-	error = None
 	print "inside login1"
 
 	if current_user.is_authenticated():
@@ -142,8 +141,8 @@ def login1():
 			if not form.verify(email, password):
 				print "form verify = false"
 				# Invalid login. Return error
-				error = 'Invalid password'
-				return redirect(url_for('login', error=error))
+				flash('Invalid email or password')
+				return redirect(url_for('login'))
 
 			# Success; Pass email to second stage of login as arg
 			# Session used to pass email to second stage of login
@@ -156,7 +155,7 @@ def login1():
 		
 		# if user doesn't exist in records.
 		flash('No record found. Please signup for a new account.')
-		return redirect(url_for('login', error = error))
+		return redirect(url_for('login'))
 
 	# GET requests
 	print "GET seen"
@@ -165,7 +164,6 @@ def login1():
 @app.route('/login2', methods=['GET', 'POST'])
 def login2():
 	form = LoginForm_2()
-	error = None
 	print "inside login2"
 
 	# Check if login1 was completed
@@ -191,8 +189,8 @@ def login2():
 				if not form.verify(email, passphrase):
 					print "form verify 2 = false"
 					# Invalid login. Return error
-					error = 'Invalid passphrase'
-					return redirect(url_for('login', error=error))
+					flash('Invalid passphrase')
+					return redirect(url_for('login'))
 
 				#Success; Redirect to profile page
 				else: 
@@ -205,11 +203,11 @@ def login2():
 
 			else:
 				# if user doesn't exist in records.
-				error = 'Email not found (login2)'
-				return redirect(url_for('login', error = error))
+				flash('Email not found (login2)')
+				return redirect(url_for('login'))
 		else:
 			flash("Email not found (login2)")
-			return redirect(url_for('login', error = error))
+			return redirect(url_for('login'))
 	
 	# GET requests
 	print "GET login2"

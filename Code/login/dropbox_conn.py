@@ -140,7 +140,7 @@ def dropbox_disconnect():
     user = User_Profile.query.filter_by(email = email).first()
     print "Disconnecting Dropbox access_token", user.dropbox
     if user:
-        user.dropbox = None
+        user.dropbox = None #corresponds to 'NULL' in SQL
         db.session.commit()
         print "remomved token from DB"
         flash('Dropbox Disconnected')
