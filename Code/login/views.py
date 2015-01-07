@@ -223,8 +223,10 @@ def profile():
 		return redirect(url_for('login'))
 	else:
 		real_name = None
-		# Dropbox Authentication; returns 'None' if access_token not found in DB
-		# real_name = dropbox_connect()
+		
+# ============= Dropbox Authentication ============= #		
+		# Returns object of class DropboxClient 
+		# otherwise returns 'None' if access_token not found in DB
 		client = dropbox_connect()
 		if client is not None:			
 			account_info = client.account_info()

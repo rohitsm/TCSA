@@ -31,6 +31,7 @@ def get_access_token():
     user_record = User_Profile.query.filter_by(email = email).first()
     if user_record:
         print "user_record = ", user_record.email
+        
         # Get access_token from DB records
         access_token = user_record.dropbox
         print "access_token from db = ", access_token
@@ -58,18 +59,12 @@ def dropbox_connect():
     print "inside dropbox_connect()"
     access_token = get_access_token()
     client = None
-    # real_name = None
     app.logger.info('access_token = %r', access_token)
     if access_token is not None:
-        client = DropboxClient(access_token)
-        
+        client = DropboxClient(access_token)        
+    
+    # Object contains all the information
     return client
-
-        # account_info = client.account_info()
-        # real_name = account_info["display_name"]
-        # print "real_name = ", real_name
-    # return real_name
-	#return render_template('profile.html', db_conn=real_name)
 
 @app.route('/dropbox-auth-finish')
 def dropbox_auth_finish():
