@@ -17,7 +17,7 @@ from models import User_1, User_2, User_Profile, set_pass
 from login import db
 
 # Dropbox Connectors
-from dropbox_conn import dropbox_connect, dropbox_auth_finish, dropbox_auth_start
+from dropbox_conn import dropbox_connect
 
 
 login_manager.login_view = 'login'
@@ -221,7 +221,9 @@ def profile():
 	if 'user' not in session:
 		return redirect(url_for('home'))
 	else:
-		return render_template('profile.html', user=session['user'])
+		real_name = dropbox_connect()
+		print "real_name", real_name
+		return render_template('profile.html', user=session['user'], db_conn=real_name)
 
 @app.route('/logout')
 @login_required

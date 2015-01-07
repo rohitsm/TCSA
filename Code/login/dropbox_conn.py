@@ -23,21 +23,22 @@ DROPBOX_APP_SECRET = app.config['DROPBOX_APP_SECRET']
 def get_access_token():
 
     email = session.get('user')
+    print "inside get_access_token() \nemail = ", email
     if email is None:
         return None
 
     # Connect to DB here.
-	user = User_Profile.query.filter_by(email = email).first()
-    if user:
-        access_token = user.dropbox
-        if access_token is None:
-            return None
-        return access_token
+    user_record = User_Profile.query.filter_by(email = email).first()
+    if user_record:
+        print "user_record = ", user_record.email
+        # Get access_token from DB records
+        access_token = user_record.dropbox
+        print "access_token from db = ", access_token
+        if access_token:
+            return access_token
 
-    print "Error record not found. Not connected"
+    print "Error record not found in DB. Not connected to dropbox"
     return None
-
-
 
     # access_token = get_access_token(email, 'dropbox')
     # if access_token is None:
@@ -51,23 +52,27 @@ def get_access_token():
     #     return None
     # return row[0]
 
-@app.route('/dropbox-connect')
+#@app.route('/dropbox-connect')
 def dropbox_connect():
-	if 'user' not in session:
-		return redirect(url_for('login'))
-	access_token = get_access_token()
-	real_name = None
-	app.logger.info('access_token = %r', access_token)
-	if access_token is not None:
-		client = DropboxClient(access_token)
-		account_info = client.account_info()
-		real_name = account_info["display_name"]
-        print real_name
-	return render_template('profile.html', db_conn=real_name)
+
+    print "inside dropbox_connect()"
+    #if 'user' not in session:
+	#	return redirect(url_for('login'))
+    access_token = get_access_token()
+    real_name = None
+    app.logger.info('access_token = %r', access_token)
+    if access_token is not None:
+        client = DropboxClient(access_token)
+        account_info = client.account_info()
+        real_name = account_info["display_name"]
+        print "real_name = ", real_name
+    return real_name
+	#return render_template('profile.html', db_conn=real_name)
 
 @app.route('/dropbox-auth-finish')
 def dropbox_auth_finish():
     email = session.get('user')
+    print "inside dropbox_auth_finish. \nemail = ", email
     if email is None:
         abort(403)
     try:
@@ -86,6 +91,7 @@ def dropbox_auth_finish():
         abort(403)
     
     user = User_Profile.query.filter_by(email = email).first()
+    print "user adding dropbox token to DB = ", user
     if user:
         user.dropbox = access_token
         db.session.commit()
@@ -115,18 +121,32 @@ def dropbox_auth_finish():
 def dropbox_auth_start():
     if 'user' not in session:
         abort(403)
+    email = session.get('user')
+    print "Inside dropbox_auth_start(). \nUser in session"
+    print "email= ", email
+    if email is None:
+        abort(403)
+
     return redirect(get_auth_flow().start())
 
-# @app.route('/dropbox-logout')
-def dropbox_logout():
+@app.route('/dropbox-disconnect')
+def dropbox_disconnect():
 	# Disconnect Dropbox access token from DB records
-
-    username = session.get('user')
-    if username is None:
+    print "inside dropbox_logout()"
+    email = session.get('user')
+    if email is None:
         abort(403)
-    # db = get_db()
-    # db.execute('UPDATE users SET access_token = NULL WHERE username = ?', [username])
-    # db.commit()
+
+    user = User_Profile.query.filter_by(email = email).first()
+    print "Disconnecting Dropbox access_token", user.dropbox
+    if user:
+        user.dropbox = None
+        db.session.commit()
+        print "remomved token from DB"
+        flash('Dropbox Disconnected')
+        return redirect(url_for('profile'))
+
+    flash("Disconnect error, Try again")
     return redirect(url_for('profile'))
 
 def get_auth_flow():

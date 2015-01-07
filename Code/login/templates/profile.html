@@ -67,18 +67,23 @@
 			  <div class="panel-heading">Dropbox
 			  </div>
 			  <div class="panel-body">
-			    Connect your Dropbox account here!
-			    <br>
-          
-            {% if db_conn %}
-            <a href="{{ url_for('dropbox_logout') }}">
-              <img src="../static/images/gd_logo.png" method="post" class="img-rounded">
+			    {% if db_conn %}
+          <strong>STATUS:</strong> <span class="label label-success">Connected</span>
+			    <br> <br>
+            <a href="{{ url_for('dropbox_disconnect') }}">
+              <img src="../static/images/db_logo_disconn.png" alt="Disconnect Dropbox account" method="post" class="img-rounded">
+              <br> <br>
+              Disconnect '{{db_conn}}' account
             </a>
-            {% else %}
+          {% else %}
+          <strong>STATUS:</strong> <span class="label label-danger">Not Connected</span>
+          <br><br>
             <a href="{{ url_for('dropbox_auth_start') }}">
               <img src="../static/images/db_logo.png" method="post" class="img-rounded">
+              <br> <br>
+              Connect your Dropbox account here!
             </a>
-            {% endif %}
+          {% endif %}
     	  </div>
 			</div>
         </div>
