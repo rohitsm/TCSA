@@ -222,10 +222,16 @@ def profile():
 	if 'user' not in session:
 		return redirect(url_for('login'))
 	else:
+		real_name = None
 		# Dropbox Authentication; returns 'None' if access_token not found in DB
-		real_name = dropbox_connect()
-		print "real_name", real_name
-		
+		# real_name = dropbox_connect()
+		client = dropbox_connect()
+		if client is not None:			
+			account_info = client.account_info()
+			real_name = account_info["display_name"]
+			folder_metadata = client.metadata('/')
+			print "real_name", real_name
+			print "metadata:", folder_metadata	
 		return render_template('profile.html', user=session['user'], db_conn=real_name)
 
 @app.route('/logout')

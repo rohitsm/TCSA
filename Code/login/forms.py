@@ -1,8 +1,6 @@
 
 # Flask
 from flask.ext.wtf import Form
-# from wtforms import TextField, PasswordField, BooleanField, SubmitField, ValidationError
-# from wtforms.validators import DataRequired, Required, Email
 from flask import session
 
 # Models
@@ -15,8 +13,7 @@ class SignupForm(Form):
 	def __init__(self, *args, **kwargs):
 		Form.__init__(self, *args, **kwargs)
 
-	def verify(self, email):
-		print "Inside SignupForm.veriyu(), Email = ", email
+	def verify(self, email):		
 		user = User_1.query.filter_by(email = email).first()
 		if user:
 			#Email already exists in records
@@ -32,13 +29,10 @@ class LoginForm_1(Form):
 
 	def verify(self, eml, pwd):
 		# Checks if email and password match in records
-		print "inside LoginForm_1.verify()"
 		user = User_1.query.filter_by(email = eml).first()
 		if check_pass(user.password, pwd):
-			print "true"
 			return True
-		else:		
-			print "False"	
+		else:
 			return False
 
 # Stage 2
@@ -52,10 +46,7 @@ class LoginForm_2(Form):
 		# Checks if email and passphrase match in records		
 		user = User_2.query.filter_by(email = eml).first()
 		if check_pass(user.passphrase, passph):
-			print "==true"
 			return True
-
 		else:
-			print "==False"
 			return False
 

@@ -56,17 +56,19 @@ def get_access_token():
 def dropbox_connect():
 
     print "inside dropbox_connect()"
-    #if 'user' not in session:
-	#	return redirect(url_for('login'))
     access_token = get_access_token()
-    real_name = None
+    client = None
+    # real_name = None
     app.logger.info('access_token = %r', access_token)
     if access_token is not None:
         client = DropboxClient(access_token)
-        account_info = client.account_info()
-        real_name = account_info["display_name"]
-        print "real_name = ", real_name
-    return real_name
+        
+    return client
+
+        # account_info = client.account_info()
+        # real_name = account_info["display_name"]
+        # print "real_name = ", real_name
+    # return real_name
 	#return render_template('profile.html', db_conn=real_name)
 
 @app.route('/dropbox-auth-finish')

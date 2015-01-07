@@ -55,9 +55,6 @@ class User_1(db.Model):
 		self.email = email.lower()
 		self.password = pwdhash
 
-	# def __repr__(self):
-	# 	return '<User %r>' % self.email
-
 
 # Table 2 (Email + passphrase)
 class User_2(db.Model):
