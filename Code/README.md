@@ -1,7 +1,7 @@
 #Source code#
 
-This folder contains all the source code for the project.
+**Note:** This is an initial commit and contains preliminary raw code. For updated version check `ross_v2`
 
-*	**login** - Contains the related HTML and CSS code for the login page
+*	_login/_ - Contains the related HTML and CSS code for the login page
   *	Ross' Development Branch: `ross_v1`
 
