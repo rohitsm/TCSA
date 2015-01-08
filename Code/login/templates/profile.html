@@ -71,7 +71,7 @@
           <strong>STATUS:</strong> <span class="label label-success">Connected</span>
 			    <br> <br>
             <a href="{{ url_for('dropbox_disconnect') }}">
-              <img src="../static/images/db_logo_disconn.png" alt="Disconnect Dropbox account" method="post" class="img-rounded">
+              <img src="../static/images/db_logo.png" alt="Disconnect Dropbox account" method="post" class="img-rounded">
               <br> <br>
               Disconnect '{{db_conn}}' account
             </a>
@@ -79,7 +79,7 @@
           <strong>STATUS:</strong> <span class="label label-danger">Not Connected</span>
           <br><br>
             <a href="{{ url_for('dropbox_auth_start') }}">
-              <img src="../static/images/db_logo.png" method="post" class="img-rounded">
+              <img src="../static/images/db_logo_disconn.png" method="post" class="img-rounded">
               <br> <br>
               Connect your Dropbox account here!
             </a>

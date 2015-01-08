@@ -31,8 +31,8 @@ def load_user(email):
 @app.route('/')
 def index():
 	if 'user' in session:
-		print "user in session"
-		return redirect(url_for('profile'))
+		print "index(): user in session"
+		return redirect(url_for('profile'))	
 	
 	return render_template('index.html')
 
@@ -47,11 +47,13 @@ def testdb():
 @app.route('/login', methods=['GET', 'POST'])
 @app.route('/signin', methods=['GET', 'POST'])
 def login():
-	if 'user' in session:
-		print "user in session"
-		return redirect(url_for('profile'))
+	
+#	if 'user' in session:
+#		print "login(): user in session"
+#		return redirect(url_for('profile'))
 
-	return render_template('login.html')
+	return render_template('login.html')	
+	
 
 # ================ SIGN UP SECTION ====================== #
 
@@ -124,7 +126,7 @@ def login1():
 	print "inside login1"
 
 	if 'user' in session:
-		print "user in session"
+		print "login1(): user in session"
 		return redirect(url_for('profile'))
 	
 	if request.method == 'POST':
@@ -172,14 +174,18 @@ def login2():
 	if 'email' not in session:
 		return redirect(url_for('login'))
 
+	if 'user' in session:
+		print "login1(): user in session"
+		return redirect(url_for('profile'))
+
 	if request.method == 'POST':
 
 		email = session['email']
 		if (email):
 			passphrase = request.form['Passphrase']
-			#remember_me = False
-			#if 'remember_me' in request.form:
-			#	remember_me = True
+			remember_me = False
+			if 'remember_me' in request.form:
+				remember_me = True
 			
 			# DEBUG
 			print "email (login2): ", str(email)
@@ -200,9 +206,9 @@ def login2():
 					session.pop('email', None)
 					print "to profile"
 					session['user'] = email
-					# login_user(user, remember = remember_me)
+					login_user(user, remember = remember_me)
 					flash('You were successfully logged in')
-					return redirect(url_for('profile', email = email))
+					return redirect(url_for('profile'))
 
 			else:
 				# if user doesn't exist in records.
@@ -216,12 +222,14 @@ def login2():
 	print "GET login2"
 	return redirect(url_for('login'))
 
-@app.route('/user')
+@app.route('/user', methods=['GET', 'POST'])
 @login_required
 def profile():
 	if 'user' not in session:
 		return redirect(url_for('login'))
+	
 	else:
+		print ("Profile (Else case)")
 		real_name = None
 		
 # ============= Dropbox Authentication ============= #		
@@ -242,10 +250,10 @@ def logout():
 
 	if 'user' not in session:
 		print "user not in session"
-		return redirect(url_for('login1'))
+		return redirect(url_for('login'))
 	
 	session.pop('user', None)
-	# logout_user()
+	logout_user()
 	print "session popped"
 	return redirect(url_for('index'))
 
