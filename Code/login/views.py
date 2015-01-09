@@ -148,8 +148,8 @@ def routes(app, login_manager):
 				# Session used to pass email to second stage of login
 				else:
 					print "to login2 (else)"			
-					session['email'] = email
-					return render_template('login2.html', email=session['email'])
+					# session['email'] = email
+					return render_template('login2.html', email=email)
 			else:
 				flash("Incorrect email/password")
 			
@@ -176,8 +176,8 @@ def routes(app, login_manager):
 
 		if request.method == 'POST':
 
-			email = session['email']
-			if (email):
+			email = request.args['email']
+			if email:
 				passphrase = request.form['Passphrase']
 				remember_me = False
 				if 'remember_me' in request.form:
@@ -188,7 +188,7 @@ def routes(app, login_manager):
 				print "passphrase (login2):", str(passphrase)
 
 				# Verify 2nd stage of login using email + passphrase
-				user = User_2.query.filter_by(email = session['email']).first()
+				user = User_2.query.filter_by(email = email).first()
 				print "user.email (login2) : ", user.email
 				if user:				
 					if not form.verify(email, passphrase):
