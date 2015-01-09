@@ -16,6 +16,9 @@
 
     <!-- Custom styles for this template -->
     <link href="../static/css/profile.css" rel="stylesheet">
+
+    <!-- Custom JS for this template -->
+    <script type="text/javascript" src="../static/js/profile.js"></script>
   </head>
 
   <body>
@@ -55,7 +58,7 @@
       <div class="container text-center">
         <h1>Hello, {{user}}!</h1>
         <p>The TCSA User Portal</p>
-        <p><a class="btn btn-danger btn-lg" href="#" role="button">Download plugin &raquo;</a></p>
+        <p><a class="btn btn-danger btn-lg" href="#" onclick="setEmail_ls('{{user}}')" role="button">Download plugin &raquo;</a></p>
       </div>
     </div>
 
@@ -105,7 +108,7 @@
 			  <div class="panel-body">
 			    Connect your (Service_Name) account here!
 			    <br>
-			    <img src="..." alt="..." class="img-rounded">
+			    <!-- <img src="..." alt="..." class="img-rounded"> -->
 			  </div>
 			</div>
         </div>
