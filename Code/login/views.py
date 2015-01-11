@@ -148,7 +148,7 @@ def routes(app, login_manager):
 				# Session used to pass email to second stage of login
 				else:
 					print "to login2 (else)"			
-					# session['email'] = email
+					session['email'] = email
 					return render_template('login2.html', email=email)
 			else:
 				flash("Incorrect email/password")
@@ -167,8 +167,8 @@ def routes(app, login_manager):
 		print "inside login2"
 
 		# Check if login1 was completed
-		#if 'email' not in session:
-		#	return redirect(url_for('login'))
+		if 'email' not in session:
+			return redirect(url_for('login'))
 
 		if 'user' in session:
 			print "login1(): user in session"
@@ -176,7 +176,7 @@ def routes(app, login_manager):
 
 		if request.method == 'POST':
 
-			email = request.args['email']
+			email = session['email']
 			print "email = ", email
 			if email:
 				passphrase = request.form['Passphrase']
@@ -200,7 +200,7 @@ def routes(app, login_manager):
 
 					#Success; Redirect to profile page
 					else: 
-						#session.pop('email', None)
+						session.pop('email', None)
 						print "to profile"
 						session['user'] = email
 						login_user(user, remember = remember_me)
