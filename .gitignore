@@ -1,8 +1,6 @@
 Code/bin/*
 Code/include/*
 Code/lib/*
-Code/pb_keys/*
 *.Python
 *.pyc
 config.py
-tcsa.wsgi

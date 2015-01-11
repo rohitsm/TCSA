@@ -1,3 +1,7 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{% block content %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -16,6 +20,9 @@
     <!-- Custom styles for this template -->
     <link href="../static/css/login.css" rel="stylesheet">
 
+    <!-- Custom JS for this template -->
+    <link href="../static/js/login.js" type="text/javascript">
+
   </head>
 
   <body>
@@ -30,55 +37,67 @@
               </ul>
             </div>
           </div>
-        <!-- Flash messages -->
-          {% with messages = get_flashed_messages() %}
-            {% if messages %}
-              <div class="alert alert-danger text-center" role="alert">
-                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
 
-                {% for message in messages %}
-                  {{message}}
-                {% endfor %}
-              </div>
-            {% endif %}
-          {% endwith %}
           
           <div>
             <!-- Call corresponding form action here -->
-            <form class="form-signin" role="form" method="POST" action="/login1">
+            <form class="form-signin" role="form" method="post" action="">
 
               <h2 class="form-signin-heading">Please sign in</h2>
-              
-              <input type="email" class="form-control" placeholder="Email address" name="Email" id="Email" required autofocus>
 
-              <input type="password" class="form-control" placeholder="Password" name="Password" id="Password" required>
+              <!-- CSRF Prevention -->
+              {{ form.hidden_tag() }}
               
-              <!-- <label class="checkbox">
-                <input type="checkbox" value="remember-me"> Remember me
-              </label> -->
+              <!-- Email ID -->
+              <!-- <input type="email" class="form-control" placeholder="Email address" name="email" required autofocus> -->
+              <div class="form-control" name="email" >
+                {{ form.email(size=80) }}
+                <br>
+                {% for error in form.email.errors %}
+                  <span style="color: red;"> 
+                  [{{ error }}]
+                  </span>
+                {% endfor %}
+                | {% for pr in providers %}
+                  <a href="javascript:set_openid('{{ pr.url }}', '{{ pr.name }}');">{{ pr.name }}</a> |
+                  {% endfor %}
+
+              </div>             
+
+              <!-- Password -->
+              <!-- <input type="password" class="form-control" placeholder="Password" name="password" required> -->
+
+              <div class="form-control" name="password" >
+                {{ form.password(size=80) }}
+              </div>            
+
               
+              <!-- Remember Me -->
+
+
+              <label class="checkbox">
+              <!--   <input type="checkbox" value="remember-me">
+                 Remember Me -->
+              {{ form.remember_me }} Remember Me
+              </label>
               
-              <div class="col-sm-6 col-xs-12" id="btns">
-                <button type="submit" id="Submit" name="Submit" class="btn-block btn-primary btn">Sign In</button>
+              <div class="col-sm-6">
+                <button type="submit" name="Submit" class="btn-block btn-primary btn">Sign In</button>
               </div>
-              <div class="col-sm-6 col-sm-6" id="btns">
+              <div class="col-sm-6">
                 <button type="submit" class="btn-block btn-default btn">Forgot Password</button>
               </div>
-
-              <div id="create-account" class="col-sm-6 col-xs-12 text-center ">
-                <h3><span class="label label-success"><a href="{{url_for('signup')}}">Create an account</span></h3>
-              </div>
             </form>  
-            
           </div> 
+{% endblock %}
 
           <!-- Copyright and Footer-->
 
-          <footer>
-            <div class="mastfoot inner">
-              Copyright © 2014 The TCSA Project. All rights reserved
+          <div class="mastfoot">
+            <div class="inner">
+              <p>Copyright © 2014 The TCSA Project. All rights reserved</p>
             </div>  
-          </footer>
+          </div>
 
         </div><!-- cover-container -->
       </div><!-- site-wrapper-inner -->
