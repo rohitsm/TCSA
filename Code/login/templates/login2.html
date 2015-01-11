@@ -30,12 +30,12 @@
               </ul>
             </div>
           </div>
-        <!-- Flash messages -->
+          
+          <!-- Flash messages -->
           {% with messages = get_flashed_messages() %}
             {% if messages %}
               <div class="alert alert-danger text-center" role="alert">
                 <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-
                 {% for message in messages %}
                   {{message}}
                 {% endfor %}
@@ -44,18 +44,17 @@
           {% endwith %}
           
           <div>
-            <!-- Call corresponding form action here -->
-            <form class="form-signin" role="form" method="POST" action="/login1">
+            <form class="form-signin" role="form" method="POST" action="/login2">
 
-              <h2 class="form-signin-heading">Please sign in</h2>
+              <h2 class="form-signin-heading" id="form-h2">Enter passphrase</h2>
               
-              <input type="email" class="form-control" placeholder="Email address" name="Email" id="Email" required autofocus>
+              <input type="email" class="form-control" placeholder="{{email}}" value="{{email}}" name="Email" id="Email" disabled>
 
-              <input type="password" class="form-control" placeholder="Password" name="Password" id="Password" required>
+              <input type="password" class="form-control" placeholder="Passphrase" name="Passphrase" id="Passphrase" required autofocus>
               
-              <!-- <label class="checkbox">
+              <label class="checkbox">
                 <input type="checkbox" value="remember-me"> Remember me
-              </label> -->
+              </label>
               
               
               <div class="col-sm-6 col-xs-12" id="btns">
@@ -66,7 +65,7 @@
               </div>
 
               <div id="create-account" class="col-sm-6 col-xs-12 text-center ">
-                <h3><span class="label label-success"><a href="{{url_for('signup')}}">Create an account</span></h3>
+                <button class="btn btn-lg btn-success"><a href="signup.html">Create an account</a></button>
               </div>
             </form>  
             

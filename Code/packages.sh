@@ -10,3 +10,8 @@ pip install flask-script
 pip install flask-wtf WTForms
 pip install flask-sqlalchemy
 pip install MySQL-python
+pip install Flask-Admin
+pip install Flask-Login
+
+# Third party packages
+pip install dropbox
