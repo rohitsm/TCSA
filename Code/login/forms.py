@@ -5,7 +5,7 @@ from flask import session
 
 # Models
 from login import db
-from models import User_1, User_2, check_pass
+from models import get_user_record, set_user_record, check_pass
 
 # Stage 0
 class SignupForm(Form):
@@ -13,8 +13,9 @@ class SignupForm(Form):
 	def __init__(self, *args, **kwargs):
 		Form.__init__(self, *args, **kwargs)
 
-	def verify(self, email):		
-		user = User_1.query.filter_by(email = email).first()
+	def verify(self, email):	
+		user = get_user_record(email)	
+		# user = User_1.query.filter_by(email = email).first()
 		if user:
 			#Email already exists in records
 			return True
@@ -27,9 +28,10 @@ class LoginForm_1(Form):
 	def __init__(self, *args, **kwargs):
 		Form.__init__(self, *args, **kwargs)
 
-	def verify(self, eml, pwd):
+	def authenticate(self, eml, pwd):
 		# Checks if email and password match in records
-		user = User_1.query.filter_by(email = eml).first()
+		user = get_user_record(eml)
+		# user = User_1.query.filter_by(email = eml).first()
 		if check_pass(user.password, pwd):
 			return True
 		else:
@@ -41,12 +43,15 @@ class LoginForm_2(Form):
 	def __init__(self, *args, **kwargs):
 		Form.__init__(self, *args, **kwargs)
 
-	# Takes email ID as argument
-	def verify(self, eml, passph):
+	def authenticate(self, eml, passph):
 		# Checks if email and passphrase match in records		
-		user = User_2.query.filter_by(email = eml).first()
+		user = get_user_record(eml)
+		# user = User_2.query.filter_by(email = eml).first()
 		if check_pass(user.passphrase, passph):
 			return True
 		else:
 			return False
+
+
+
 

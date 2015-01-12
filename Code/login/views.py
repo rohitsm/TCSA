@@ -9,8 +9,9 @@ from flask.ext.login import login_user, logout_user, login_required, current_use
 from forms import SignupForm, LoginForm_1, LoginForm_2
 
 # DB
-from models import User_1, User_2, User_Profile, set_pass
 from login import db
+from models import User, User_Profile, set_pass
+from models import get_user_record, set_user_record
 
 # Dropbox Connectors
 from dropbox_conn import dropbox_connect
@@ -22,7 +23,7 @@ def routes(app, login_manager):
 	def load_user(email):
 		# Must be contained in the file where routes are defined (views.py)
 		# Returns the associated User object form DB
-		return User_2.query.get(email)
+		return User.query.get(email)
 
 	@app.route('/')
 	def index():
@@ -94,19 +95,7 @@ def routes(app, login_manager):
 
 			else:
 				# Add entry into the DB
-				entry_1 = User_1(email, pwd_hash)
-				entry_2 = User_2(email, passphrase_hash)
-				entry_3 = User_Profile(email)
-				print "entry_1", entry_1
-				print "entry_2", entry_2
-				print "entry_3", entry_3
-				
-				entry_1.child_1.append(entry_2)
-				entry_1.child_2.append(entry_3)
-				db.session.add(entry_1)
-				
-				db.session.commit()
-
+				set_user_record(email, pwd_hash, passphrase_hash)
 				flash('New account created successfully!')
 				return redirect(url_for('login'))
 
@@ -136,9 +125,10 @@ def routes(app, login_manager):
 			print "password", str(password)
 
 			# Checks if email/pwd exists in DB records
-			user = User_1.query.filter_by(email = email).first()
+			user = get_user_record(email)
+			# user = User_1.query.filter_by(email = email).first()
 			if user:
-				if not form.verify(email, password):
+				if not form.authenticate(email, password):
 					print "form verify = false"
 					# Invalid login. Return error
 					flash('Invalid email or password')
@@ -189,10 +179,10 @@ def routes(app, login_manager):
 				print "passphrase (login2):", str(passphrase)
 
 				# Verify 2nd stage of login using email + passphrase
-				user = User_2.query.filter_by(email = email).first()
+				user = get_user_record(email)
 				print "user.email (login2) : ", user.email
 				if user:				
-					if not form.verify(email, passphrase):
+					if not form.authenticate(email, passphrase):
 						print "form verify 2 = false"
 						# Invalid login. Return error
 						flash('Invalid passphrase')
