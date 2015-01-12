@@ -15,3 +15,4 @@ pip install Flask-Login
 
 # Third party packages
 pip install dropbox
+pip install --upgrade google-api-python-client
