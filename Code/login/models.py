@@ -19,9 +19,14 @@ def get_user_record(email):
 	print "inside get_user_record: "
 	return user
 
-def set_user_record(email, pwdhash, ppshash):
+def set_user_record(email, password, passphrase):
 	# Set user object in database
 	user = User(email, password, passphrase)
+	profile = User_Profile(email)
+
+	# Maintaining foreign key dependency
+	user.child.append(profile)
+
 	db.session.add(user)
 	db.session.commit()
 	print "inside set_user_record: "
