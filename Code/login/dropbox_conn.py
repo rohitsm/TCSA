@@ -10,7 +10,6 @@ from login import app
 from login import login_manager 
 
 # DB
-# from models import User_Profile #, set_access_token, get_access_token
 from models import get_dropbox_token, set_dropbox_token
 from login import db
 
@@ -69,7 +68,6 @@ def dropbox_auth_finish():
         abort(403)
     
     print "user adding dropbox token to DB for email ", email
-    # user = User_Profile.query.filter_by(email = email).first()
     if set_dropbox_token(email, access_token):
         print "added access_token to DB"
         #flash('Connected')
@@ -100,7 +98,6 @@ def dropbox_disconnect():
         abort(403)
 
     print "Disconnecting Dropbox access_token for email: ", email
-    # user = User_Profile.query.filter_by(email = email).first()
     if set_dropbox_token(email, None):
         print "Disconnected Dropbox. remomved token from DB"
         return redirect(url_for('profile'))

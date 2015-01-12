@@ -6,3 +6,4 @@ Code/pb_keys/*
 *.pyc
 config.py
 tcsa.wsgi
+test.py

@@ -126,7 +126,6 @@ def routes(app, login_manager):
 
 			# Checks if email/pwd exists in DB records
 			user = get_user_record(email)
-			# user = User_1.query.filter_by(email = email).first()
 			if user:
 				if not form.authenticate(email, password):
 					print "form verify = false"

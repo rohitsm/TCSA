@@ -68,23 +68,23 @@ def set_token(email, service, access_token):
 
 # External Wrappers
 def get_dropbox_token(email):
-	db_token = get_token(email, 'dropbox')
+	db_token = get_token(str(email), 'dropbox')
 	print "inside get_dropbox_token: ", db_token
 	return db_token
 
 def set_dropbox_token(email, access_token):
-	if set_token(email, 'dropbox', access_token):
+	if set_token(str(email), 'dropbox', access_token):
 		print "inside set_dropbox_token: "
 		return True
 	return False
 
 def get_gdrive_token(email):
-	gd_token = get_token(email, 'gdrive')
+	gd_token = get_token(str(email), 'gdrive')
 	print "inside get_gdrive_token: ", gd_token
 	return gd_token
 
 def set_gdrive_token(email, access_token):
-	if set_token(email, 'gdrive', access_token):
+	if set_token(str(email), 'gdrive', access_token):
 		print "inside set_gdrive_token: ", db_token
 		return True
 	return False

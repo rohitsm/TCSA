@@ -15,7 +15,6 @@ class SignupForm(Form):
 
 	def verify(self, email):	
 		user = get_user_record(email)	
-		# user = User_1.query.filter_by(email = email).first()
 		if user:
 			#Email already exists in records
 			return True
@@ -31,7 +30,6 @@ class LoginForm_1(Form):
 	def authenticate(self, eml, pwd):
 		# Checks if email and password match in records
 		user = get_user_record(eml)
-		# user = User_1.query.filter_by(email = eml).first()
 		if check_pass(user.password, pwd):
 			return True
 		else:
@@ -46,7 +44,6 @@ class LoginForm_2(Form):
 	def authenticate(self, eml, passph):
 		# Checks if email and passphrase match in records		
 		user = get_user_record(eml)
-		# user = User_2.query.filter_by(email = eml).first()
 		if check_pass(user.passphrase, passph):
 			return True
 		else:
