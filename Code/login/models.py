@@ -11,6 +11,19 @@ def set_pass(password):
 def check_pass(pass_1, pass_2):
 	return check_password_hash(pass_1, pass_2)
 
+def get_user(email):
+	# Get user record from database
+	user = User.query.filter_by(email = email).first()
+	return user
+
+def set_user(email, pwdhash, ppshash):
+	# Insert user record into database
+	user = User(email, password, passphrase)
+	db.session.add(user)
+	db.session.commit()
+
+
+
 # # Sets the access tokens for the services in the DB
 # def set_token(self, email, service, access_token):
 
@@ -38,57 +51,39 @@ def check_pass(pass_1, pass_2):
 
 # 	return None
 
-# Table 1 (Email + password)
-class User_1(db.Model):
-
+# Table (Email + password + passphrase)
+class User(db.Model):
 	# Setting the table name
-	__tablename__ = 'Login_1'
+	__tablename__ = 'Login'
 
-	email 	= 	Column('email', String(120), primary_key=True, unique=True)
-	password = 	Column('password', String(100))
+	email = Column('email', String(120), primary_key=True)
+	password = Column('password', String(120))
+	passphrase = Column('password', String(120))
 
-	# Defining One-One relationship with Login_2
-	child_1 = relationship("User_2", backref=backref('Login_1',  uselist=False))
-	child_2 = relationship("User_Profile", backref=backref('Login_1',  uselist=False))
-
-	def __init__(self, email, pwdhash):
+	def __init__(self, email, pwdhash, ppshash):
 		self.email = email.lower()
 		self.password = pwdhash
+		self.passphrase = ppshash
 
-
-# Table 2 (Email + passphrase)
-class User_2(db.Model):
-
-	# Setting the table name
-	__tablename__ = 'Login_2'
-
-	email 		=	Column('email', String(120), ForeignKey('Login_1.email'), primary_key=True, unique=True)
-	passphrase 	= 	Column('passphrase', String(100))
-
-	def __init__(self, email, passphrase_hash):
-		# Create object from Login
-		
-		self.email = email.lower()
-		self.passphrase = passphrase_hash
+	# Flask-Login function definitions
 
 	def get_id(self):
-		# For Flask-Login
-		#return self.email
-		return unicode(self.email)		
+		# for Flask-Login
+		return unicode(self.email)
 
 	def is_authenticated(self):
-		# Return True if user is authenticated
+		# Return true if user is authenticated
 		return True
 
 	def is_active(self):
-		# True, as all users are active
+		# True, as all users are active 
 		return True
 
 	def is_anonymous(self):
 		# Anonymous users are not supported
 		return False
 
-# Table 3 - Email + various Access Tokens
+# Table 2 - Email + various Access Tokens
 class User_Profile(db.Model):
 
 	# Setting the table name
