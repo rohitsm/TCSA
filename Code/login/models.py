@@ -92,7 +92,7 @@ class User(db.Model):
 
 	email = Column('email', String(120), primary_key=True)
 	password = Column('password', String(120))
-	passphrase = Column('password', String(120))
+	passphrase = Column('passphrase', String(120))
 
 	# Describing One-One relationship with Profile
 	child = relationship("User_Profile", backref=backref('Login', uselist=False))
