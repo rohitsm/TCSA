@@ -55,13 +55,13 @@ def gdrive_connect():
 		print "refresh_token = none"
 		return None
 	# Build the JSON variable for credentials
-	cred = {}
-	cred["client_id"] = GDRIVE_CLIENT_ID
-	cred["client_secret"] = GDRIVE_CLIENT_SECRET
-	cred["refresh_token"] = refresh_token
-	cred["grant_type"] = "refresh_token"
+	# cred = {}
+	# cred['client_id'] = GDRIVE_CLIENT_ID
+	# cred['client_secret'] = GDRIVE_CLIENT_SECRET
+	# cred['refresh_token'] = refresh_token
+	# cred['grant_type'] = "refresh_token"
 
-	credentials = OAuth2Credentials.from_json(json.dumps(cred))
+	credentials = OAuth2Credentials.from_json(json.dumps(refresh_token))
 	if credentials.access_token_expired:
 		print "credentials.access_token_expired"
 		return None
@@ -90,7 +90,7 @@ def gdrive_auth_finish():
 		# session['credentials'] = credentials.to_json()
 		refresh_token = credentials.refresh_token
 
-		if set_gdrive_token(email, refresh_token):
+		if set_gdrive_token(email, credentials):
 			print "refresh_token added to DB"
 			return redirect(url_for('profile'))
 
@@ -120,7 +120,7 @@ def get_auth_flow_object():
                            redirect_uri=REDIRECT_URI)
 	flow.params['access_type'] = 'offline'
 	flow.params['approval_prompt'] = 'force'
-	flow.params['include_granted_scopes'] = True
+	flow.params['include_granted_scopes'] = 'true'
 	return flow
 
 @app.route('/gdrive-disconnect')
