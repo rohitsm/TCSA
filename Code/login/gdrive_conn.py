@@ -50,7 +50,10 @@ def get_gdrive_refresh_token():
 def gdrive_connect():
 	# Make request for new access_token using the refresh token
 	refresh_token = get_gdrive_refresh_token()
-	
+	print "refresh_token = ", refresh_token
+	if refresh_token is None:
+		print "refresh_token = none"
+		return None
 	# Build the JSON variable for credentials
 	cred = {}
 	cred["client_id"] = GDRIVE_CLIENT_ID
