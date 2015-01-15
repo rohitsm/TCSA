@@ -61,7 +61,7 @@ def gdrive_connect():
 	# cred['refresh_token'] = refresh_token
 	# cred['grant_type'] = "refresh_token"
 
-	credentials = OAuth2Credentials.from_json(json.dumps(refresh_token))
+	credentials = OAuth2Credentials.from_json(refresh_token)
 	if credentials.access_token_expired:
 		print "credentials.access_token_expired"
 		return None
@@ -70,7 +70,9 @@ def gdrive_connect():
 		user_info_service = build(
 			serviceName = 'drive', version = 'v2',
 			http = credentials.authorize(httplib2.Http()) )
-		user_info = user_info_service.userinfo().get().execute()
+		print "user_info_service = ", user_info_service
+		user_info = user_info_service.files().list().execute()
+		print "\n\n\n\nuser_info = ", json.dumps(user_info, indent=4, sort_keys=True)
 		return json.dumps(user_info)
 		
 @app.route('/gdrive-auth-finish')
@@ -90,7 +92,7 @@ def gdrive_auth_finish():
 		# session['credentials'] = credentials.to_json()
 		refresh_token = credentials.refresh_token
 
-		if set_gdrive_token(email, credentials):
+		if set_gdrive_token(email, credentials.to_json()):
 			print "refresh_token added to DB"
 			return redirect(url_for('profile'))
 
