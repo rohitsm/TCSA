@@ -220,6 +220,7 @@ def routes(app, login_manager):
 		else:
 			print ("Profile (Else case)")
 			real_name = None
+			gd_email = None
 			
 	# ============= Dropbox Authentication ============= #		
 			# Returns object of class DropboxClient 
@@ -232,10 +233,11 @@ def routes(app, login_manager):
 				print "real_name", real_name
 				print "metadata:", folder_metadata	
 
-	# ============= Google Drive Authentication ============= #		
-				# Returns object user_info of JSON type 
-				# otherwise returns 'None' if access_token not found in DB
-				user_info = gdrive_connect()
+# ============= Google Drive Authentication ============= #		
+			# Returns object user_info of JSON type 
+			# otherwise returns 'None' if access_token not found in DB
+			user_info = gdrive_connect()
+			if user_info is not None:
 				print "user_info = ", user_info
 				gd_email = user_info["email"]
 				print "gd_email = ", gd_email
