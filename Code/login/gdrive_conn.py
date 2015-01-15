@@ -70,7 +70,7 @@ def gdrive_connect():
 		user_info = user_info_service.userinfo().get().execute()
 		return json.dumps(user_info)
 		
-@app.route('gdrive-auth-finish')
+@app.route('/gdrive-auth-finish')
 def gdrive_auth_finish():
 	email = session.get('user')
 	print "inside gdrive-auth-finish. \nEmail = ", email
@@ -120,19 +120,19 @@ def get_auth_flow_object():
 	flow.params['include_granted_scopes'] = True
 	return flow
 
-@app.route('gdrive-disconnect')
+@app.route('/gdrive-disconnect')
 def gdrive_disconnect():
 	# Disconnect Google Drive refresh_token from DB records
 	print "inside gdrive-disconnect"
 	email = session.get('user')
 	if email is None:
 		abort(403)
-	print"Disconnecting Google Drive for email: ", email
+	print "Disconnecting Google Drive for email: ", email
 	if set_gdrive_token(email, None):
 		print "Disconnected Google Drive. removed from DB"
 		return redirect(url_for('profile'))
-		
-    flash("Disconnect error, Try again")
-    return redirect(url_for('profile'))
+
+	flash("Disconnect error, Try again")
+	return redirect(url_for('profile'))
 
 
