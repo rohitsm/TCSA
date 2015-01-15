@@ -66,8 +66,8 @@
       <!-- Example row of columns -->
       <div class="row">
         <div class="col-md-4">
-        	<div class="panel panel-primary text-center">
-			  <div class="panel-heading">Dropbox
+          <div class="panel panel-primary text-center">
+          <div class="panel-heading">Dropbox
 			  </div>
 			  <div class="panel-body">
 			    {% if db_conn %}
@@ -89,15 +89,29 @@
           {% endif %}
     	  </div>
 			</div>
-        </div>
+      </div>
         <div class="col-md-4">
-          	<div class="panel panel-info text-center">
-				<div class="panel-heading">Google Drive
+          <div class="panel panel-info text-center">
+				  <div class="panel-heading">Google Drive
 				</div>
 				<div class="panel-body">
-					Connect your Google Drive account here!
-					<br>
-					<img src="../static/images/gd_logo.png" alt="..." class="img-rounded">
+          {% if gd_conn %}
+          <strong>STATUS:</strong> <span class="label label-success">Connected</span>
+          <br> <br>
+            <a href="{{ url_for('gdrive_disconnect') }}">
+              <img src="../static/images/gd_logo.png" alt="Disconnect Google Drive account" method="post" class="img-rounded">
+              <br> <br>
+              Disconnect '{{gd_conn}}' account
+            </a>
+          {% else %}
+          <strong>STATUS:</strong> <span class="label label-danger">Not Connected</span>
+          <br><br>
+            <a href="{{ url_for('gdrive_auth_start') }}">
+              <img src="../static/images/gd_logo_disconn.png" method="post" class="img-rounded">
+              <br> <br>
+              Connect your Google Drive account here!
+            </a>
+          {% endif %}
 				</div>
 			</div>
        </div>
