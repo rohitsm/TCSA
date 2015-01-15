@@ -20,9 +20,9 @@ DROPBOX_APP_KEY = app.config['DROPBOX_APP_KEY']
 DROPBOX_APP_SECRET = app.config['DROPBOX_APP_SECRET']
 
 # Get access token from DB
-def get_access_token():
+def get_dropbox_access_token():
     email = session.get('user')
-    print "inside get_access_token() \nemail = ", email
+    print "inside get_dropbox_access_token() \nemail = ", email
     if email is None:
         return None
 
@@ -38,7 +38,7 @@ def get_access_token():
 #@app.route('/dropbox-connect')
 def dropbox_connect():
     print "inside dropbox_connect()"
-    access_token = get_access_token()
+    access_token = get_dropbox_access_token()
     client = None
     app.logger.info('access_token = %r', access_token)
     if access_token is not None:
