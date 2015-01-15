@@ -16,6 +16,9 @@ from models import get_user_record, set_user_record
 # Dropbox Connectors
 from dropbox_conn import dropbox_connect
 
+# Google Drive Connectors
+from gdrive_conn import gdrive_connect
+
 def routes(app, login_manager):
 	login_manager.login_view = 'login'
 
@@ -228,7 +231,17 @@ def routes(app, login_manager):
 				folder_metadata = client.metadata('/')
 				print "real_name", real_name
 				print "metadata:", folder_metadata	
-			return render_template('profile.html', user=session['user'], db_conn=real_name)
+
+	# ============= Google Drive Authentication ============= #		
+				# Returns object user_info of JSON type 
+				# otherwise returns 'None' if access_token not found in DB
+				user_info = gdrive_connect()
+				print "user_info = ", user_info
+				gd_email = user_info["email"]
+				print "gd_email = ", gd_email
+
+			return render_template('profile.html', user=session['user'], db_conn=real_name, gd_conn=gd_email)
+
 
 	@app.route('/logout')
 	@login_required

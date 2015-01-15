@@ -79,6 +79,7 @@ def dropbox_auth_finish():
 
 @app.route('/dropbox-auth-start')
 def dropbox_auth_start():
+    # Checking for user session
     if 'user' not in session:
         abort(403)
     email = session.get('user')
