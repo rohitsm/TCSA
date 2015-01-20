@@ -19,9 +19,9 @@ def get_user_record(email):
 	print "inside get_user_record: "
 	return user
 
-def set_user_record(email, password, passphrase):
+def set_user_record(email, password, passphrase, pub_key):
 	# Set user object in database
-	user = User(email, password, passphrase)
+	user = User(email, password, passphrase, pub_key)
 	profile = User_Profile(email)
 
 	# Maintaining foreign key dependency
@@ -98,14 +98,16 @@ class User(db.Model):
 	email = Column('email', String(120), primary_key=True)
 	password = Column('password', String(120))
 	passphrase = Column('passphrase', String(120))
+	pub_key = Column('pub_key', BLOB)
 
 	# Describing One-One relationship with Profile
 	child = relationship("User_Profile", backref=backref('Login', uselist=False))
 
-	def __init__(self, email, pwdhash, ppshash):
+	def __init__(self, email, pwdhash, ppshash, pub_key):
 		self.email = email.lower()
 		self.password = pwdhash
 		self.passphrase = ppshash
+		self.pub_key = pub_key
 
 	# Flask-Login function definitions
 
