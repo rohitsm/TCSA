@@ -46,7 +46,6 @@ def get_gdrive_refresh_token():
 	print "Error no record of refresh_token found in DB. Not connected to Google Drive"
 	return None
 
-
 def gdrive_connect():
 	# Make request for new access_token using the refresh token
 	refresh_token = get_gdrive_refresh_token()
@@ -70,6 +69,7 @@ def gdrive_connect():
 		user_info_service = build(
 			serviceName = 'drive', version = 'v2',
 			http = credentials.authorize(httplib2.Http()) )
+		
 		print "user_info_service = ", user_info_service
 		user_info = user_info_service.files().list().execute()
 		print "\n\n\n\nuser_info = ", json.dumps(user_info, indent=4, sort_keys=True)
