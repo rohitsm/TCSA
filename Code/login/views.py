@@ -60,51 +60,101 @@ def routes(app, login_manager):
 	@app.route('/signup', methods=['GET', "POST"])
 	def signup():
 		form = SignupForm()
+		try:
+			if request.method == 'POST':
 
-		if request.method == 'POST':
+				# Get form data
+				print "Inside signup()"
 
-			# Get form data
-			print "Inside signup()"
-			
-			email = cgi.escape(request.form['Email'], True).lower()
-			print "email = ", str(email)
+				# Get form data
+				email = cgi.escape(request.form['Email'], True).lower()
+				password1 = request.form['Password1']
+				password2 = request.form['Password2']
+				passphrase1 = request.form['Passphrase1']
+				passphrase2 = request.form['Passphrase2']
+				fn = request.files['PB_Key']
 
-			pwd_hash = set_pass(request.form['Password1'])
-			print "pwd_hash = ", str(pwd_hash)
+				# DEBUG
+				print "email: ", str(email)
+				print "password1: ", str(password1)
+				print "password2: ", str(password2)
+				print "passphrase1: ", str(passphrase1)
+				print "passphrase2: ", str(passphrase2)
+				print "filename = ", str(fn.filename)
+				# print "filesize = ", os.path.getsize(fn.filename)
 
-			passphrase_hash = set_pass(request.form['Passphrase1'])
-			print "passphrase_hash = ", str(passphrase_hash)
+				# if form.verify(email):	# Email exists in records
+				# 	flash('That email is already registered!')	
+				# 	print "That email is already registered"
+				# 	return render_template('signup.html')
 
-			fn = request.files['PB_Key']
-			print "filename = ", str(fn.filename)
+				if len(password1) < 5: # Password lenght test
+					flash('Password must have minimum 5 characters!')	
+					print "Password must have minimum 5 characters!"
+					return render_template('signup.html')
 
-			# Validates extension of file uploaded and renames the file
-			# based on email address: 
-			# <name before '@' in email>.pub 
+				if len(passphrase1) < 8: # Passphrase lenght test
+					flash('Passphrase must have minimum 5 characters!')	
+					print "Passphrase must have minimum 5 characters!"
+					return render_template('signup.html')
 
-			if (fn.filename).endswith('.pub'):
-				new_fn = str(email.split('@')[0]).replace('.','') + '.pub'
-				print "new_fn = ", str(new_fn)
-				print "current WD = ", os.getcwd()
-				print "UPLOAD_FOLDER = ", app.config['UPLOAD_FOLDER']
-				fn.save(os.path.join(app.config['UPLOAD_FOLDER'] , new_fn))
+				if (password1 != password2): # Password match test
+					flash('Passwords do not match')	
+					print "Passwords do not match"
+					return render_template('signup.html')
 
-			print "Uploaded pub key "
+				if (passphrase1 != passphrase2): # Passphrase match test
+					flash('Passwords do not match')	
+					print "Passwords do not match"
+					return render_template('signup.html')
 
-			if form.verify(email):	#Email exists in records
-				flash('That email is already registered!')	
-				print "That email is already registered"
-				return render_template('signup.html')
+				# Validates extension of file uploaded; Prompt error if invalid public key
+				if not (fn.filename).endswith('.pub'):
+					flash("Invalid public key. Please upload proper public key")
+					print "Invalid public key. Please upload proper public key"
+					return render_template('signup.html')
+	
+				# Delete if the above works
 
-			else:
-				# Add entry into the DB
-				set_user_record(email, pwd_hash, passphrase_hash)
-				flash('New account created successfully!')
-				return redirect(url_for('login'))
+				# if os.stat(fn.filename).st_size == 0:
+				# 	print "empty pub key file"
+				# 	flash("Invalid public key. Please upload proper public key")
+				# 	return render_template('signup.html')				
 
-		# GET Requests
-		print "GET Signup"
+				else:
+					pwd_hash = set_pass(password1)
+					print "pwd_hash = ", str(pwd_hash)
+					passphrase_hash = set_pass(passphrase1)
+					print "passphrase_hash = ", str(passphrase_hash)
+
+					# Strip leading path from file: attack prevention
+					# pb_key = os.path.basename(fn.filename)
+
+					# Read public key file contents
+					# with open(fn) as f:
+					pub_key = fn.read()
+					
+					print "Uploaded pub key: ", pub_key
+					
+					# Add entry into the DB
+					set_user_record(email, pwd_hash, passphrase_hash, pub_key)
+					flash('New account created successfully!')
+					return redirect(url_for('login'))
+
+			# GET Requests
+			print "GET Signup"
+			return render_template('signup.html')
+
+		except OSError:
+		# except Exception, e:
+			# May be caused by 'os.stat(fn).st_size'
+			print "Woah horsey! You broke something!:  OSError"
+			print str(e)
+			flash("Signup Error")
+			pass
+
 		return render_template('signup.html')
+
 
 	# ============= LOGIN/SIGN IN SECTION =================== #
 
@@ -233,7 +283,7 @@ def routes(app, login_manager):
 				print "real_name", real_name
 				print "metadata:", folder_metadata	
 
-# ============= Google Drive Authentication ============= #		
+	# ============= Google Drive Authentication ============= #		
 			# Returns object user_info of JSON type 
 			# otherwise returns 'None' if access_token not found in DB
 			user_info = gdrive_connect()
