@@ -3,4 +3,10 @@ Code/include/*
 Code/lib/*
 *.Python
 *.pyc
+<<<<<<< HEAD
 config.py
+=======
+config.py
+tcsa.wsgi
+test.py
+>>>>>>> ross_v3

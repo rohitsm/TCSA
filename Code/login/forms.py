@@ -6,7 +6,11 @@ from wtforms.validators import DataRequired, Required, Email
 
 # Models
 from login import db
+<<<<<<< HEAD
 from models import User_1, User_2
+=======
+from models import get_user_record, set_user_record, check_pass
+>>>>>>> ross_v3
 
 # Stage 0
 class SignupForm(Form):
@@ -18,11 +22,16 @@ class SignupForm(Form):
 	def __init__(self, *args, **kwargs):
 		Form.__init__(self, *args, **kwargs)
 
+<<<<<<< HEAD
 	def validate(self):
 		if not Form.validate(self):
 			return False
 
 		user = User_1.query.filter_by(email = self.email.data.lower()).first()
+=======
+	def verify(self, email):	
+		user = get_user_record(email)	
+>>>>>>> ross_v3
 		if user:
 			self.email.errors.append("That email is already taken")
 			return False
@@ -48,12 +57,19 @@ class LoginForm_1(Form):
 	def __init__(self, *args, **kwargs):
 		Form.__init__(self, *args, **kwargs)
 
+<<<<<<< HEAD
 	def validate(self):
 		if not Form.validate(self):
 			return False
 
 		user = User_1.query.filter_by(email = self.email.data.lower()).first()
 		if user and user.check_password(self.password.data):
+=======
+	def authenticate(self, eml, pwd):
+		# Checks if email and password match in records
+		user = get_user_record(eml)
+		if check_pass(user.password, pwd):
+>>>>>>> ross_v3
 			return True
 		else:
 			self.email.errors.append("Invalid email or password")
@@ -72,6 +88,7 @@ class LoginForm_2(Form):
 	def __init__(self, *args, **kwargs):
 		Form.__init__(self, *args, **kwargs)
 
+<<<<<<< HEAD
 	# Takes email ID as argument
 	def validate(self, eml):
 		if not Form.validate(self):
@@ -79,8 +96,17 @@ class LoginForm_2(Form):
 
 		user = User_2.query.filter_by(email = eml.lower()).first()
 		if user and user.check_passphrase(self.passphrase.data):
+=======
+	def authenticate(self, eml, passph):
+		# Checks if email and passphrase match in records		
+		user = get_user_record(eml)
+		if check_pass(user.passphrase, passph):
+>>>>>>> ross_v3
 			return True
 		else:
 			self.email.errors.append("Incorrect passphrase")
 			return False
+
+
+
 
