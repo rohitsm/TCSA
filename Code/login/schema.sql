@@ -7,7 +7,9 @@ CREATE TABLE Login(
 	-- Hashed password
 	password VARCHAR(100) NOT NULL,
 	-- Hashed passphrase
-	passphrase VARCHAR(100) NOT NULL
+	passphrase VARCHAR(100) NOT NULL,
+	-- Public key
+	pub_key BLOB NOT NULL
 ) ENGINE=InnoDB;
 
 -- CREATE TABLE Login_1(
