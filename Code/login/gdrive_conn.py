@@ -48,32 +48,40 @@ def get_gdrive_refresh_token():
 
 def gdrive_connect():
 	# Make request for new access_token using the refresh token
-	refresh_token = get_gdrive_refresh_token()
-	# print "refresh_token = ", refresh_token
-	if refresh_token is None:
-		print "refresh_token = none"
-		return None
-	# Build the JSON variable for credentials
-	# cred = {}
-	# cred['client_id'] = GDRIVE_CLIENT_ID
-	# cred['client_secret'] = GDRIVE_CLIENT_SECRET
-	# cred['refresh_token'] = refresh_token
-	# cred['grant_type'] = "refresh_token"
+	try:		
+		refresh_token = get_gdrive_refresh_token()
+		# print "refresh_token = ", refresh_token
+		if refresh_token is None:
+			print "refresh_token = none"
+			return None
+		# Build the JSON variable for credentials
+		# cred = {}
+		# cred['client_id'] = GDRIVE_CLIENT_ID
+		# cred['client_secret'] = GDRIVE_CLIENT_SECRET
+		# cred['refresh_token'] = refresh_token
+		# cred['grant_type'] = "refresh_token"
 
-	credentials = OAuth2Credentials.from_json(refresh_token)
-	if credentials.access_token_expired:
-		print "credentials.access_token_expired"
-		return None
-	else:
-		# Returns user information as a JSON object
-		user_info_service = build(
-			serviceName = 'drive', version = 'v2',
-			http = credentials.authorize(httplib2.Http()) )
-		
-		print "user_info_service = ", user_info_service
-		user_info = user_info_service.files().list().execute()
-		print "\n\n\n\nuser_info = ", json.dumps(user_info, indent=4, sort_keys=True)
-		return json.dumps(user_info)
+		credentials = OAuth2Credentials.from_json(refresh_token)
+		if credentials.access_token_expired:
+			print "credentials.access_token_expired"
+			# return redirect(url_for('gdrive_auth_finish'))
+			return None
+		else:
+			# Returns user information as a JSON object
+			user_info_service = build(
+				serviceName = 'drive', version = 'v2',
+				http = credentials.authorize(httplib2.Http()) )
+			
+			print "else: user_info_service = "
+			user_info = user_info_service.files().list().execute()
+			print "\n\nuser_info type = ", type(user_info)
+			print "\n\nuser_info = ", json.dumps(user_info, indent=4, sort_keys=True)			
+			return json.dumps(user_info)
+
+	except AccessTokenRefreshError:
+		flash('Drive access revoked!')
+		return redirect(url_for('gdrive_auth_finish'))
+
 		
 @app.route('/gdrive-auth-finish')
 def gdrive_auth_finish():
