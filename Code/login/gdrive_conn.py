@@ -4,6 +4,7 @@
 # Python
 import json
 import httplib2
+import urllib2
 from urllib import urlencode
 
 # Flask
@@ -56,9 +57,11 @@ def refresh_access_token(refresh_token):
 			'refresh_token' : refresh_token,
 			'grant_type' : "refresh_token"
 		}
-
-	h = httplib2.Http()
-	resp, content = h.request("https://www.googleapis.com/oauth2/v3/token", "POST", urlencode(cred))
+	request_url = "https://www.googleapis.com/oauth2/v3/token?" = str(urlencode(cred))
+	print "request_url = ", request_url
+	req = urllib2.Request(request_url)
+    resp = urllib2.urlopen(req)
+    content = resp.read()
 	print "inside refresh_access_token. Resp = ", resp
 	print "inside refresh_access_token. content = ", content
 
