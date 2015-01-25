@@ -78,7 +78,7 @@ def gdrive_connect():
 			print "\n\nuser_info = ", json.dumps(user_info, indent=4, sort_keys=True)			
 			return json.dumps(user_info)
 
-	except AccessTokenRefreshError:
+	except AccessTokenRefreshError as e:
 		flash('Drive access revoked!')
 		return redirect(url_for('gdrive_auth_finish'))
 
