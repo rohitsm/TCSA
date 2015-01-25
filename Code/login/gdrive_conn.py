@@ -57,11 +57,13 @@ def refresh_access_token(refresh_token):
 			'refresh_token' : refresh_token,
 			'grant_type' : "refresh_token"
 		}
-	request_url = "https://www.googleapis.com/oauth2/v3/token?" = str(urlencode(cred))
-	print "request_url = ", request_url
-	req = urllib2.Request(request_url)
-    resp = urllib2.urlopen(req)
-    content = resp.read()
+	# request_url = "https://www.googleapis.com/oauth2/v3/token?" = str(urlencode(cred))
+	# print "request_url = ", request_url
+
+
+	req = urllib2.Request("https://www.googleapis.com/oauth2/v3/token", urlencode(cred))
+	resp = urllib2.urlopen(req)
+	content = resp.read()
 	print "inside refresh_access_token. Resp = ", resp
 	print "inside refresh_access_token. content = ", content
 
