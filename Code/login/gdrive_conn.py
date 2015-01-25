@@ -39,7 +39,7 @@ def get_gdrive_refresh_token():
 
 	# Get the refresh token from the DB
 	refresh_token = get_gdrive_token(email)
-	print "refresh_token form db = ", refresh_token
+	# print "refresh_token form db = ", refresh_token
 	if refresh_token:
 		return refresh_token
 
@@ -49,7 +49,7 @@ def get_gdrive_refresh_token():
 def gdrive_connect():
 	# Make request for new access_token using the refresh token
 	refresh_token = get_gdrive_refresh_token()
-	print "refresh_token = ", refresh_token
+	# print "refresh_token = ", refresh_token
 	if refresh_token is None:
 		print "refresh_token = none"
 		return None
