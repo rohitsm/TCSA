@@ -47,22 +47,31 @@ def get_gdrive_refresh_token():
 	print "Error no record of refresh_token found in DB. Not connected to Google Drive"
 	return None
 
+def refresh_access_token(refresh_token):
+	# Build the JSON variable for credentials
+	cred = dict(
+		client_id = GDRIVE_CLIENT_ID,
+		client_secret = GDRIVE_CLIENT_SECRET,
+		refresh_token = refresh_token,
+		grant_type = "refresh_token" )
+
+	h = httplib2.Http()
+	resp, content = h.request("https://www.googleapis.com/oauth2/v3/token", "POST", urlencode(cred))
+	print "inside refresh_access_token. Resp = ", resp
+
 def gdrive_connect():
 	# Make request for new access_token using the refresh token
 	try:		
 		refresh_token = get_gdrive_refresh_token()
 		# print "refresh_token = ", refresh_token
+
+		# No record found in DB
 		if refresh_token is None:
 			print "refresh_token = none"
 			return None
-		# Build the JSON variable for credentials
-		# cred = {}
-		# cred['client_id'] = GDRIVE_CLIENT_ID
-		# cred['client_secret'] = GDRIVE_CLIENT_SECRET
-		# cred['refresh_token'] = refresh_token
-		# cred['grant_type'] = "refresh_token"
 
 		credentials = OAuth2Credentials.from_json(refresh_token)
+		print "credentials = ", credentials
 		if credentials.access_token_expired:
 			print "credentials.access_token_expired"
 			return redirect(url_for('gdrive_auth_finish'))
@@ -83,7 +92,9 @@ def gdrive_connect():
 	except client.AccessTokenRefreshError as e:
 		flash('Drive access revoked!')
 		print "client.AccessTokenRefreshError", e
-		return redirect(url_for('gdrive_auth_finish'))
+		# User revoked access, so remove gdrive token from DB
+		set_gdrive_token(email, None)
+		return None
 
 		
 @app.route('/gdrive-auth-finish')
