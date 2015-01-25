@@ -50,10 +50,10 @@ def get_gdrive_refresh_token():
 
 def refresh_access_token(refresh_token):
 	# Build the JSON variable for credentials
-	cred = 	"client_id="+GDRIVE_CLIENT_ID+"&"
-			"client_secret="+GDRIVE_CLIENT_SECRET+"&"
-			"refresh_token="+refresh_token+"&"
-			"grant_type = 'refresh_token"
+	cred = 	"client_id="+GDRIVE_CLIENT_ID+\
+			"&client_secret="+GDRIVE_CLIENT_SECRET+\
+			"&refresh_token="+refresh_token+\
+			"&grant_type = 'refresh_token"
 
 	h = httplib2.Http()
 	resp, content = h.request("https://www.googleapis.com/oauth2/v3/token", "POST", urlencode(cred))
