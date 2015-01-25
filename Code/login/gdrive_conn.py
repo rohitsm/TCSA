@@ -66,7 +66,7 @@ def gdrive_connect():
 	# Make request for new access_token using the refresh token
 	try:		
 		refresh_token = get_gdrive_refresh_token()
-		print "refresh_token = ", refresh_token['refresh_token']
+		# print "refresh_token = ", refresh_token['refresh_token']
 
 		# No record found in DB
 		if refresh_token is None:
