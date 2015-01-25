@@ -4,6 +4,7 @@
 # Python
 import json
 import httplib2
+from urllib import urlencode
 
 # Flask
 from flask import render_template, flash, redirect, request, url_for
@@ -49,21 +50,21 @@ def get_gdrive_refresh_token():
 
 def refresh_access_token(refresh_token):
 	# Build the JSON variable for credentials
-	cred = dict(
-		client_id = GDRIVE_CLIENT_ID,
-		client_secret = GDRIVE_CLIENT_SECRET,
-		refresh_token = refresh_token,
-		grant_type = "refresh_token" )
+	cred = 	"client_id="+GDRIVE_CLIENT_ID+"&"
+			"client_secret="+GDRIVE_CLIENT_SECRET+"&"
+			"refresh_token="+refresh_token+"&"
+			"grant_type = 'refresh_token"
 
 	h = httplib2.Http()
 	resp, content = h.request("https://www.googleapis.com/oauth2/v3/token", "POST", urlencode(cred))
 	print "inside refresh_access_token. Resp = ", resp
+	print "inside refresh_access_token. content = ", content
 
 def gdrive_connect():
 	# Make request for new access_token using the refresh token
 	try:		
 		refresh_token = get_gdrive_refresh_token()
-		# print "refresh_token = ", refresh_token
+		print "refresh_token = ", refresh_token['refresh_token']
 
 		# No record found in DB
 		if refresh_token is None:
@@ -113,6 +114,10 @@ def gdrive_auth_finish():
 		print "credentials = ", credentials.to_json()
 		# session['credentials'] = credentials.to_json()
 		refresh_token = credentials.refresh_token
+		print "============================================"
+		print "\n\n refresh_token = ", refresh_token
+		refresh_access_token(refresh_token)
+		print "============================================"
 
 		if set_gdrive_token(email, credentials.to_json()):
 			print "refresh_token added to DB"
