@@ -65,8 +65,8 @@ def gdrive_connect():
 		credentials = OAuth2Credentials.from_json(refresh_token)
 		if credentials.access_token_expired:
 			print "credentials.access_token_expired"
-			# return redirect(url_for('gdrive_auth_finish'))
-			return None
+			return redirect(url_for('gdrive_auth_finish'))
+			# return None
 		else:
 			# Returns user information as a JSON object
 			user_info_service = build(

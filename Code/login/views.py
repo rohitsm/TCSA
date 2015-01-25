@@ -287,6 +287,7 @@ def routes(app, login_manager):
 			# Returns object user_info of JSON type 
 			# otherwise returns 'None' if access_token not found in DB
 			user_info = gdrive_connect()
+			print "in views user_info = ", type(user_info)
 			if user_info is not None:
 				#print "user_info = ", user_info
 				#gd_email = user_info["email"]
