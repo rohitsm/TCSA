@@ -49,24 +49,6 @@ def get_gdrive_refresh_token():
 	print "Error no record of refresh_token found in DB. Not connected to Google Drive"
 	return None
 
-def refresh_access_token(refresh_token):
-	# Build the JSON variable for credentials
-	cred = {
-			'client_id' : GDRIVE_CLIENT_ID,
-			'client_secret' : GDRIVE_CLIENT_SECRET,
-			'refresh_token' : refresh_token,
-			'grant_type' : "refresh_token"
-		}
-	# request_url = "https://www.googleapis.com/oauth2/v3/token?" = str(urlencode(cred))
-	# print "request_url = ", request_url
-
-
-	req = urllib2.Request("https://www.googleapis.com/oauth2/v3/token", urlencode(cred))
-	resp = urllib2.urlopen(req)
-	content = resp.read()
-	print "inside refresh_access_token. Resp = ", resp
-	print "inside refresh_access_token. content = ", content
-
 def gdrive_connect():
 	# Make request for new access_token using the refresh token
 	try:		
@@ -104,7 +86,29 @@ def gdrive_connect():
 		set_gdrive_token(email, None)
 		return None
 
-		
+
+def refresh_access_token(refresh_token):
+	""" 
+	Uses refresh_token to obtain new access_token 
+	"""
+
+	# Build the JSON variable for credentials
+	cred = 	{
+			'client_id' : GDRIVE_CLIENT_ID,
+			'client_secret' : GDRIVE_CLIENT_SECRET,
+			'refresh_token' : refresh_token,
+			'grant_type' : "refresh_token"
+			}
+
+	req = urllib2.Request("https://www.googleapis.com/oauth2/v3/token", urlencode(cred))
+	resp = urllib2.urlopen(req)
+	content = resp.read()
+	cont = json.loads(content)
+	print "inside refresh_access_token. content = ", content
+	print "NEW access_token. cont = ", cont["access_token"]
+	return cont["access_token"]
+
+
 @app.route('/gdrive-auth-finish')
 def gdrive_auth_finish():
 	email = session.get('user')
