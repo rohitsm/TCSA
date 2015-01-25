@@ -21,7 +21,7 @@ from login import db
 # Google Drive API
 from oauth2client.client import OAuth2WebServerFlow, OAuth2Credentials
 from apiclient.discovery import build
-from oauth2client.client import AccessTokenRefreshError
+from oauth2client import client
 
 GDRIVE_CLIENT_SECRET = app.config['GDRIVE_CLIENT_SECRET']
 GDRIVE_CLIENT_ID = app.config['GDRIVE_CLIENT_ID']
@@ -73,14 +73,16 @@ def gdrive_connect():
 				serviceName = 'drive', version = 'v2',
 				http = credentials.authorize(httplib2.Http()) )
 			
-			print "else: user_info_service = "
+			# user_info is of type dict 
 			user_info = user_info_service.files().list().execute()
 			print "\n\nuser_info type = ", type(user_info)
-			print "\n\nuser_info = ", json.dumps(user_info, indent=4, sort_keys=True)			
+			print "\n\nuser_info = ", json.dumps(user_info, indent=4, sort_keys=True)
+			print "\n\nuser_info type (after) = ", type(user_info)
 			return json.dumps(user_info)
 
-	except AccessTokenRefreshError as e:
+	except client.AccessTokenRefreshError as e:
 		flash('Drive access revoked!')
+		print "client.AccessTokenRefreshError", e
 		return redirect(url_for('gdrive_auth_finish'))
 
 		
