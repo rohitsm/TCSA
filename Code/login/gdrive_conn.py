@@ -35,6 +35,8 @@ OAUTH_SCOPE = 'https://www.googleapis.com/auth/drive'
 # CLIENT_SECRET = json.dumps(app.config['CLIENT_SECRET'])
 
 def get_gdrive_refresh_token():
+	""" Get user credentials from database
+	"""
 	email = session.get('user')
 	print "inside get_gdrive_access_token() \nemail = ", email
 	if email is None:
@@ -50,7 +52,11 @@ def get_gdrive_refresh_token():
 	return None
 
 def gdrive_connect():
-	# Make request for new access_token using the refresh token
+	"""Interfaces with views.py
+
+	Returns:
+		User information as a dict if it exists otherwise None. 
+	"""
 	try:		
 		refresh_token = get_gdrive_refresh_token()
 		# print "refresh_token = ", refresh_token['refresh_token']
@@ -88,8 +94,12 @@ def gdrive_connect():
 
 
 def refresh_access_token(refresh_token):
-	""" 
-	Uses refresh_token to obtain new access_token 
+	""" Make request for new access_token using the refresh token
+
+	Args:
+		refresh_token
+	Returns:
+		access_token
 	"""
 
 	# Build the JSON variable for credentials

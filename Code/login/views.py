@@ -114,24 +114,14 @@ def routes(app, login_manager):
 					print "Invalid public key. Please upload proper public key"
 					return render_template('signup.html')
 	
-				# Delete if the above works
-
-				# if os.stat(fn.filename).st_size == 0:
-				# 	print "empty pub key file"
-				# 	flash("Invalid public key. Please upload proper public key")
-				# 	return render_template('signup.html')				
-
 				else:
-					pwd_hash = set_pass(password1)
-					print "pwd_hash = ", str(pwd_hash)
-					passphrase_hash = set_pass(passphrase1)
-					print "passphrase_hash = ", str(passphrase_hash)
+					# If everything is okay, hash the password and passphrase, extract the
+					# contents of the public key file and save all three into the database.
 
-					# Strip leading path from file: attack prevention
-					# pb_key = os.path.basename(fn.filename)
+					pwd_hash = set_pass(password1)
+					passphrase_hash = set_pass(passphrase1)					
 
 					# Read public key file contents
-					# with open(fn) as f:
 					pub_key = fn.read()
 					
 					print "Uploaded pub key: ", pub_key
