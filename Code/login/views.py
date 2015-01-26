@@ -83,10 +83,10 @@ def routes(app, login_manager):
 				print "filename = ", str(fn.filename)
 				# print "filesize = ", os.path.getsize(fn.filename)
 
-				# if form.verify(email):	# Email exists in records
-				# 	flash('That email is already registered!')	
-				# 	print "That email is already registered"
-				# 	return render_template('signup.html')
+				if form.verify(email):	# Email exists in records
+					flash('That email is already registered!')	
+					print "That email is already registered"
+					return render_template('signup.html')
 
 				if len(password1) < 5: # Password lenght test
 					flash('Password must have minimum 5 characters!')	

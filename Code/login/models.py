@@ -62,9 +62,7 @@ def set_token(email, service, access_token):
 		db.session.commit()
 		print "inside set_token: (GDRIVE)"
 		return True
-
 	return False
-
 
 # External Wrappers
 def get_dropbox_token(email):
@@ -89,7 +87,6 @@ def set_gdrive_token(email, access_token):
 		print "inside set_gdrive_token: "
 		return True
 	return False
-
 
 # Table (Email + password + passphrase)
 class User(db.Model):
