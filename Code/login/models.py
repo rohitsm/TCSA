@@ -83,9 +83,7 @@ def set_token(email, service, access_token):
 		db.session.commit()
 		print "inside set_token: (GDRIVE)"
 		return True
-
 	return False
-
 
 # External Wrappers
 def get_dropbox_token(email):
@@ -100,8 +98,9 @@ def set_dropbox_token(email, access_token):
 	return False
 
 def get_gdrive_token(email):
+	"""Returns Google OAuth credentials as a JSON element"""
 	gd_token = get_token(str(email), 'gdrive')
-	print "inside get_gdrive_token: ", gd_token
+	print "inside get_gdrive_token: ", type(gd_token)
 	return gd_token
 
 def set_gdrive_token(email, access_token):
@@ -110,8 +109,11 @@ def set_gdrive_token(email, access_token):
 		return True
 	return False
 
+<<<<<<< HEAD
 >>>>>>> ross_v3
 
+=======
+>>>>>>> ross_v3
 # Table (Email + password + passphrase)
 class User(db.Model):
 	# Setting the table name

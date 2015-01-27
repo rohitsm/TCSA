@@ -194,10 +194,10 @@ def routes(app, login_manager):
 				print "filename = ", str(fn.filename)
 				# print "filesize = ", os.path.getsize(fn.filename)
 
-				# if form.verify(email):	# Email exists in records
-				# 	flash('That email is already registered!')	
-				# 	print "That email is already registered"
-				# 	return render_template('signup.html')
+				if form.verify(email):	# Email exists in records
+					flash('That email is already registered!')	
+					print "That email is already registered"
+					return render_template('signup.html')
 
 				if len(password1) < 5: # Password lenght test
 					flash('Password must have minimum 5 characters!')	
@@ -225,24 +225,14 @@ def routes(app, login_manager):
 					print "Invalid public key. Please upload proper public key"
 					return render_template('signup.html')
 	
-				# Delete if the above works
-
-				# if os.stat(fn.filename).st_size == 0:
-				# 	print "empty pub key file"
-				# 	flash("Invalid public key. Please upload proper public key")
-				# 	return render_template('signup.html')				
-
 				else:
-					pwd_hash = set_pass(password1)
-					print "pwd_hash = ", str(pwd_hash)
-					passphrase_hash = set_pass(passphrase1)
-					print "passphrase_hash = ", str(passphrase_hash)
+					# If everything is okay, hash the password and passphrase, extract the
+					# contents of the public key file and save all three into the database.
 
-					# Strip leading path from file: attack prevention
-					# pb_key = os.path.basename(fn.filename)
+					pwd_hash = set_pass(password1)
+					passphrase_hash = set_pass(passphrase1)					
 
 					# Read public key file contents
-					# with open(fn) as f:
 					pub_key = fn.read()
 					
 					print "Uploaded pub key: ", pub_key
@@ -398,11 +388,12 @@ def routes(app, login_manager):
 			# Returns object user_info of JSON type 
 			# otherwise returns 'None' if access_token not found in DB
 			user_info = gdrive_connect()
+			print "in views user_info = ", type(user_info)
 			if user_info is not None:
 				#print "user_info = ", user_info
 				#gd_email = user_info["email"]
 				#print "gd_email = ", type(gd_email)
-				gd_email = "hell0"
+				gd_email = "hello World"
 
 			return render_template('profile.html', user=session['user'], db_conn=real_name, gd_conn=gd_email)
 
