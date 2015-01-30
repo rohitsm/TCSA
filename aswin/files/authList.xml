@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Accounts>
+	<acc username="asetiadi">
+		<storage email="aswin.setiadi@gmail.com">
+			<type>dropbox</type>
+			<authToken>QpgYDBNMAjIAAAAAAAAACzAmq7dm0Cy1W3gvFw1uW7-eFWqNTYHSOBG-7juHmRCM</authToken>
+			<file>
+				<virtualpath>root/monyet.jpg</virtualpath>
+				<real_location>monyet.jpg</real_location>
+			</file>
+		</storage>
+
+		<storage email="aswin_setiadi@hotmail.com">
+			<type>dropbox</type>
+			<authToken>6JdVwA4dAh0AAAAAAAAB-U6VBBZ-Iff9YpMmq2kJgGkc6vXxwFIAtF6x-B6wgphj</authToken>
+		</storage>
+	</acc>
+	
+	<acc username="rohitsm">
+		<storage type="dropbox">
+			<email>rohitsm008@gmail.com</email>
+			<authToken>null</authToken>
+		</storage>
+	</acc>
+</Accounts>
+
+
+{
+	_id:"123",
+	email:"aswin@gmail.com",
+	storage:[
+		{
+			type:"dropbox",
+			metadata:[
+				{
+					virtual:"aswin/setiadi/pic.jpg",
+					real:"root/aswin/setiadi/pic.jpg"
+				},
+
+				{
+					virtual:"egg/is/healthy/chicken.pdf",
+					real:"root/egg/is/healthy/chicken.pdf"
+				}
+			]
+		}
+		{
+			type:"googledrive"
+			metadata:[
+				{
+					
+				},
+
+				{
+
+				}
+			]
+		}			
+	]
+
+}
