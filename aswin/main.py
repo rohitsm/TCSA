@@ -43,7 +43,7 @@ class Main:
 
     def upload(self):
         email           ='aswin.setiadi@gmail.com'
-        virtualPath     ='/images/images'
+        virtualPath     ='/files/animal/primate'
         fileLocation    ='files/monkey.jpg'
         self.mongodb.upload(email, virtualPath, fileLocation)
 
@@ -60,12 +60,13 @@ class Main:
         self.mongodb.getFolderTree(email)
 
     def deleteFile(self):
+
         pass
 
 
     def createFolder(self):
         email       ='aswin.setiadi@gmail.com'
-        virtualPath ='/furniture/table'
+        virtualPath ='/files/animal/primate'
         self.mongodb.createFolder(email, virtualPath)
 
 
