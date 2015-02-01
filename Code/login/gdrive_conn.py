@@ -177,12 +177,12 @@ def gdrive_auth_finish():
 		# credentials 
 		
 		credentials = flow.step2_exchange(auth_code)
-		print "credentials = ", credentials.to_json()
+		# print "credentials = ", credentials.to_json()
 		# session['credentials'] = credentials.to_json()
 
 		# Store credentials as 'oauth2client.client.OAuth2Credentials' object
 		if set_gdrive_token(email, credentials):
-			print "refresh_token added to DB"
+			print "credentials added to DB: type", type(credentials)
 			return redirect(url_for('profile'))
 
 		flash('Error in adding Gdrive token to DB')
