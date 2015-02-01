@@ -92,15 +92,14 @@ class MongoDBWrapper:
 
     def _getAllVirtualPathList(self, email):
         self.setCollection(email)
-        aList=[]
+        aListOfTuple=[]
         storages=self.aCollection.find(
-            {},{'_id':0,'metadata.virtualPath':1}
+            {},{'_id':0,'metadata.virtualPath':1, 'type':1}
         )
         for storage in storages:
             for path in storage['metadata']:
-                aList.append(path['virtualPath'])
-
-        return aList
+                aListOfTuple.append((path['virtualPath'], storage['type']))
+        return aListOfTuple
 
     def _lastItemCheck(self, lastItem, pointer):
         #left with last item, could be a file or a folder
@@ -114,26 +113,40 @@ class MongoDBWrapper:
             if lastItem not in pointer.keys():
                 pointer[lastItem]={}
 
-    #replace parent path record with this new record
-    #e.g. inserting /aswin/setiadi/awesome.pdf will replace /aswin/setiadi
     def _replaceVirtualOldPath(self, email, newVirtualPath, chosenStorage=None, newRecord=None):
-
+        """
+        NOTE: new file/folder must not be in root
+        replace parent path record with this new record
+        e.g. inserting /aswin/setiadi/awesome.pdf will replace /aswin/setiadi
+        test cases to consider:
+        -create folder with parentPath exist
+        -create folder without parentPath exist
+        -upload file with parentpath exist and Dropbox
+        -upload file with parentpath exist and Googledrive
+        -upload file with parentpath not exist and Dropbox
+        -upload file with parentpath not exist and Googledrive
+        """
         newItem=newVirtualPath.split('/')[-1]
         m=re.match(r'(.*)/%s$' % newItem, newVirtualPath)
+        #path will be like /aswin/setiadi
         path=m.group(1)
 
-        aList=self._getAllVirtualPathList(email)
+        aListOfTuple=self._getAllVirtualPathList(email)
         exist=False
-        for virtualPathItem in aList:
-            if virtualPathItem == path:
+
+        #check if parent path exist
+        for virtualPathItem in aListOfTuple:
+            if virtualPathItem[0] == path:
                 #path exist for folder to be created
+                ########################################################################
                 exist= True
 
-                #storage is googledrive, must include fileID
+
                 if newRecord is not None:
+                    #storage is googledrive and is a file, must include fileID
                     self.aCollection.update(
                         {
-                             'metadata.virtualPath':virtualPathItem
+                             'metadata.virtualPath':virtualPathItem[0]
                         },
                         {
                             '$set':{
@@ -143,9 +156,10 @@ class MongoDBWrapper:
                         }
                     )
                 else:
+                    #storing file and not googledrive OR storing folder with storage decided by where parentPath is
                     self.aCollection.update(
                         {
-                             'metadata.virtualPath':virtualPathItem
+                             'metadata.virtualPath':virtualPathItem[0]
                         },
                         {
                             '$set':{
@@ -155,21 +169,21 @@ class MongoDBWrapper:
                     )
                 print 'db updated.'
                 break
+                ########################################################################
+
+        #parentPath does not exist
         if not exist:
             if chosenStorage is None:
+                #storing folder in any storage
                 chosenStorage=self.getLargestRemainingStorage(email)
             if newRecord is None:
+                #storing folder in any storage OR storing file in dropbox if chosenStorage is not None
                 newRecord={
                     'virtualPath':newVirtualPath
                 }
             self.aCollection.update(
-                {
-                    'type':chosenStorage
-                },
-                {
-                    '$push':{'metadata':newRecord}
-                }
-
+                {'type':chosenStorage},
+                {'$push':{'metadata':newRecord}}
             )
             print 'db updated'
 
@@ -224,7 +238,8 @@ class MongoDBWrapper:
             #ros function here
             self._uploadDropbox(self.accessToken, fileLocation, virtualPath)
             #update database
-            self._replaceVirtualOldPath(email, virtualPath+'/'+filename, chosenStorage)
+            if virtualPath != '':
+                self._replaceVirtualOldPath(email, virtualPath+'/'+filename, chosenStorage)
 
         elif chosenStorage == 'box':
             raise NotImplementedError
@@ -243,15 +258,14 @@ class MongoDBWrapper:
                 'virtualPath': virtualPath+'/'+filename,
                 'fileID'     : file['id']
             }
-            self._replaceVirtualOldPath(email, virtualPath+'/'+filename, chosenStorage, newRecord)
+            if virtualPath != '':
+                self._replaceVirtualOldPath(email, virtualPath+'/'+filename, chosenStorage, newRecord)
 
     def download(self, email, virtualPath, savePath):
         #find where the file is stored, return pymongo cursor object, convert to list
         self.setCollection(email)
         record= self.aCollection.find(
-            {
-                'metadata.virtualPath':virtualPath
-            },
+            {},
             {    '_id':0,
                  'type':1,
                  'metadata':{
@@ -288,7 +302,7 @@ class MongoDBWrapper:
 
         for aPath in aList:
             pointer=folderTree['root']
-            splittedPath=aPath.split('/')[1:]
+            splittedPath=aPath[0].split('/')[1:]
 
             #item(file/folder) inside root folder
             if len(splittedPath)==1:
@@ -308,9 +322,103 @@ class MongoDBWrapper:
         pprint.pprint(folderTree)
 
     def delFile(self, email, virtualPath):
+        #/animal/monkey.jpg
+        #/creature/animal.jpg
+        #/animal/horse.jpg
+        #/animal1/t.jpg
+        #/animal11/t.jpg
+
+        #test case:
+        #delete /animal/horse.jpg
+        #delete /creature/animal.jpg, must left /creature
+        #delete /animal1/t.jpg
+        virtualPathStorage=None
+        aList=[
+            ('/animal/monkey.jpg','dropbox'),
+             #('/creature/animal','dropbox'),
+             ('/creature/animal.jpg', 'dropbox'),
+              ('/animal/horse.jpg','dropbox'),
+               ('/animal1/t.jpg','dropbox'),
+                ('/animal11/t.jpg','googledrive'),
+                ('/file.pdf', 'googledrive')
+        ]
         self.setCollection(email)
-        item=virtualPath.split('/')[-1]
-        m=re.match(r'(.*)/%s' % item, virtualPath)
+        #get all path and their respective storage,including the path to be deleted
+        temp=self._getAllVirtualPathList(email)
+        #change aList to temp
+        for t in temp:
+            if t[0]==virtualPath:
+                virtualPathStorage=t[1]
+                temp.remove((virtualPath, virtualPathStorage))
+                break
+                print 'virtualpathStorage found...'
+        if virtualPathStorage=='dropbox':
+            #ros function here
+            self.accessToken=self.DROPBOX[email][2]
+            wrapper=DropboxWrapper(self.accessToken)
+            wrapper.deleteFile(virtualPath)
+        elif virtualPathStorage=='googledrive':
+            #ros function here
+            self.credential=self.GOOGLE_DRIVE[email]['credentials']
+            storage= self.aCollection.find(
+                {},
+                {    '_id':0,
+                     'type':1,
+                     'metadata':{
+                         '$elemMatch':{
+                            'virtualPath':virtualPath
+                         }
+                     }
+                }
+
+            )[0]
+            if storage['type']=='googledrive':
+                fileID=storage['metadata'][0]['fileID']
+                wrapper=GoogleDriveWrapper(self.credential)
+                wrapper.deleteFile(fileID)
+            else:
+                assert 'error fileID not found'
+
+        #delete virtualPath record in db
+        self.aCollection.update(
+                    {'type':virtualPathStorage},
+                    {'$pull':
+                         {'metadata':
+                              {'virtualPath':virtualPath}
+                         }
+                    }
+                )
+        print "file deleted from database..."
+        #if file in root eg. /a.pdf, it will return none
+        mObj=re.match(r'(^.+/)[^/]+$', virtualPath)
+        if mObj is None:
+            print 'file in root, no parentPath involved. Returning...'
+            return
+        else:
+            #file not in root folder
+            print 'checking for parentPath reference in other record...'
+            #get parentPath string
+            parentPath=mObj.group(1)
+            #change aList to temp
+            for path in temp:
+                nObj=re.match(r'^%s'%parentPath, path[0])
+                if nObj is not None:
+                    print 'found other parentPath reference: '+nObj.group()
+                    print 'exist other parentPath record, no need to generate parentPath reference. Returning...'
+                    return
+
+            print 'parentPath is the only record, adding parentPath reference to db...'
+            parentPathRef=parentPath.rstrip('/')
+
+            newRecord={'virtualPath':parentPathRef}
+            self.aCollection.update(
+                {'type':virtualPathStorage},
+                {'$push':{'metadata':newRecord}}
+            )
+            print '%s added. Returning...' % parentPathRef
+            return
+
+
 
     def createFolder(self, email, newVirtualPath):
         self.setCollection(email)
@@ -340,17 +448,16 @@ class MongoDBWrapper:
         #the function to compare the second value(1000), hence the function x[1]
         #return (key, value) tuple so put [0] to get the storage
         chosenStorage= max(storageSizePair.iteritems(), key= lambda x: x[1])[0]
-        #TODO
-        chosenStorage='dropbox'
         print chosenStorage, ' has largest remaining storage.'
         return chosenStorage
 
     def removePath(self, email, storage, path):
         self.setCollection(email)
+
         test= self.aCollection.update(
-            {
-                'type':storage
-            },
+            #if this empty, can only update first storagerecord type and will wipe
+            #all entry in that storage according to the parameter
+            {'type':storage},
             {
                 '$pull':{
                     'metadata':{
@@ -359,5 +466,13 @@ class MongoDBWrapper:
                 }
             }
         )
+        '''
+        newRecord={'virtualPath':'/parent/path'}
+        self.aCollection.update(
+            {'type':storage},
+            {'$push':{'metadata':newRecord}}
+        )
+        '''
 #mongodb = MongoDBWrapper('test', 'localhost', 27017)
-#mongodb.removePath('aswin.setiadi@gmail.com', 'googledrive', '/testfile.txt')
+#mongodb.delFile('aswin.setiadi@gmail.com','/animal/monkey.jpg')
+#mongodb.removePath('aswin.setiadi@gmail.com', 'dropbox', '/parent/path')

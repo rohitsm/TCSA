@@ -45,6 +45,28 @@ class DropboxWrapper:
         print "downloaded, metadata:/n"
         pprint.pprint(metadata)
 
+    def deleteFile(self, filePath):
+        '''
+        sample response from file_delete(path)
+        {
+            "size": "0 bytes",
+            "is_deleted": true,
+            "bytes": 0,
+            "thumb_exists": false,
+            "rev": "1f33043551f",
+            "modified": "Wed, 10 Aug 2011 18:21:30 +0000",
+            "path": "/test .txt",
+            "is_dir": false,
+            "icon": "page_white_text",
+            "root": "dropbox",
+            "mime_type": "text/plain",
+            "revision": 492341
+        }
+        '''
+        response=self.client.file_delete(filePath)
+        return response
+
+
 """
 aswin= DropboxWrapper('aswin.setiadi@gmail.com')
 aswin.initClient()

@@ -28,7 +28,7 @@ class GoogleDriveWrapper:
         print 'gDrive storage remaining: %s bytes' % storageRemaining
         return storageRemaining
 
-    #by default, folder will be created inside root
+    #by default from argument parentFolderID, folder will be created inside root
     def createFolder(self, folderName, parentFolderID='root'):
         body={
             'title'     :folderName,
@@ -82,7 +82,11 @@ class GoogleDriveWrapper:
         except errors.HttpError, error:
             print 'An error occured: %s' % error
 
-
+    def deleteFile(self, fileID):
+        try:
+            self.driveService.files().delete(fileId=fileID).execute()
+        except errors.HttpError, error:
+            print 'An error occurred: %s' % error
 
 #aswin= GoogleDriveWrapper('aswin.setiadi@gmail.com')
 #aswin.initDriveService()

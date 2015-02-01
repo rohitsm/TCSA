@@ -37,19 +37,23 @@ class Main:
 
     def addStorage(self):
         email       =raw_input("enter email address:")
-        storage     =int(raw_input("1.dropbox\n2.box\n3.googledrive\nchoose 1-3 to add storage for account %s: " % (email)))
+        storage     =int(raw_input("1.dropbox\n"
+                                   "2.box\n"
+                                   "3.googledrive\n"
+                                   "choose 1-3 to add storage for account %s: " % (email)))
         self.mongodb.addStorage(self.storageType[storage], email)
 
 
     def upload(self):
         email           ='aswin.setiadi@gmail.com'
-        virtualPath     ='/files/animal/primate'
+        #to upload file in root folder, pass ''
+        virtualPath     ='/images'
         fileLocation    ='files/monkey.jpg'
         self.mongodb.upload(email, virtualPath, fileLocation)
 
     def download(self):
         email           ='aswin.setiadi@gmail.com'
-        virtualPath     ='/files/horse.jpg'
+        virtualPath     ='/movies/comedy/monkey.jpg'
         saveLocation    ='C:/Users/aswin/Downloads'
         self.mongodb.download(email, virtualPath, saveLocation)
 
@@ -60,11 +64,13 @@ class Main:
         self.mongodb.getFolderTree(email)
 
     def deleteFile(self):
-
-        pass
+        email='aswin.setiadi@gmail.com'
+        virtualPath='/furniture/chair/chair/chair.jpg'
+        self.mongodb.delFile(email, virtualPath)
 
 
     def createFolder(self):
+        #to create folder in root folder, pass''
         email       ='aswin.setiadi@gmail.com'
         virtualPath ='/files/animal/primate'
         self.mongodb.createFolder(email, virtualPath)
@@ -81,41 +87,10 @@ class Main:
         self.exit = True
 
     def start(self):
-        #find existing parent folder, remove them
-
-        #/sound
-        #buat /sound/music
-
-        #/sound
-        #/sound/music.mp3
-        #buat /sound/music
-
-        #/music
-        #buat /sound/music/list
-        i=['/sound/sound',
-           '/sound/music.mp3',
-           '/music',
-
-        ]
-
-        j='/music/image'
-        exist=False
-        newFolder=j.split('/')[-1]
-        m=re.match(r'(.*)/%s$' % newFolder, j )
-        path=m.group(1)
-        #print path
-        #print newFolder
-        for k in range(0, len(i)):
-            if i[k] ==path:
-                #print 'replace parent %s with new path %s' % (i[k], j)
-                i[k]=j
-                exist=True
-                break
-        if not exist:
-            #print '%s appended' % j
-            i.append(j)
-        #print i
-
+        #if something infront / , match will fail
+        #t='/as'
+        #m=re.match(r'/as$', t)
+        #print m.group()
 
         while not self.exit:
             #test= DropboxWrapper("asetiadi", 'aswin_setiadi@hotmail.com')
