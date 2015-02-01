@@ -128,7 +128,7 @@ def routes(app, login_manager):
 					
 					# Add entry into the DB
 					set_user_record(email, pwd_hash, passphrase_hash, pub_key)
-					flash('New account created successfully!')
+					# flash('New account created successfully!')
 					return redirect(url_for('login'))
 
 			# GET Requests
@@ -236,7 +236,7 @@ def routes(app, login_manager):
 						print "to profile"
 						session['user'] = email
 						login_user(user, remember = remember_me)
-						flash('You were successfully logged in')
+						# flash('You were successfully logged in')
 						return redirect(url_for('profile'))
 
 				else:
