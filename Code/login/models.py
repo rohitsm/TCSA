@@ -79,7 +79,7 @@ def set_dropbox_token(email, access_token):
 def get_gdrive_token(email):
 	"""Returns Google OAuth credentials as a JSON element"""
 	gd_token = get_token(str(email), 'gdrive')
-	print "inside get_gdrive_token: ", type(gd_token)
+	print "inside get_gdrive_token: ", type(gd_token)	#type = <str>
 	return gd_token
 
 def set_gdrive_token(email, access_token):

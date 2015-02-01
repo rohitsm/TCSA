@@ -93,31 +93,55 @@ def gdrive_connect():
 		return None
 
 
-def refresh_access_token(refresh_token):
-	""" Make request for new access_token using the refresh token
+def refresh_access_token(old_credentials):
+	""" Take credentials containing expired access token)as arg and return
+		credentials with renewed access token.
+
+		Get refresh token for this purpose from db. To look in db records,
+		use corresponding email (taken from session)
 
 	Args:
-		refresh_token
+		old_credentials: contains expired access_token
 	Returns:
-		access_token
+		new_credentials: contains renewed access_token
 	"""
+
+	# Get email from session. Email used for querying DB
+	email = session.get('user')
+	print "inside gdrive-auth-finish. \nEmail = ", email
+	if email is None:
+		abort(403)
+
+	# Get old credentials from DB and extract out refresh_token from it
+	credentials_from_db = get_gdrive_token(email)
+	refresh_token = credentials_from_db.refresh_token
 
 	# Build the JSON variable for credentials
 	cred = 	{
-			'client_id' : GDRIVE_CLIENT_ID,
-			'client_secret' : GDRIVE_CLIENT_SECRET,
-			'refresh_token' : refresh_token,
-			'grant_type' : "refresh_token"
-			}
+		'client_id' : GDRIVE_CLIENT_ID,
+		'client_secret' : GDRIVE_CLIENT_SECRET,
+		'refresh_token' : refresh_token,
+		'grant_type' : "refresh_token"
+	}
 
+	# Renew access_token
 	req = urllib2.Request("https://www.googleapis.com/oauth2/v3/token", urlencode(cred))
 	resp = urllib2.urlopen(req)
 	content = resp.read()
 	cont = json.loads(content)
 	print "inside refresh_access_token. content = ", content
 	print "NEW access_token. cont = ", cont["access_token"]
-	return cont["access_token"]
+	new_access_token = cont["access_token"]
 
+	# Use regex to replace old access_token with renewed one
+	matchObj = re.match(r'.*access_token": "(.*)", "token_uri.*', old_credentials)
+	old_access_token = matchObj.group(1)
+	new_credentials = old_credentials.replace(old_access_token, new_access_token)
+
+	print "old_access_token: ", old_access_token
+	print "new_access_token: ", new_access_token
+	print "renewed credentials = ", new_credentials
+	return new_credentials
 
 @app.route('/gdrive-auth-finish')
 def gdrive_auth_finish():
@@ -131,8 +155,11 @@ def gdrive_auth_finish():
 		return redirect(auth_uri)
 	else:
 		auth_code = request.args.get('code')
+		
+		# type(credentials) = class 'oauth2client.client.OAuth2Credentials
+		# credentials 
+		
 		credentials = flow.step2_exchange(auth_code)
-		print "before conversion to json: credentials = ", type(credentials)
 		print "credentials = ", credentials.to_json()
 		# session['credentials'] = credentials.to_json()
 		refresh_token = credentials.refresh_token
