@@ -173,14 +173,15 @@ def gdrive_auth_finish():
 	else:
 		auth_code = request.args.get('code')
 		
-		# type(credentials) = class 'oauth2client.client.OAuth2Credentials
+		# type(credentials) = class 'oauth2client.client.OAuth2Credentials'
 		# credentials 
 		
 		credentials = flow.step2_exchange(auth_code)
 		print "credentials = ", credentials.to_json()
 		# session['credentials'] = credentials.to_json()
 
-		if set_gdrive_token(email, credentials.to_json()):
+		# Store credentials as 'oauth2client.client.OAuth2Credentials' object
+		if set_gdrive_token(email, credentials):
 			print "refresh_token added to DB"
 			return redirect(url_for('profile'))
 
@@ -215,7 +216,8 @@ def get_auth_flow_object():
 
 @app.route('/gdrive-disconnect')
 def gdrive_disconnect():
-	# Disconnect Google Drive refresh_token from DB records
+	"""Disconnect Google Drive refresh_token from DB records
+	"""
 	print "inside gdrive-disconnect"
 	email = session.get('user')
 	if email is None:
