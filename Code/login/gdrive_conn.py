@@ -60,6 +60,11 @@ def gdrive_connect():
 	try:		
 		credentials_from_db = get_gdrive_refresh_token()
 		# print "refresh_token = ", credentials_from_db['refresh_token']
+		
+		# No record found in DB
+		if credentials_from_db is None:
+			print "refresh_token = none"
+			return None
 
 		########## Testing and debugging. Remove this from here ##########
 		refresh_token = credentials_from_db.refresh_token
@@ -71,13 +76,7 @@ def gdrive_connect():
 
 		#####################################################################
 
-
-		# No record found in DB
-		if refresh_token is None:
-			print "refresh_token = none"
-			return None
-
-		credentials = OAuth2Credentials.from_json(refresh_token)
+		credentials = OAuth2Credentials.from_json(credentials_from_db)
 		print "credentials = ", credentials
 		if credentials.access_token_expired:
 			print "credentials.access_token_expired"
