@@ -132,6 +132,7 @@ def gdrive_auth_finish():
 	else:
 		auth_code = request.args.get('code')
 		credentials = flow.step2_exchange(auth_code)
+		print "before conversion to json: credentials = ", type(credentials)
 		print "credentials = ", credentials.to_json()
 		# session['credentials'] = credentials.to_json()
 		refresh_token = credentials.refresh_token
