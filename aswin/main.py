@@ -3,13 +3,13 @@ import pprint
 import re
 from lib.DropboxWrapper import DropboxWrapper
 from lib.MongoDBWrapper import MongoDBWrapper
-
+import slurpy
 
 class Main:
 
     def __init__(self):
         self.exit    =False
-        self.mongodb =MongoDBWrapper('test', 'localhost', 27017)
+        self.mongodb =MongoDBWrapper()
 
         self.selection = {
             1:self.register,
@@ -32,7 +32,7 @@ class Main:
     def register(self):
         email       =raw_input("enter email address:")
         print "putting these info into database..."
-        self.mongodb.addAccount(email)
+        mongoDBWrapper.addAccount(email)
         #put these onto mongodb for record
 
     def addStorage(self):
@@ -126,4 +126,8 @@ class Main:
                 print "please enter 1-10 only!!!"
 
 
-Main().start()
+
+s=slurpy.Slurpy()
+s.register(os)
+s.register(Main)
+s.start()

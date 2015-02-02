@@ -9,6 +9,8 @@ from GoogleDriveWrapper import GoogleDriveWrapper
 
 
 import os
+import ConfigParser
+
 
 class MongoDBWrapper:
 
@@ -22,7 +24,14 @@ class MongoDBWrapper:
 
 
 
-    def __init__(self, databaseName, addr, port):
+    def __init__(self):
+        config= ConfigParser.ConfigParser()
+        config.read(os.path.join(os.path.abspath(os.path.dirname(__file__)),'mongodbconfig.ini'))
+        section=config.sections()[0]
+        allOptions=config.options(section)
+        databaseName=config.get(section, allOptions[0])
+        addr        =config.get(section, allOptions[1])
+        port        =int(config.get(section, allOptions[2]))
         #TEMPORARY!!!!
         #app key, secret key, authToken
         self.DROPBOX={
@@ -47,8 +56,8 @@ class MongoDBWrapper:
             }
         self.client         = MongoClient(addr, port)
         self.db             = self.client[databaseName]
-        self.aCollection    = None
 
+        self.aCollection    = None
         self.accessToken    = None
         self.credential     = None
 
