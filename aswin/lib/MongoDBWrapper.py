@@ -1,8 +1,6 @@
+__author__ = 'aswin'
 import pprint
 import re
-
-__author__ = 'aswin'
-
 from pymongo import MongoClient
 from DropboxWrapper import DropboxWrapper
 from GoogleDriveWrapper import GoogleDriveWrapper
@@ -206,6 +204,7 @@ class MongoDBWrapper:
         docID= self.aCollection.insert(placeHolder)
         print docID
         print 'acc added successfully\n##########################################'
+        self.client.disconnect()
 
     def addStorage(self, storagetype, email):
         self.setCollection(email)
@@ -231,6 +230,7 @@ class MongoDBWrapper:
         docID= self.aCollection.insert(newStorageRecord)
         print docID
         print 'storage(%s) added successfully\n##########################################' % (type)
+        self.client.disconnect()
 
 
 
@@ -269,6 +269,7 @@ class MongoDBWrapper:
             }
             if virtualPath != '':
                 self._replaceVirtualOldPath(email, virtualPath+'/'+filename, chosenStorage, newRecord)
+        self.client.disconnect()
 
     def download(self, email, virtualPath, savePath):
         #find where the file is stored, return pymongo cursor object, convert to list
@@ -304,6 +305,8 @@ class MongoDBWrapper:
             wrapper=GoogleDriveWrapper(self.credential)
             wrapper.downloadFile(fileID, savePath)
 
+        self.client.disconnect()
+
     def getFolderTree(self,email):
         folderTree={'root':{}}
 
@@ -329,6 +332,8 @@ class MongoDBWrapper:
 
                 self._lastItemCheck(splittedPath[-1], pointer)
         pprint.pprint(folderTree)
+
+        self.client.disconnect()
 
     def delFile(self, email, virtualPath):
         #/animal/monkey.jpg
@@ -402,7 +407,6 @@ class MongoDBWrapper:
         mObj=re.match(r'(^.+/)[^/]+$', virtualPath)
         if mObj is None:
             print 'file in root, no parentPath involved. Returning...'
-            return
         else:
             #file not in root folder
             print 'checking for parentPath reference in other record...'
@@ -414,6 +418,7 @@ class MongoDBWrapper:
                 if nObj is not None:
                     print 'found other parentPath reference: '+nObj.group()
                     print 'exist other parentPath record, no need to generate parentPath reference. Returning...'
+                    self.client.disconnect()
                     return
 
             print 'parentPath is the only record, adding parentPath reference to db...'
@@ -424,14 +429,14 @@ class MongoDBWrapper:
                 {'type':virtualPathStorage},
                 {'$push':{'metadata':newRecord}}
             )
-            print '%s added. Returning...' % parentPathRef
-            return
-
+            print '%s added.' % parentPathRef
+        self.client.disconnect()
 
 
     def createFolder(self, email, newVirtualPath):
         self.setCollection(email)
         self._replaceVirtualOldPath(email, newVirtualPath)
+        self.client.disconnect()
 
 
 
@@ -482,6 +487,7 @@ class MongoDBWrapper:
             {'$push':{'metadata':newRecord}}
         )
         '''
-#mongodb = MongoDBWrapper('test', 'localhost', 27017)
+#mongodb = MongoDBWrapper()
 #mongodb.delFile('aswin.setiadi@gmail.com','/animal/monkey.jpg')
 #mongodb.removePath('aswin.setiadi@gmail.com', 'dropbox', '/parent/path')
+#mongodb.getFolderTree('aswin.setiadi@gmail.com')

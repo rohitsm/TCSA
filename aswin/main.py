@@ -1,15 +1,22 @@
-import os
+import cgi, os
 import pprint
 import re
+import cgitb; cgitb.enable()
+try:
+    import msvcrt
+    msvcrt.setmode(0, os.O_BINARY)
+    msvcrt.setmode(1, os.O_BINARY)
+except ImportError:
+    pass
+
 from lib.DropboxWrapper import DropboxWrapper
 from lib.MongoDBWrapper import MongoDBWrapper
-import slurpy
+#import slurpy
 
 class Main:
 
     def __init__(self):
         self.exit    =False
-        self.mongodb =MongoDBWrapper()
 
         self.selection = {
             1:self.register,
@@ -29,56 +36,77 @@ class Main:
             2:'box',
             3:'googledrive'
         }
+
+    #arg: email
     def register(self):
         email       =raw_input("enter email address:")
         print "putting these info into database..."
-        mongoDBWrapper.addAccount(email)
+        mongoDBWrapper().addAccount(email)
         #put these onto mongodb for record
 
+    #arg: email, storage type must be in these form below
     def addStorage(self):
         email       =raw_input("enter email address:")
         storage     =int(raw_input("1.dropbox\n"
                                    "2.box\n"
                                    "3.googledrive\n"
                                    "choose 1-3 to add storage for account %s: " % (email)))
-        self.mongodb.addStorage(self.storageType[storage], email)
+        MongoDBWrapper().addStorage(self.storageType[storage], email)
 
-
+    #arg: email, folder path in TCSA
     def upload(self):
         email           ='aswin.setiadi@gmail.com'
         #to upload file in root folder, pass ''
+        #below example means uploading file to TCSA at /images folder
         virtualPath     ='/images'
-        fileLocation    ='files/monkey.jpg'
-        self.mongodb.upload(email, virtualPath, fileLocation)
 
+
+        form=cgi.FieldStorage()
+        fileitem=form['file']
+        if fileitem.filename:
+            fn=os.path.basename(fileitem.filename)
+            fileLocation='files/'+fn
+            open(fileLocation, 'wb').write(fileitem.file.read())
+            print 'file has reached and saved in files folder...'
+
+        #todo remove line below
+        #fileLocation    ='files/monkey.jpg'
+        MongoDBWrapper().upload(email, virtualPath, fileLocation)
+        print 'file stored in online storage. destroying local copy..'
+        os.remove(fileLocation)
+        print 'local copy destroyed'
+
+    #arg: email, file path in tcsa, save path(must be full path!!)
     def download(self):
         email           ='aswin.setiadi@gmail.com'
         virtualPath     ='/movies/comedy/monkey.jpg'
         saveLocation    ='C:/Users/aswin/Downloads'
-        self.mongodb.download(email, virtualPath, saveLocation)
+        MongoDBWrapper().download(email, virtualPath, saveLocation)
 
         pass
 
+    #arg: email
     def getfoldertree(self):
         email='aswin.setiadi@gmail.com'
-        self.mongodb.getFolderTree(email)
+        MongoDBWrapper().getFolderTree(email)
 
+    #arg: email, file path in tcsa
     def deleteFile(self):
         email='aswin.setiadi@gmail.com'
         virtualPath='/furniture/chair/chair/chair.jpg'
-        self.mongodb.delFile(email, virtualPath)
+        MongoDBWrapper().delFile(email, virtualPath)
 
 
+    #arg: email, folder path including new folder name
     def createFolder(self):
         #to create folder in root folder, pass''
         email       ='aswin.setiadi@gmail.com'
         virtualPath ='/files/animal/primate'
-        self.mongodb.createFolder(email, virtualPath)
+        MongoDBWrapper().createFolder(email, virtualPath)
 
 
     def deleteFolder(self):
         pass
-
 
     def renameFolder(self):
         pass
@@ -86,6 +114,7 @@ class Main:
     def doexit(self):
         self.exit = True
 
+    #for testing purpose
     def start(self):
         #if something infront / , match will fail
         #t='/as'
@@ -124,10 +153,12 @@ class Main:
 
             else:
                 print "please enter 1-10 only!!!"
-
-
+'''
+test=Main()
+test.start()
 
 s=slurpy.Slurpy()
 s.register(os)
 s.register(Main)
 s.start()
+'''
