@@ -174,14 +174,13 @@ def gdrive_auth_finish():
 		auth_code = request.args.get('code')
 		
 		# type(credentials) = class 'oauth2client.client.OAuth2Credentials'
-		# credentials 
-		
+		# credentials 		
 		credentials = flow.step2_exchange(auth_code)
 		# print "credentials = ", credentials.to_json()
 		# session['credentials'] = credentials.to_json()
 
-		# Store credentials as 'oauth2client.client.OAuth2Credentials' object
-		if set_gdrive_token(email, credentials):
+		# Store credentials as JSON object
+		if set_gdrive_token(email, credentials.to_json()):
 			print "credentials added to DB: type", type(credentials)
 			return redirect(url_for('profile'))
 
@@ -229,5 +228,3 @@ def gdrive_disconnect():
 
 	flash("Disconnect error, Try again")
 	return redirect(url_for('profile'))
-
-
