@@ -1,0 +1,17 @@
+{
+  "manifest_version": 2,
+
+  "name": "Cloud Storage",
+  "description": "This extension demonstrates a browser action with kittens.",
+  "version": "1.0",
+
+  "background": {
+    "scripts": ["bg.js"]
+  },
+
+  //"optional_permissions": [ "tabs", "http://www.google.com/" ],
+
+  "browser_action": {
+    "default_icon": "icon.png"
+  }
+}
