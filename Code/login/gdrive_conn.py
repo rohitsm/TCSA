@@ -24,6 +24,7 @@ from login import db
 from oauth2client.client import OAuth2WebServerFlow, OAuth2Credentials
 from apiclient.discovery import build
 from oauth2client import client
+# from oauth2client.client.Credentials import new_from_json, 
 
 GDRIVE_CLIENT_SECRET = app.config['GDRIVE_CLIENT_SECRET']
 GDRIVE_CLIENT_ID = app.config['GDRIVE_CLIENT_ID']
@@ -58,8 +59,10 @@ def gdrive_connect():
 		User information as a dict if it exists otherwise None. 
 	"""
 	try:		
-		credentials_from_db = get_gdrive_refresh_token()
-		# print "refresh_token = ", credentials_from_db['refresh_token']
+		# Instantiate an OAuth2Credentials instance from a JSON representation
+		cred = get_gdrive_refresh_token()
+		credentials_from_db = cred.from_json()
+		print "credentials_from_db = ", credentials_from_db
 		
 		# No record found in DB
 		if credentials_from_db is None:
@@ -173,13 +176,12 @@ def gdrive_auth_finish():
 	else:
 		auth_code = request.args.get('code')
 		
-		# type(credentials) = class 'oauth2client.client.OAuth2Credentials'
-		# credentials 		
+		# Credentials is of type class 'oauth2client.client.OAuth2Credentials'
 		credentials = flow.step2_exchange(auth_code)
 		# print "credentials = ", credentials.to_json()
 		# session['credentials'] = credentials.to_json()
 
-		# Store credentials as JSON object
+		# Convert credentials to a JSON representation before storing
 		if set_gdrive_token(email, credentials.to_json()):
 			print "credentials added to DB: type", type(credentials)
 			return redirect(url_for('profile'))
