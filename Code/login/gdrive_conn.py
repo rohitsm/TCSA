@@ -105,6 +105,11 @@ def gdrive_connect():
 		set_gdrive_token(email, None)
 		return None
 
+	except AttributeError as e:
+		print "no record found in DB. \nArributeError", e
+		# No record exists in DB for GDrive
+		return None
+
 
 def refresh_access_token(old_credentials):
 	""" Take credentials containing expired access token)as arg and return
