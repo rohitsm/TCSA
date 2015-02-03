@@ -84,7 +84,7 @@ def get_gdrive_token(email):
 
 def set_gdrive_token(email, access_token):
 	if set_token(str(email), 'gdrive', access_token):
-		print "inside set_gdrive_token: "
+		print "inside set_gdrive_token: ", type(access_token)
 		return True
 	return False
 

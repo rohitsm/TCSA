@@ -24,7 +24,7 @@ from login import db
 from oauth2client.client import OAuth2WebServerFlow, OAuth2Credentials
 from apiclient.discovery import build
 from oauth2client import client
-# from oauth2client.client.Credentials import new_from_json, 
+from oauth2client.client.Credentials import new_from_json, to_json
 
 GDRIVE_CLIENT_SECRET = app.config['GDRIVE_CLIENT_SECRET']
 GDRIVE_CLIENT_ID = app.config['GDRIVE_CLIENT_ID']
@@ -61,7 +61,8 @@ def gdrive_connect():
 	try:		
 		# Instantiate an OAuth2Credentials instance from a JSON representation
 		cred = get_gdrive_refresh_token()
-		credentials_from_db = cred.from_json()
+		print "gdrive_connect() - cred = ", cred
+		credentials_from_db = cred.new_from_json()
 		print "credentials_from_db = ", credentials_from_db
 		
 		# No record found in DB
