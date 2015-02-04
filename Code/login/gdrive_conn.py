@@ -129,7 +129,7 @@ def get_user_info(credentials):
 	if user_info and user_info.get('id'):
 		return user_info
 	else:
-		raise NoUserIdException()
+		return None
 
 def gdrive_connect():
 	"""Interfaces with views.py
