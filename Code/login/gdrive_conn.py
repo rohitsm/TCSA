@@ -44,6 +44,7 @@ def get_gdrive_refresh_token():
 
 	# Get the refresh token from the DB
 	refresh_token = get_gdrive_token(email)
+
 	# print "refresh_token form db = ", refresh_token
 	if refresh_token:
 		return refresh_token
@@ -61,7 +62,7 @@ def gdrive_connect():
 		# Instantiate an OAuth2Credentials instance from a JSON representation
 		cred = get_gdrive_refresh_token()
 		print "gdrive_connect() - cred = ", cred
-		credentials_from_db = cred.new_from_json()
+		credentials_from_db = Credentials.new_from_json(cred)
 		print "credentials_from_db = ", credentials_from_db
 		
 		# No record found in DB
