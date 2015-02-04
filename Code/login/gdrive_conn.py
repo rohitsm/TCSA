@@ -142,7 +142,7 @@ def refresh_access_token(cred):
 		refresh_token = cred.refresh_token
 
 		# Build the JSON variable for credentials
-		cred = {
+		renew = {
 			'client_id' : GDRIVE_CLIENT_ID,
 			'client_secret' : GDRIVE_CLIENT_SECRET,
 			'refresh_token' : refresh_token,
@@ -150,7 +150,7 @@ def refresh_access_token(cred):
 		}
 
 		# Renew access_token using the above refresh_token
-		req = urllib2.Request("https://www.googleapis.com/oauth2/v3/token", urlencode(cred))
+		req = urllib2.Request("https://www.googleapis.com/oauth2/v3/token", urlencode(renew))
 		resp = urllib2.urlopen(req)
 		content = resp.read()
 		cont = json.loads(content)
