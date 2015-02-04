@@ -167,7 +167,7 @@ def refresh_access_token(old_credentials):
 		print "No refresh_token found in old_credentials. NoneType!"
 		return None
 
-	except Exception, e:
+	except Exception as e:
 		print "Error: ", e
 		return None
 
