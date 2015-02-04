@@ -61,15 +61,14 @@ def gdrive_connect():
 		User information as a JSON string if it exists otherwise None. 
 	"""
 	try:		
-		# Instantiate an OAuth2Credentials instance from a JSON representation
 		cred = get_gdrive_refresh_token()
-		print "gdrive_connect() - cred = ", cred
+		print "gdrive_connect() - cred from db = ", cred
+		# Convert JSON represenation to an instance of 'OAuth2Credentials'
 		credentials = Credentials.new_from_json(cred)
-		print "credentials_from_db = ", credentials
 		
 		# No record found in DB
 		if credentials is None:
-			print "refresh_token = none"
+			print "No records for credentials found in DB = none"
 			return None		
 
 		# Expired access_token
@@ -77,27 +76,15 @@ def gdrive_connect():
 			# Get new access_token
 			print "credentials.access_token_expired"
 			credentials = refresh_access_token(credentials)
-			print "==================================="
-			print "\n\nNEW refresh_token = ", credentials.refresh_token
-			print "==================================="
 
 		# Returns user information as a JSON object
-
-		# DEBUG
-		credentials = refresh_access_token(credentials)
-		print "==================================="
-		print "\n\nNEW refresh_token = ", credentials.refresh_token
-		print "==================================="
-
 		user_info_service = build(
 			serviceName = 'drive', version = 'v2',
 			http = credentials.authorize(httplib2.Http()) )
 		
 		# user_info is of type dict 
 		user_info = user_info_service.files().list().execute()
-		print "\n\nuser_info type = ", type(user_info)
-		print "\n\nuser_info = ", json.dumps(user_info, indent=4, sort_keys=True)
-		print "\n\nuser_info type (after) = ", type(user_info)
+		# print "\n\nuser_info = ", json.dumps(user_info, indent=4, sort_keys=True)
 		return json.dumps(user_info)
 
 	except client.AccessTokenRefreshError as e:
@@ -154,21 +141,17 @@ def refresh_access_token(cred):
 		resp = urllib2.urlopen(req)
 		content = resp.read()
 		cont = json.loads(content)
-		print "inside refresh_access_token. content = ", content
-		print "NEW access_token. cont = ", cont["access_token"]
 
 		# Replace old access_token with renewed one
-		print "old_access_token: ", cred.access_token
 		cred.access_token = cont["access_token"]	
-		print "new_access_token: ", cred.access_token	
 
 		# Update DB records with new credentials.
-		set_gdrive_token(email, credentials.to_json())
+		set_gdrive_token(email, cred.to_json())
 	
 		return cred
 	
 	except AttributeError as e:
-		print "No refresh_token found in old_credentials. NoneType!"
+		print "No refresh_token found in old_credentials. NoneType?", e
 		return None
 
 	except Exception, e:
@@ -190,8 +173,6 @@ def gdrive_auth_finish():
 		
 		# Credentials is of type class 'oauth2client.client.OAuth2Credentials'
 		credentials = flow.step2_exchange(auth_code)
-		# print "credentials = ", credentials.to_json()
-		# session['credentials'] = credentials.to_json()
 
 		# Convert credentials to a JSON representation before storing
 		if set_gdrive_token(email, credentials.to_json()):
@@ -199,7 +180,7 @@ def gdrive_auth_finish():
 			return redirect(url_for('profile'))
 
 		flash('Error in adding Gdrive token to DB')
-		print "Error, Could not add refresh_token to DB"
+		print "Error, Could not add credentials to DB"
 		return redirect(url_for('profile'))
 
 
