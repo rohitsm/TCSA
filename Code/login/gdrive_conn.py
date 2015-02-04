@@ -117,19 +117,21 @@ def get_user_info(credentials):
 	Returns:
 	User information as a dict.
 	"""
-	user_info_service = build(
-			serviceName = 'drive', version = 'v2',
-			http = credentials.authorize(httplib2.Http()) )
-	user_info = None
+	
 	try:
-		user_info = user_info_service.userinfo().get().execute()
+		# Returns user information as a JSON object
+		user_info_service = build(
+			serviceName = 'drive', version = 'v2',
+			http = credentials.authorize(httplib2.Http()) )		
+		# user_info is of type dict 
+		user_info = user_info_service.files().list().execute()
+		if user_info:
+			return user_info
+		else:
+			return None
 	except Exception as e:
 		# logging.error('An error occurred: %s', e)
 		print "An error occurred: ", e
-	if user_info and user_info.get('id'):
-		return user_info
-	else:
-		return None
 
 def gdrive_connect():
 	"""Interfaces with views.py
@@ -154,13 +156,7 @@ def gdrive_connect():
 			print "credentials.access_token_expired"
 			credentials = refresh_access_token(credentials)
 
-		# Returns user information as a JSON object
-		# user_info_service = build(
-		# 	serviceName = 'drive', version = 'v2',
-		# 	http = credentials.authorize(httplib2.Http()) )
 		
-		# # user_info is of type dict 
-		# user_info = user_info_service.files().list().execute()
 
 		user_info = get_user_info(credentials)
 		# print "\n\nuser_info = ", json.dumps(user_info, indent=4, sort_keys=True)
