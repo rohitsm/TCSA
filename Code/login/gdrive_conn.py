@@ -112,12 +112,11 @@ def get_user_info(credentials):
 	"""Send a request to the UserInfo API to retrieve the user's information.
 
 	Args:
-	credentials: oauth2client.client.OAuth2Credentials instance to authorize the
-	             request.
+		credentials: oauth2client.client.OAuth2Credentials instance to authorize the
+		             request.
 	Returns:
-	User information as a dict.
-	"""
-	
+		User information as a dict.
+	"""	
 	try:
 		# Returns user information as a JSON object
 		user_info_service = build(
