@@ -6,6 +6,7 @@ import json
 import httplib2
 import urllib2
 from urllib import urlencode
+import re
 
 # Flask
 from flask import render_template, flash, redirect, request, url_for
@@ -81,7 +82,8 @@ def gdrive_connect():
 
 		#####################################################################
 
-		credentials = OAuth2Credentials.from_json(credentials_from_db)
+		#credentials = OAuth2Credentials.from_json(credentials_from_db)
+		credentials = credentials_from_db
 		print "credentials = ", credentials
 		if credentials.access_token_expired:
 			print "credentials.access_token_expired"
@@ -110,6 +112,10 @@ def gdrive_connect():
 	except AttributeError as e:
 		print "no record found in DB. \nArributeError", e
 		# No record exists in DB for GDrive
+		return None
+
+	except TypeError as e:
+		print "no record found in DB. \nTypeError", e
 		return None
 
 
@@ -154,20 +160,24 @@ def refresh_access_token(old_credentials):
 		new_access_token = cont["access_token"]
 
 		# Use regex to replace old access_token with renewed one
-		matchObj = re.match(r'.*access_token": "(.*)", "token_uri.*', old_credentials)
-		old_access_token = matchObj.group(1)
-		new_credentials = old_credentials.replace(old_access_token, new_access_token)
+		#matchObj = re.match(r'.*access_token": "(.*)", "token_uri.*', old_credentials)
+		#old_access_token = matchObj.group(1)
+		#new_credentials = old_credentials.replace(old_access_token, new_access_token)
+		print "old_access_token: ", old_credentials.access_token
+		old_credentials.access_token = new_access_token		
 
-		print "old_access_token: ", old_access_token
+
+
+		#print "old_access_token: ", old_access_token
 		print "new_access_token: ", new_access_token
-		print "renewed credentials = ", new_credentials
-		return new_credentials
+		print "renewed credentials = ", old_credentials
+		return old_credentials
 	
 	except AttributeError as e:
 		print "No refresh_token found in old_credentials. NoneType!"
 		return None
 
-	except Exception as e:
+	except Exception, e:
 		print "Error: ", e
 		return None
 
