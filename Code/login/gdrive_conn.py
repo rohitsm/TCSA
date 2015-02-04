@@ -104,7 +104,7 @@ def refresh_access_token(cred):
 		print "No refresh_token found in old_credentials. NoneType?", e
 		return None
 
-	except Exception, e:
+	except Exception as e:
 		print "Error: ", e
 		return None
 
@@ -123,8 +123,9 @@ def get_user_info(credentials):
 	user_info = None
 	try:
 		user_info = user_info_service.userinfo().get().execute()
-	except errors.HttpError, e:
-		logging.error('An error occurred: %s', e)
+	except HttpError as e:
+		# logging.error('An error occurred: %s', e)
+		print "An error occurred: ", e
 	if user_info and user_info.get('id'):
 		return user_info
 	else:
