@@ -58,49 +58,47 @@ def gdrive_connect():
 	"""Interfaces with views.py
 
 	Returns:
-		User information as a dict if it exists otherwise None. 
+		User information as a JSON string if it exists otherwise None. 
 	"""
 	try:		
 		# Instantiate an OAuth2Credentials instance from a JSON representation
 		cred = get_gdrive_refresh_token()
 		print "gdrive_connect() - cred = ", cred
-		credentials_from_db = Credentials.new_from_json(cred)
-		print "credentials_from_db = ", credentials_from_db
+		credentials = Credentials.new_from_json(cred)
+		print "credentials_from_db = ", credentials
 		
 		# No record found in DB
-		if credentials_from_db is None:
+		if credentials is None:
 			print "refresh_token = none"
-			return None
+			return None		
 
-		########## Testing and debugging. Remove this from here ##########
-		refresh_token = credentials_from_db.refresh_token
-		print "==================================="
-		print "\n\n OLD refresh_token = ", refresh_token
-		print "new creds = ", refresh_access_token(credentials_from_db)
-
-		print "===================================\n\n"
-
-		#####################################################################
-
-		#credentials = OAuth2Credentials.from_json(credentials_from_db)
-		credentials = credentials_from_db
-		print "credentials = ", credentials
+		# Expired access_token
 		if credentials.access_token_expired:
+			# Get new access_token
 			print "credentials.access_token_expired"
-			return redirect(url_for('gdrive_auth_finish'))
-			# return None
-		else:
-			# Returns user information as a JSON object
-			user_info_service = build(
-				serviceName = 'drive', version = 'v2',
-				http = credentials.authorize(httplib2.Http()) )
-			
-			# user_info is of type dict 
-			user_info = user_info_service.files().list().execute()
-			print "\n\nuser_info type = ", type(user_info)
-			print "\n\nuser_info = ", json.dumps(user_info, indent=4, sort_keys=True)
-			print "\n\nuser_info type (after) = ", type(user_info)
-			return json.dumps(user_info)
+			credentials = refresh_access_token(credentials)
+			print "==================================="
+			print "\n\nNEW refresh_token = ", credentials.refresh_token
+			print "==================================="
+
+		# Returns user information as a JSON object
+
+		# DEBUG
+		credentials = refresh_access_token(credentials)
+		print "==================================="
+		print "\n\nNEW refresh_token = ", credentials.refresh_token
+		print "==================================="
+
+		user_info_service = build(
+			serviceName = 'drive', version = 'v2',
+			http = credentials.authorize(httplib2.Http()) )
+		
+		# user_info is of type dict 
+		user_info = user_info_service.files().list().execute()
+		print "\n\nuser_info type = ", type(user_info)
+		print "\n\nuser_info = ", json.dumps(user_info, indent=4, sort_keys=True)
+		print "\n\nuser_info type (after) = ", type(user_info)
+		return json.dumps(user_info)
 
 	except client.AccessTokenRefreshError as e:
 		flash('Drive access revoked!')
@@ -119,17 +117,18 @@ def gdrive_connect():
 		return None
 
 
-def refresh_access_token(old_credentials):
-	""" Take credentials containing expired access token)as arg and return
+def refresh_access_token(cred):
+	""" Take credentials (with expired access token) as arg and return
 		credentials with renewed access token.
 
 		Get refresh token for this purpose from db. To look in db records,
-		use corresponding email (taken from session)
+		use corresponding email (taken from session). After renewing, write
+		new credentials back to DB
 
 	Args:
-		old_credentials: From DB; contains expired access_token; also contains refresh_token
+		cred: From DB; contains expired access_token; also contains refresh_token
 	Returns:
-		new_credentials: Contains renewed access_token
+		cred: Contains renewed access_token
 	"""
 
 	try:	
@@ -139,8 +138,8 @@ def refresh_access_token(old_credentials):
 		if email is None:
 			abort(403)
 
-		# Extract out refresh_token from old_credentials
-		refresh_token = old_credentials.refresh_token
+		# Extract out refresh_token from cred
+		refresh_token = cred.refresh_token
 
 		# Build the JSON variable for credentials
 		cred = {
@@ -150,28 +149,23 @@ def refresh_access_token(old_credentials):
 			'grant_type' : "refresh_token"
 		}
 
-		# Renew access_token
+		# Renew access_token using the above refresh_token
 		req = urllib2.Request("https://www.googleapis.com/oauth2/v3/token", urlencode(cred))
 		resp = urllib2.urlopen(req)
 		content = resp.read()
 		cont = json.loads(content)
 		print "inside refresh_access_token. content = ", content
 		print "NEW access_token. cont = ", cont["access_token"]
-		new_access_token = cont["access_token"]
 
-		# Use regex to replace old access_token with renewed one
-		#matchObj = re.match(r'.*access_token": "(.*)", "token_uri.*', old_credentials)
-		#old_access_token = matchObj.group(1)
-		#new_credentials = old_credentials.replace(old_access_token, new_access_token)
-		print "old_access_token: ", old_credentials.access_token
-		old_credentials.access_token = new_access_token		
+		# Replace old access_token with renewed one
+		print "old_access_token: ", cred.access_token
+		cred.access_token = cont["access_token"]	
+		print "new_access_token: ", cred.access_token	
 
-
-
-		#print "old_access_token: ", old_access_token
-		print "new_access_token: ", new_access_token
-		print "renewed credentials = ", old_credentials
-		return old_credentials
+		# Update DB records with new credentials.
+		set_gdrive_token(email, credentials.to_json())
+	
+		return cred
 	
 	except AttributeError as e:
 		print "No refresh_token found in old_credentials. NoneType!"
