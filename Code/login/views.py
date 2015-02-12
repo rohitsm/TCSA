@@ -1,6 +1,10 @@
 # Python
 import cgi
 import os
+#todo
+#note this MongoDBWrapper.py must be inside lib folder which exist in the same folder as this views.py
+#mongodbconfig.ini, dropboxWrapper.py and googleDriveWrapper.py must be in the same folder as MongoDBWrapper.py
+from lib.MongoDBWrapper import MongoDBWrapper
 
 # Flask
 from flask import render_template, flash, redirect, request, url_for
@@ -134,6 +138,9 @@ def routes(app, login_manager):
 					
 					# Add entry into the DB
 					set_user_record(email, pwd_hash, passphrase_hash, pub_key)
+					#todo
+					#Add entry into the MongoDB
+					MongoDBWrapper().addAccount(email)
 					# flash('New account created successfully!')
 					return redirect(url_for('login'))
 
