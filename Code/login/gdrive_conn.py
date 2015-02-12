@@ -21,6 +21,9 @@ from login import login_manager
 from models import get_gdrive_token, set_gdrive_token
 from login import db
 
+#todo
+from lib.MongoDBWRapper import MongoDBWRapper
+
 # Google Drive API
 from oauth2client.client import OAuth2WebServerFlow, OAuth2Credentials
 from apiclient.discovery import build
@@ -196,6 +199,9 @@ def gdrive_auth_finish():
 		# Convert credentials to a JSON representation before storing
 		if set_gdrive_token(email, credentials.to_json()):
 			print "credentials added to DB: type", type(credentials)
+			#todo
+			MongoDBWrapper().addStorage('googledrive', email)
+			
 			return redirect(url_for('profile'))
 
 		flash('Error in adding Gdrive token to DB')
