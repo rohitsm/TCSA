@@ -44,6 +44,12 @@ def routes(app, login_manager):
 		else:
 			return "Not Working"
 
+	@app.route('/testupload', methods=['POST'])
+	def testupload():
+		user =  request.form['file'];
+		return json.dumps({'status':'OK','user':user,'pass':password});
+
+
 	@app.route('/login', methods=['GET', 'POST'])
 	@app.route('/signin', methods=['GET', 'POST'])
 	def login():
