@@ -44,11 +44,17 @@ def routes(app, login_manager):
 		else:
 			return "Not Working"
 
-	@app.route('/testupload', methods=['POST'])
+	@app.route('/testupload', methods=['GET', 'POST'])
 	def testupload():
-		user =  request.form['file'];
-		return json.dumps({'status':'OK','user':user,'pass':password});
-
+		
+		if request.method == 'POST':
+			user =  request.args.get('file');
+			print "user = ", user
+			return render_template('index.html')
+		#return json.dumps({'status':'OK','user':user});
+		
+		print "GET Request"
+		return render_template('signup.html')
 
 	@app.route('/login', methods=['GET', 'POST'])
 	@app.route('/signin', methods=['GET', 'POST'])
