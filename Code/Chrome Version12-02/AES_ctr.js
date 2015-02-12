@@ -1,7 +1,3 @@
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
-/*  AES Counter-mode implementation in JavaScript       (c) Chris Veness 2005-2014 / MIT Licence  */
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
-
 /* jshint node:true *//* global define, escape, unescape, btoa, atob */
 'use strict';
 if (typeof module!='undefined' && module.exports) var Aes = require('./aes'); // CommonJS (Node.js)
