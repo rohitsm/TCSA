@@ -1,17 +1,5 @@
-import cgi, os
-import pprint
-import re
-import cgitb; cgitb.enable()
-try:
-    import msvcrt
-    msvcrt.setmode(0, os.O_BINARY)
-    msvcrt.setmode(1, os.O_BINARY)
-except ImportError:
-    pass
-
-from lib.DropboxWrapper import DropboxWrapper
 from lib.MongoDBWrapper import MongoDBWrapper
-#import slurpy
+import os
 
 class Main:
 
@@ -37,13 +25,15 @@ class Main:
             3:'googledrive'
         }
 
+    #todo append this to ros program
     #arg: email
     def register(self):
         email       =raw_input("enter email address:")
         print "putting these info into database..."
-        mongoDBWrapper().addAccount(email)
+        MongoDBWrapper().addAccount(email)
         #put these onto mongodb for record
 
+    #todo dont know yet
     #arg: email, storage type must be in these form below
     def addStorage(self):
         email       =raw_input("enter email address:")
@@ -57,20 +47,9 @@ class Main:
     def upload(self):
         email           ='aswin.setiadi@gmail.com'
         #to upload file in root folder, pass ''
-        #below example means uploading file to TCSA at /images folder
+        #below example means uploading file monkey.jpg to TCSA at /images folder
         virtualPath     ='/images'
-
-
-        form=cgi.FieldStorage()
-        fileitem=form['file']
-        if fileitem.filename:
-            fn=os.path.basename(fileitem.filename)
-            fileLocation='files/'+fn
-            open(fileLocation, 'wb').write(fileitem.file.read())
-            print 'file has reached and saved in files folder...'
-
-        #todo remove line below
-        #fileLocation    ='files/monkey.jpg'
+        fileLocation    ='files/monkey.jpg'
         MongoDBWrapper().upload(email, virtualPath, fileLocation)
         print 'file stored in online storage. destroying local copy..'
         os.remove(fileLocation)
@@ -120,7 +99,8 @@ class Main:
         #t='/as'
         #m=re.match(r'/as$', t)
         #print m.group()
-
+        test=1^20
+        print test
         while not self.exit:
             #test= DropboxWrapper("asetiadi", 'aswin_setiadi@hotmail.com')
             #test.getAuthTokenFromXML('files/authList.xml')
@@ -153,10 +133,10 @@ class Main:
 
             else:
                 print "please enter 1-10 only!!!"
-'''
+
 test=Main()
 test.start()
-
+'''
 s=slurpy.Slurpy()
 s.register(os)
 s.register(Main)

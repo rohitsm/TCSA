@@ -55,8 +55,11 @@ class MongoDBWrapper:
         self.client         = MongoClient(addr, port)
         self.db             = self.client[databaseName]
 
+        #each collection represent a user
         self.aCollection    = None
+        #for dropbox
         self.accessToken    = None
+        #for googledrive
         self.credential     = None
 
 
@@ -67,7 +70,7 @@ class MongoDBWrapper:
         wrapper.uploadFile(filePath, virtualPath)
 
     def _uploadBox(self):
-        pass
+        raise NotImplementedError
 
     def _uploadGoogleDrive(self, credential, filePath, parentID):
         wrapper= GoogleDriveWrapper(credential)
@@ -96,6 +99,29 @@ class MongoDBWrapper:
 
 
     #private function
+    def _getLargestRemainingStorage(self, email):
+        self.setCollection(email)
+        storageSizePair={}
+        #return a list of 1 element(dictionary), chose dict element called 'storage'
+        #will return [{u'type': u'dropbox', u'metadata': []},{u'type': u'googledrive', u'metadata': []}], etc
+        storageList=self.aCollection.find({},{'_id':0,'type':1})
+        for storage in storageList:
+            if storage['type'] == 'dropbox':
+                #ROS function here
+                self.accessToken= self.DROPBOX[email][2]
+                storageSizePair['dropbox']=self._getDropboxRemainingStorage(self.accessToken)
+            elif storage['type'] == 'box':
+                raise NotImplementedError
+            elif storage['type'] == 'googledrive':
+                #ROS server here
+                self.credential= self.GOOGLE_DRIVE[email]['credentials']
+                storageSizePair['googledrive']=self._getGoogleDriveRemainingStorage(self.credential)
+        #itermitems() will generate a set of tuples eg. ('a', 1000), the key argument dictate
+        #the function to compare the second value(1000), hence the function x[1]
+        #return (key, value) tuple so put [0] to get the storage
+        chosenStorage= max(storageSizePair.iteritems(), key= lambda x: x[1])[0]
+        print chosenStorage, ' has largest remaining storage.'
+        return chosenStorage
 
     def _getAllVirtualPathList(self, email):
         self.setCollection(email)
@@ -182,7 +208,7 @@ class MongoDBWrapper:
         if not exist:
             if chosenStorage is None:
                 #storing folder in any storage
-                chosenStorage=self.getLargestRemainingStorage(email)
+                chosenStorage=self._getLargestRemainingStorage(email)
             if newRecord is None:
                 #storing folder in any storage OR storing file in dropbox if chosenStorage is not None
                 newRecord={
@@ -193,6 +219,31 @@ class MongoDBWrapper:
                 {'$push':{'metadata':newRecord}}
             )
             print 'db updated'
+
+
+
+    def _removePath(self, email, storage, path):
+        self.setCollection(email)
+
+        test= self.aCollection.update(
+            #if this empty, can only update first storagerecord type and will wipe
+            #all entry in that storage according to the parameter
+            {'type':storage},
+            {
+                '$pull':{
+                    'metadata':{
+                        'virtualPath':path
+                    }
+                }
+            }
+        )
+        '''
+        newRecord={'virtualPath':'/parent/path'}
+        self.aCollection.update(
+            {'type':storage},
+            {'$push':{'metadata':newRecord}}
+        )
+        '''
 
     #utility function
     def addAccount(self, collectionName):
@@ -242,7 +293,7 @@ class MongoDBWrapper:
         filename= re.match(r".*/(.*)", fileLocation).group(1)
 
 
-        chosenStorage=self.getLargestRemainingStorage(email)
+        chosenStorage=self._getLargestRemainingStorage(email)
         if chosenStorage == 'dropbox':
             #ros function here
             self._uploadDropbox(self.accessToken, fileLocation, virtualPath)
@@ -346,7 +397,8 @@ class MongoDBWrapper:
         #delete /animal/horse.jpg
         #delete /creature/animal.jpg, must left /creature
         #delete /animal1/t.jpg
-        virtualPathStorage=None
+
+        #for test cases
         aList=[
             ('/animal/monkey.jpg','dropbox'),
              #('/creature/animal','dropbox'),
@@ -356,10 +408,10 @@ class MongoDBWrapper:
                 ('/animal11/t.jpg','googledrive'),
                 ('/file.pdf', 'googledrive')
         ]
+        virtualPathStorage=None
         self.setCollection(email)
         #get all path and their respective storage,including the path to be deleted
         temp=self._getAllVirtualPathList(email)
-        #change aList to temp
         for t in temp:
             if t[0]==virtualPath:
                 virtualPathStorage=t[1]
@@ -438,56 +490,24 @@ class MongoDBWrapper:
         self._replaceVirtualOldPath(email, newVirtualPath)
         self.client.disconnect()
 
+    def deleteFolder(self):
+        raise NotImplementedError
 
+    def renameFolder(self):
+        raise NotImplementedError
 
-    #miscelanous
-    def getLargestRemainingStorage(self, email):
+    def getTempFolderName(self, email):
         self.setCollection(email)
-        storageSizePair={}
-        #return a list of 1 element(dictionary), chose dict element called 'storage'
-        #will return [{u'type': u'dropbox', u'metadata': []},{u'type': u'googledrive', u'metadata': []}], etc
-        storageList=self.aCollection.find({},{'_id':0,'type':1})
-        for storage in storageList:
-            if storage['type'] == 'dropbox':
-                #ROS function here
-                self.accessToken= self.DROPBOX[email][2]
-                storageSizePair['dropbox']=self._getDropboxRemainingStorage(self.accessToken)
-            elif storage['type'] == 'box':
-                raise NotImplementedError
-            elif storage['type'] == 'googledrive':
-                #ROS server here
-                self.credential= self.GOOGLE_DRIVE[email]['credentials']
-                storageSizePair['googledrive']=self._getGoogleDriveRemainingStorage(self.credential)
-        #itermitems() will generate a set of tuples eg. ('a', 1000), the key argument dictate
-        #the function to compare the second value(1000), hence the function x[1]
-        #return (key, value) tuple so put [0] to get the storage
-        chosenStorage= max(storageSizePair.iteritems(), key= lambda x: x[1])[0]
-        print chosenStorage, ' has largest remaining storage.'
-        return chosenStorage
-
-    def removePath(self, email, storage, path):
-        self.setCollection(email)
-
-        test= self.aCollection.update(
-            #if this empty, can only update first storagerecord type and will wipe
-            #all entry in that storage according to the parameter
-            {'type':storage},
-            {
-                '$pull':{
-                    'metadata':{
-                        'virtualPath':path
-                    }
-                }
-            }
+        txt=self.aCollection.find(
+            {},
+            {'_id':1}
         )
-        '''
-        newRecord={'virtualPath':'/parent/path'}
-        self.aCollection.update(
-            {'type':storage},
-            {'$push':{'metadata':newRecord}}
-        )
-        '''
-#mongodb = MongoDBWrapper()
-#mongodb.delFile('aswin.setiadi@gmail.com','/animal/monkey.jpg')
-#mongodb.removePath('aswin.setiadi@gmail.com', 'dropbox', '/parent/path')
-#mongodb.getFolderTree('aswin.setiadi@gmail.com')
+        return txt[0]['_id']
+
+if __name__ == '__main__':
+    #only call these lines when this file is ran
+    mongodb = MongoDBWrapper()
+    #mongodb.delFile('aswin.setiadi@gmail.com','/animal/monkey.jpg')
+    #mongodb.removePath('aswin.setiadi@gmail.com', 'dropbox', '/parent/path')
+    #mongodb.getFolderTree('aswin.setiadi@gmail.com')
+    #mongodb.getTempFolderName('aswin.setiadi@gmail.com')
