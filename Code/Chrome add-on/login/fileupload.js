@@ -6,12 +6,9 @@ $(':file').change(function(){
 
     if(file.name.length < 1) {
     }
-    else if(file.size > 100000) {
-        alert("File is to big");
-    }
-    else if(file.type != 'image/png' && file.type != 'image/jpg' && !file.type != 'image/gif' && file.type != 'image/jpeg' ) {
+    /*else if(file.type != 'image/png' && file.type != 'image/jpg' && !file.type != 'image/gif' && file.type != 'image/jpeg' ) {
         alert("File doesnt match png, jpg or gif");
-    }
+    }*/
     else { 
         $(':submit').click(function(){
             var formData = new FormData($('*formId*')[0]);

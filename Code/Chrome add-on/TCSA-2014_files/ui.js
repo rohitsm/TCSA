@@ -1,5 +1,3 @@
-var next=0;
-var previous=1;
 $(document).ready(function(){
 	$("#fileRegion").hide();
 	$("#upload").click(function(){
@@ -11,9 +9,9 @@ $(document).ready(function(){
 		var file=[];
 
 		fileInput.addEventListener('change', function(e) {
-			count=fileInput.files.length;
+			/*count=fileInput.files.length;
 			alert("count "+ count);
-			/*for(var i=0; i<count; i++){
+			for(var i=0; i<count; i++){
 				file=fileInput.files;
 				
 			}*/
@@ -21,11 +19,9 @@ $(document).ready(function(){
 
 		});
 		encrypt.addEventListener('click',function(e){
-
-			while(next<count && next!=previous){
-				previous=next;
-				alert("next"+next);
-				encryptFileProcess(file[next]);
+			for(var i=0;i<count;i++){
+				alert("i"+i);
+				encryptFileProcess(file[i]);
 			}
 			//encryptFileProcess(file);
 

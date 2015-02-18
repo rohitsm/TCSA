@@ -46,7 +46,6 @@ function decryptFile(e){
 			    console.log(blob.size);
 			    var filename = file.name.replace(/\.encrypted$/,'');
 			    saveAs(blob, filename);
-			    plaintext="";
 				console.log(filename);
 		}
 				
