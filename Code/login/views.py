@@ -1,6 +1,7 @@
 # Python
 import cgi
 import os
+import json
 
 # Flask
 from flask import render_template, flash, redirect, request, url_for
@@ -48,13 +49,19 @@ def routes(app, login_manager):
 	def testupload():
 		
 		if request.method == 'POST':
-			user =  request.args.get('file');
-			print "user = ", user
-			return render_template('index.html')
-		#return json.dumps({'status':'OK','user':user});
-		
-		print "GET Request"
-		return render_template('signup.html')
+			filename =  request.json['filename']
+			file_content = request.json['file_content']
+			user_email = request.json['user_email']
+			
+			# Debug 
+			print "filename: ", filename
+			print "file_content", file_content
+			print "user_email", user_email
+			
+			return json.dumps({'status':'OK','filename':filename, 'file_content':file_content, 'user_email':user_email});
+		else:
+			print"GET Request"
+			return render_template('signup.html')
 
 	@app.route('/login', methods=['GET', 'POST'])
 	@app.route('/signin', methods=['GET', 'POST'])
