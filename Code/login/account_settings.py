@@ -14,10 +14,10 @@ from login import login_manager
 from models import update_password
 from login import db
 
-@app.route('/changepwd', methods=['GET', 'POST'])
-def change_password():
+@app.route('/change-pwd', methods=['GET', 'POST'])
+def change_pwd():
 	form = LoginForm_1()
-	print "inside change_password"
+	print "inside change_pwd"
 
 	if 'user' not in session:
 		return redirect(url_for('login'))
@@ -55,7 +55,7 @@ def change_password():
 					if (new_password1 != new_password2): # Password match test
 						flash('Passwords do not match')
 						print "Passwords do not match"
-						return render_template('changepwd.html')
+						return render_template('changepwd.html', user=session['user'])
 
 					else:
 						# If authentication is okay, hash the password and replace the
@@ -83,7 +83,7 @@ def change_password():
 
 	# GET requests
 	print "GET /changepwd"
-	return render_template('changepwd.html')
+	return render_template('changepwd.html', user=session['user'])
 
 
 
