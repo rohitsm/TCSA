@@ -76,27 +76,27 @@
 
     <div class="container">
 
-      <form name="signupForm" onSubmit="return validateForm();" enctype="multipart/form-data" role="form" method="POST" action="/signup">
+      <form name="signupForm" enctype="multipart/form-data" role="form" method="POST" action="/change_pwd">
         
         <div class="row marketing" id="form-bg">
           <h3 id="form-header" class="text-center block-center">Change Password</h3>
           
           <div class="col-md-6 col-xs-6 col-md-offset-3 col-xs-offset-3">
             <div class="form-group">
-              <label for="EmailAddress">Enter your existing password</label>
-              <input type="email" class="form-control" name="Email" placeholder="Enter email" required>
+              <label for="old_password">Enter your existing password</label>
+              <input type="password" class="form-control" name="old_password" placeholder="Enter current password" required>
             </div>
             <div class="form-group">
-              <label for="Password1">Enter new password <small>(min. 5 characters)</small></label>
-              <input type="password" class="form-control" name="Password1" placeholder="Password" onblur="validatePwd1()" required>
+              <label for="new_password1">Enter new password <small>(min. 5 characters)</small></label>
+              <input type="password" class="form-control" name="new_password1" placeholder="Enter new password" onblur="validatePwd1()" required>
             </div>
 
             <div class="form-group">
-              <label for="Password2">Confirm your password</label>
-              <input type="password" class="form-control" name="Password2" placeholder="Re-enter Password" onblur="validatePwd()" required>
+              <label for="new_password2">Confirm your password</label>
+              <input type="password" class="form-control" name="new_password2" placeholder="Re-enter Password" onblur="validatePwd()" required>
             </div>
 
-            <button type="submit" class="btn btn-danger col-md-offset-5 col-xs-offset-4">Change</button>
+            <button type="submit" class="btn btn-danger col-md-offset-5 col-xs-offset-4">Update</button>
         </div>
       </form>
       	
