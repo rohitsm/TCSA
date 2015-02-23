@@ -155,8 +155,6 @@ def gdrive_connect():
 			print "credentials.access_token_expired"
 			credentials = refresh_access_token(credentials)
 
-		
-
 		user_info = get_user_info(credentials)
 		# print "\n\nuser_info = ", json.dumps(user_info, indent=4, sort_keys=True)
 		return json.dumps(user_info)
