@@ -43,8 +43,8 @@ def change_pwd():
 				if not form.authenticate(email, old_password):
 					print "form verify = false"
 					# Invalid login. Return error
-					flash("User doesn't exit in records")
-					return redirect(url_for('login'))
+					flash("Incorrect password!")
+					return redirect(url_for('profile'))
 				
 				# Success. User records exist
 				else:
