@@ -11,6 +11,11 @@ def set_pass(password):
 def check_pass(pass_1, pass_2):
 	return check_password_hash(pass_1, pass_2)
 
+def update_password(email, new_pwd):
+	user = User.query.filter_by(email = email).first()
+	user.password = new_pwd
+	db.session.commit()
+	return True
 
 # User record handlers
 def get_user_record(email):
@@ -31,6 +36,11 @@ def set_user_record(email, password, passphrase, pub_key):
 	db.session.commit()
 	print "inside set_user_record: "
 
+def update_password(email, new_pwd):
+	user = User.query.filter_by(email = email).first()
+	user.password = new_pwd
+	db.session.commit()
+	return True
 
 # Access token handlers
 def get_token(email, service):
