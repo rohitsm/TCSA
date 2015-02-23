@@ -59,9 +59,7 @@
         <h3>Hello, {{user}}!</h3>
         <p>The TCSA User Portal</p>
       </div>
-    </div>
-
-    <!-- Flash messages -->
+      <!-- Flash messages -->
       {% with messages = get_flashed_messages() %}
         {% if messages %}
           <div class="alert alert-danger text-center" role="alert">
@@ -72,6 +70,7 @@
           </div>
         {% endif %}
       {% endwith %}
+    </div>
 
     <div class="container">
 
