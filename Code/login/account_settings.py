@@ -44,14 +44,14 @@ def change_pwd():
 					print "form verify = false"
 					# Invalid login. Return error
 					flash("Incorrect password!")
-					return redirect(url_for('profile'))
+					return render_template('changepwd.html', user=session['user'])
 				
 				# Success. User records exist
 				else:
 					if len(new_password1) < 5: # Password length test
 						flash('Password must have minimum 5 characters!')	
 						print "Password must have minimum 5 characters!"
-						return render_template('changepwd.html')
+						return render_template('changepwd.html', user=session['user'])
 
 					if (new_password1 != new_password2): # Password match test
 						flash('Passwords do not match')
