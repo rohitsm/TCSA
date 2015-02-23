@@ -43,7 +43,7 @@
               <span class="caret"></span>          
             </button>
             <ul class="dropdown-menu" role="menu">
-              <li><a href="#">Change password</a></li>
+              <li><a href="{{url_for('profile')}}">Back to Profile</a></li>
               <li><a href="#">Change public key</a></li>
               <li class="divider"></li>
               <li><a href="{{url_for('logout')}}">Sign Out</a></li>
@@ -53,12 +53,11 @@
       </div>
     </nav>
 
-    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <!-- Main jumbotron -->
     <div class="jumbotron">
       <div class="container text-center">
         <h3>Hello, {{user}}!</h3>
         <p>The TCSA User Portal</p>
-        <p><a class="btn btn-danger btn-lg" href="#" onclick="setEmail_ls('{{user}}')" role="button">Install plugin &raquo;</a></p>
       </div>
     </div>
 
@@ -97,7 +96,7 @@
             </div>
 
             <button type="submit" class="btn btn-danger col-md-offset-5 col-xs-offset-4">Update</button>
-        </div>
+		</div>
       </form>
       	
     </div> <!-- /container -->

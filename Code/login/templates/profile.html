@@ -53,7 +53,7 @@
       </div>
     </nav>
 
-    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <!-- Main jumbotron -->
     <div class="jumbotron">
       <div class="container text-center">
         <h3>Hello, {{user}}!</h3>
@@ -67,73 +67,73 @@
       <div class="row">
         <div class="col-md-4">
           <div class="panel panel-primary text-center">
-          <div class="panel-heading">Dropbox
-			  </div>
-			  <div class="panel-body">
-			    {% if db_conn %}
-          <strong>STATUS:</strong> <span class="label label-success">Connected</span>
-			    <br> <br>
-            <a href="{{ url_for('dropbox_disconnect') }}">
-              <img src="../static/images/db_logo.png" alt="Disconnect Dropbox account" method="post" class="img-rounded">
-              <br> <br>
-              Disconnect '{{db_conn}}' account
-            </a>
-          {% else %}
-          <strong>STATUS:</strong> <span class="label label-danger">Not Connected</span>
-          <br><br>
-            <a href="{{ url_for('dropbox_auth_start') }}">
-              <img src="../static/images/db_logo_disconn.png" method="post" class="img-rounded">
-              <br> <br>
-              Connect your Dropbox account here!
-            </a>
-          {% endif %}
-    	  </div>
-			</div>
-      </div>
+            <div class="panel-heading">Dropbox
+            </div>
+    			  <div class="panel-body">
+    			    {% if db_conn %}
+              <strong>STATUS:</strong> <span class="label label-success">Connected</span>
+    			    <br> <br>
+                <a href="{{ url_for('dropbox_disconnect') }}">
+                  <img src="../static/images/db_logo.png" alt="Disconnect Dropbox account" method="post" class="img-rounded">
+                  <br> <br>
+                  Disconnect '{{db_conn}}' account
+                </a>
+              {% else %}
+              <strong>STATUS:</strong> <span class="label label-danger">Not Connected</span>
+              <br><br>
+                <a href="{{ url_for('dropbox_auth_start') }}">
+                  <img src="../static/images/db_logo_disconn.png" method="post" class="img-rounded">
+                  <br> <br>
+                  Connect your Dropbox account here!
+                </a>
+              {% endif %}
+        	  </div>
+          </div>
+        </div>
         <div class="col-md-4">
           <div class="panel panel-info text-center">
-				  <div class="panel-heading">Google Drive
-				</div>
-				<div class="panel-body">
-          {% if gd_conn %}
-          <strong>STATUS:</strong> <span class="label label-success">Connected</span>
-          <br> <br>
-            <a href="{{ url_for('gdrive_disconnect') }}">
-              <img src="../static/images/gd_logo.png" alt="Disconnect Google Drive account" method="post" class="img-rounded">
+  				  <div class="panel-heading">Google Drive
+  				  </div>
+    				<div class="panel-body">
+              {% if gd_conn %}
+              <strong>STATUS:</strong> <span class="label label-success">Connected</span>
               <br> <br>
-              Disconnect '{{gd_conn}}' account
-            </a>
-          {% else %}
-          <strong>STATUS:</strong> <span class="label label-danger">Not Connected</span>
-          <br><br>
-            <a href="{{ url_for('gdrive_auth_start') }}">
-              <img src="../static/images/gd_logo_disconn.png" method="post" class="img-rounded">
-              <br> <br>
-              Connect your Google Drive account here!
-            </a>
-          {% endif %}
-				</div>
-			</div>
-       </div>
+                <a href="{{ url_for('gdrive_disconnect') }}">
+                  <img src="../static/images/gd_logo.png" alt="Disconnect Google Drive account" method="post" class="img-rounded">
+                  <br> <br>
+                  Disconnect '{{gd_conn}}' account
+                </a>
+              {% else %}
+              <strong>STATUS:</strong> <span class="label label-danger">Not Connected</span>
+              <br><br>
+                <a href="{{ url_for('gdrive_auth_start') }}">
+                  <img src="../static/images/gd_logo_disconn.png" method="post" class="img-rounded">
+                  <br> <br>
+                  Connect your Google Drive account here!
+                </a>
+              {% endif %}
+    				</div>
+    			</div>
+        </div>
         <div class="col-md-4">
           <div class="panel panel-primary text-center">
-			  <div class="panel-heading">Dropbox
-			  </div>
-			  <div class="panel-body">
-			    Connect your (Service_Name) account here!
-			    <br>
-			    <!-- <img src="..." alt="..." class="img-rounded"> -->
-			  </div>
-			</div>
+            <div class="panel-heading">Dropbox
+            </div>
+    			  <div class="panel-body">
+    			    Connect your (Service_Name) account here!
+    			    <br>
+    			    <!-- <img src="..." alt="..." class="img-rounded"> -->
+    			  </div>
+    			</div>
         </div>
       </div>
 
     </div> <!-- /container -->
-      <hr>
+    <hr>
 
-      <footer>
-        <p class="text-center">Copyright © 2014 The TCSA Project. All rights reserved.</p>
-      </footer>
+    <footer>
+      <p class="text-center">Copyright © 2014 The TCSA Project. All rights reserved.</p>
+    </footer>
 
 
     <!-- Bootstrap core JavaScript
