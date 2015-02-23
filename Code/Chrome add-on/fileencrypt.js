@@ -9,7 +9,7 @@ var password=localStorage.getItem("password");
 		//file=fileInput.files[0];
 		var fr = new FileReader();
 		var buf;
-		var filename = file.name+'.encrypted';
+		var filename = file.name;
 		
 		var aa = fr.readAsArrayBuffer(file);
 		fr.onloadstart = function(e){
@@ -47,8 +47,7 @@ function encryptFile(blobs,filename){
         		}
         		//alert(contentStr);
         		ciphertext +=Aes.Ctr.encrypt(contentStr, password, 256)+"-";
-				
-
+        		
 				
 			}
 			reader.onloadend=function(e){
@@ -65,10 +64,13 @@ function encryptFile(blobs,filename){
         
 		}
 		else{
-			alert("ended");
+			alert(filename);
+			filename = password.substring(0,10) + filename ; //+ lalalaa :D salting to be done
+        	//filename = Aes.cipher(filename,password);
+   			filename = Aes.Ctr.encrypt(filename, password, 256);
 			var blob = new Blob([ciphertext], { type: 'text/plain' });
-		    //saveAs(blob, filename);
-		    upload(ciphertext, filename);
+		    saveAs(blob, filename);
+		    //upload(ciphertext, filename);
 		    ciphertext="";
 		    next++;
 		    //alert("Calling encrypt");
@@ -88,23 +90,22 @@ function upload (ciphertext, filename) {
       //var blobdata = new FormData();
       //blobdata.append('file', blob);
       //alert(blobdata);
-      { 'filename'
-  		'filecontent'
-  		'user'
-  	}
-      data= { 'foo': ciphertext,
-  			 'bar' : 'bar'}
+     
+      data= { 'filename' : filename,
+  			'file_content': ciphertext
+  			//'user': //to be added when i got username
+  			}
       $.ajax({
         url :  "https://155.69.145.226/testupload",
-        type: 'POST',
+        type: 'GET',
         data: JSON.stringify(data, null, '\t'),
         contentType: 'application/json;charset=UTF-8',
         processData: false,
         success: function(data) {
-          alert("boa!"+data);
+          alert("Successful!");
         },    
         error: function(response,error) {
-          alert("is this error?");
+          alert("ERROR");
         }
       });
 } 

@@ -52,7 +52,7 @@ body{
 	margin-top: 30%;
 	margin-left:21%
 }
-#fileInput{;
+#fileInput{
 	content: 'Select some files';
   	display: inline-block;
   	background: -webkit-linear-gradient(top, #4F628E, #e3e3e3);

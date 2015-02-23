@@ -6,7 +6,6 @@ var password=localStorage.getItem("password");
 var file;
 var newstr='';
 function decryptFileProcess(file){
-	alert("filesplit decrypt");
 	var fr = new FileReader();
 	fr.readAsText(file);
 	
@@ -43,11 +42,15 @@ function decryptFile(e){
 		        }
 
 				var blob = new Blob([contentBytes], { type: 'application/octet-stream' });
-			    console.log(blob.size);
-			    var filename = file.name.replace(/\.encrypted$/,'');
+				var filename = file.name.replace(/\.txt$/,'');
+			    filename= Aes.Ctr.decrypt(filename, password, 256);
+			    //filename = filename.replace(/\.encrypted$/,'');
+			    var removName= filename.substring(0,10);
+			   	filename= filename.replace(removName, '');
 			    saveAs(blob, filename);
 			    plaintext="";
-				console.log(filename);
+			    alert(filename);
+				//alert(filename.toString(CryptoJS.enc.Utf8));
 		}
 				
 }
