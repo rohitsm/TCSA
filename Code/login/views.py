@@ -132,7 +132,7 @@ def routes(app, login_manager):
 
 				# Validates extension of file uploaded; Prompt error if invalid public key
 				if not (fn.filename).endswith('.pub'):
-					flash("Invalid public key. Please upload proper public key")
+					flash('Invalid public key. Please upload proper public key')
 					print "Invalid public key. Please upload proper public key"
 					return render_template('signup.html')
 	
@@ -162,7 +162,7 @@ def routes(app, login_manager):
 			# May be caused by 'os.stat(fn).st_size'
 			print "Woah horsey! You broke something!:  OSError"
 			print str(e)
-			flash("Signup Error")
+			flash('Signup Error')
 			pass
 
 		return render_template('signup.html')
@@ -205,7 +205,7 @@ def routes(app, login_manager):
 					session['email'] = email
 					return render_template('login2.html', email=email)
 			else:
-				flash("Incorrect email/password")
+				flash('Incorrect email/password')
 			
 			# if user doesn't exist in records.
 			flash('No record found. Please signup for a new account.')
@@ -266,7 +266,7 @@ def routes(app, login_manager):
 					flash('Email not found (login2)')
 					return redirect(url_for('login'))
 			else:
-				flash("Email not found (login2)")
+				flash('Email not found (login2)')
 				return redirect(url_for('login'))
 		
 		# GET requests
