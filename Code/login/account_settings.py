@@ -25,7 +25,7 @@ def change_pwd():
 
 	if request.method == 'POST':
 		email = session.get('user')
-		print "account_settings: email from session: ", email
+		print "change_pwd: email from session: ", email
 		if email:			
 			old_password = request.form['old_password']
 			new_password1 = request.form['new_password1']
@@ -43,7 +43,7 @@ def change_pwd():
 				if not form.authenticate(email, old_password):
 					print "form verify = false"
 					# Invalid login. Return error
-					flash("Incorrect password!")
+					flash('Incorrect password!')
 					return render_template('changepwd.html', user=session['user'])
 				
 				# Success. User records exist
@@ -87,10 +87,47 @@ def change_pwd():
 	return render_template('changepwd.html', user=session['user'])
 
 
+@app.route('change-pbkey', methods=['GET', 'POST'])
+def change_pbkey():
+	form = LoginForm_1()
+	print "inside change_pbkey"
 
+	if 'user' not in session:
+		return redirect(url_for('login'))
 
+	if request.method == 'POST':
+		email = session.get('user')
+		print "change_pbkey: email from session: ", email
+		if email:
+			fn = request.files['PB_Key']
 
+			# Validates estension of the file uploaded; Prompt error if invalid public key
+			if not (fn.filename).endswith('.pub'):
+				flash('Invalid public key. Please upload a .pub file')
+				print "Invalid public key. Please upload a .pub file"
+				return render_template('change-pbkey.html', user=session['user'])
+			
+			else:
+				# File contents okay. Read file contents
+				pub_key = fn.read()
 
+				print "Uploaded public key: ", pub_key
+				
+				# Add entry into the DB
+				if(update_pbkey(pub_key)):
+					flash('Public key updated')
+					print "Public key updated"
+					return render_template('change-pbkey.html', user=session['user'])
+				
+				flash('Error! Public key not updated. Try again')
+				print "Error! Public key not updated. Try again"
+				return render_template('change-pbkey.html', user=session['user'])
 
+		else: # email not in session
+			redirect(url_for('login'))
 
+	# GET requests
+	print "GET /change-pbkey"
+	return render_template('change-pbkey.html', user=session['user'])
 
+	
