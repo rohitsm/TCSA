@@ -109,12 +109,12 @@ def change_pbkey():
 			
 			else:
 				# File contents okay. Read file contents
-				pub_key = fn.read()
+				new_pbkey = fn.read()
 
-				print "Uploaded public key: ", pub_key
+				print "Uploaded public key: ", new_pbkey
 				
 				# Add entry into the DB
-				if(update_pbkey(pub_key)):
+				if(update_pbkey(email, new_pbkey)):
 					flash('Public key updated')
 					print "Public key updated"
 					return render_template('change-pbkey.html', user=session['user'])
