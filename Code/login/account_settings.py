@@ -12,7 +12,7 @@ from login import app
 from login import login_manager 
 
 # DB
-from models import update_password, get_user_record, set_pass
+from models import update_password, get_user_record, set_pass, update_pbkey
 from login import db
 
 @app.route('/change-pwd', methods=['GET', 'POST'])
