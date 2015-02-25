@@ -11,8 +11,12 @@ h4#welcome{
 	padding-right: 10px;
 }
 
-h3#page-header{
+h3#page-header {
 	color: #FFF;
 	margin-top: 10px;
 	padding-top: 5px;
+}
+
+a.masthead-brand{
+	color: #FFF
 }
