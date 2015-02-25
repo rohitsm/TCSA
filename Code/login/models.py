@@ -11,9 +11,16 @@ def set_pass(password):
 def check_pass(pass_1, pass_2):
 	return check_password_hash(pass_1, pass_2)
 
+# Account settings handlers
 def update_password(email, new_pwd):
 	user = User.query.filter_by(email = email).first()
 	user.password = new_pwd
+	db.session.commit()
+	return True
+
+def update_pbkey(email, new_pbkey):
+	user = User.query.filter_by(email = email).first()
+	user.pub_key = new_pbkey
 	db.session.commit()
 	return True
 
@@ -72,6 +79,7 @@ def set_token(email, service, access_token):
 		db.session.commit()
 		print "inside set_token: (GDRIVE)"
 		return True
+	
 	return False
 
 # External Wrappers
