@@ -10,6 +10,9 @@ from flask import session, abort
 from flask.ext.login import login_user, logout_user, login_required, current_user
 from forms import SignupForm, LoginForm_1, LoginForm_2
 
+# App
+from login import app
+
 # DB
 from login import db
 from models import User, User_Profile, set_pass
@@ -28,19 +31,16 @@ from account_settings import *
 recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify'
 
 # ReCAPTCHA secret key
-ReCAPTCHA_SECRET_KEY = app.config['ReCAPTCHA_SECRET_KEY']
+RECAPTCHA_SECRET_KEY = app.config['RECAPTCHA_SECRET_KEY']
 
 def verify_captcha(recaptcha_response):
 	res = recaptcha_url + \
-		"?secret=" + ReCAPTCHA_SECRET_KEY + \
+		"?secret=" + RECAPTCHA_SECRET_KEY + \
 		"&response=" + recaptcha_response
 
 	# resp = True|False Type=bool
 	resp = json.load(urllib2.urlopen(res))["success"]
-
-	print "resp[success] = %r" %resp
 	return resp
-
 
 def routes(app, login_manager):
 	login_manager.login_view = 'login'
@@ -94,7 +94,6 @@ def routes(app, login_manager):
 	#		return redirect(url_for('profile'))
 
 		return render_template('login.html')	
-		
 
 	# ================ SIGN UP SECTION ====================== #
 
