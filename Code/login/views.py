@@ -2,6 +2,7 @@
 import cgi
 import os
 import json
+import urllib2
 
 # Flask
 from flask import render_template, flash, redirect, request, url_for
@@ -22,6 +23,24 @@ from gdrive_conn import gdrive_connect
 
 # Additional views
 from account_settings import *
+
+# URL format: recaptcha_url? + secret=your_secret & response=response_string&remoteip=user_ip_address'
+recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify'
+
+# ReCAPTCHA secret key
+ReCAPTCHA_SECRET_KEY = app.config['ReCAPTCHA_SECRET_KEY']
+
+def verify_captcha(recaptcha_response):
+	res = recaptcha_url + \
+		"?secret=" + ReCAPTCHA_SECRET_KEY + \
+		"&response=" + recaptcha_response
+
+	# resp = True|False Type=bool
+	resp = json.load(urllib2.urlopen(res))["success"]
+
+	print "resp[success] = %r" %resp
+	return resp
+
 
 def routes(app, login_manager):
 	login_manager.login_view = 'login'
@@ -87,6 +106,10 @@ def routes(app, login_manager):
 
 				# Get form data
 				print "Inside signup()"
+
+				# ReCAPTCHA Test
+				if not (verify_captcha(request.form['g-recaptcha-response'])):
+					return render_template('signup.html')
 
 				# Get form data
 				email = cgi.escape(request.form['Email'], True).lower()

@@ -20,6 +20,9 @@
     <!-- Custom JS for this template -->
     <script type="text/javascript" src="../static/js/signup.js"></script>
 
+    <!-- RECAPTCHA JS for this template -->
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+
   </head>
 
   <body>
@@ -80,9 +83,13 @@
             </div>
 
             <div class="form-group">
-              <label id="file-upload" for="exampleInputFile">Upload your public key here </label>
-              <input type="file" name="PB_Key" required>
-            </div>            
+              <label id="file-upload" for="PB_Key">Upload your public key here </label>
+              <input type="file"  name="PB_Key" required>
+            </div>        
+
+            <!-- RECAPTCHA -->
+            <div class="g-recaptcha" data-sitekey="6LfCowITAAAAAMJshL909sV3cRZPJ92PQIqNetJN">
+            </div>
 
             <button type="submit" class="btn btn-danger col-md-offset-4 col-xs-offset-4">Submit</button>
         </div>
