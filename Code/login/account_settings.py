@@ -87,7 +87,7 @@ def change_pwd():
 	return render_template('changepwd.html', user=session['user'])
 
 
-@app.route('change-pbkey', methods=['GET', 'POST'])
+@app.route('/change-pbkey', methods=['GET', 'POST'])
 def change_pbkey():
 	form = LoginForm_1()
 	print "inside change_pbkey"
