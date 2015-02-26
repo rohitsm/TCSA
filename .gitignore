@@ -1,7 +1,8 @@
 Code/bin/*
 Code/include/*
 Code/lib/*
-Code/pb_keys/*
+/pb_keys/*
+cloudstag_me_certs/*
 *.Python
 *.pyc
 config.py
