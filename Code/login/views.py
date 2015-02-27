@@ -15,7 +15,7 @@ from login import app
 
 # DB
 from login import db
-from models import User, User_Profile, set_pass
+from models import User, User_Profile, hash_pass
 from models import get_user_record, set_user_record
 
 # Dropbox Connectors
@@ -162,8 +162,8 @@ def routes(app, login_manager):
 					# If everything is okay, hash the password and passphrase, extract the
 					# contents of the public key file and save all three into the database.
 
-					pwd_hash = set_pass(password1)
-					passphrase_hash = set_pass(passphrase1)					
+					pwd_hash = hash_pass(password1)
+					passphrase_hash = hash_pass(passphrase1)					
 
 					# Read public key file contents
 					pub_key = fn.read()

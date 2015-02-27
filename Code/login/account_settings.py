@@ -12,7 +12,7 @@ from login import app
 from login import login_manager 
 
 # DB
-from models import update_password, get_user_record, set_pass, update_pbkey
+from models import set_password, get_user_record, hash_pass, set_pbkey
 from login import db
 
 @app.route('/change-pwd', methods=['GET', 'POST'])
@@ -61,10 +61,10 @@ def change_pwd():
 					else:
 						# If authentication is okay, hash the password and replace the
 						# old password with the new one
-						pwd_hash = set_pass(new_password1)
+						pwd_hash = hash_pass(new_password1)
 
 						# Replace the pwd in DB
-						if(update_password(email, pwd_hash)):
+						if(set_password(email, pwd_hash)):
 							flash('Password changed successfully')
 							print "Password changed successfully"
 							return redirect(url_for('profile'))
@@ -114,7 +114,7 @@ def change_pbkey():
 				print "Uploaded public key: ", new_pbkey
 				
 				# Add entry into the DB
-				if(update_pbkey(email, new_pbkey)):
+				if(set_pbkey(email, new_pbkey)):
 					flash('Public key updated')
 					print "Public key updated"
 					return render_template('change-pbkey.html', user=session['user'])

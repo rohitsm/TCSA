@@ -5,24 +5,30 @@ from sqlalchemy.orm import relationship, backref
 
 
 # Sets salted hash of the password
-def set_pass(password):
+def hash_pass(password):
 	return generate_password_hash(password)
 
 def check_pass(pass_1, pass_2):
 	return check_password_hash(pass_1, pass_2)
 
+
 # Account settings handlers
-def update_password(email, new_pwd):
-	user = User.query.filter_by(email = email).first()
+def set_password(email, new_pwd):
+	user = get_user_record(email)
 	user.password = new_pwd
 	db.session.commit()
 	return True
 
-def update_pbkey(email, new_pbkey):
-	user = User.query.filter_by(email = email).first()
+def set_pbkey(email, new_pbkey):
+	user = get_user_record(email)
 	user.pub_key = new_pbkey
 	db.session.commit()
 	return True
+
+def get_pb_key(email):
+	user = get_user_record(email)
+	return user.pub_key
+
 
 # User record handlers
 def get_user_record(email):
@@ -42,12 +48,6 @@ def set_user_record(email, password, passphrase, pub_key):
 	db.session.add(user)
 	db.session.commit()
 	print "inside set_user_record: "
-
-def update_password(email, new_pwd):
-	user = User.query.filter_by(email = email).first()
-	user.password = new_pwd
-	db.session.commit()
-	return True
 
 # Access token handlers
 def get_token(email, service):
@@ -82,7 +82,7 @@ def set_token(email, service, access_token):
 	
 	return False
 
-# External Wrappers
+# External Wrappers for Tokens
 def get_dropbox_token(email):
 	db_token = get_token(str(email), 'dropbox')
 	print "inside get_dropbox_token: ", db_token
