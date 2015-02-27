@@ -76,9 +76,11 @@ def routes(app, login_manager):
 			user_email = request.json['user_email']
 			
 			# Debug 
+			print "\n==============BEGIN TEST UPLOAD=============="
 			print "filename: ", filename
 			print "file_content", file_content
 			print "user_email", user_email
+			print "\n==============END TEST UPLOAD=============="
 			
 			return json.dumps({'status':'OK','filename':filename, 'file_content':file_content, 'user_email':user_email});
 		else:
