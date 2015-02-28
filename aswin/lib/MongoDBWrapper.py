@@ -4,7 +4,7 @@ import re
 from pymongo import MongoClient
 from DropboxWrapper import DropboxWrapper
 from GoogleDriveWrapper import GoogleDriveWrapper
-
+from Test import Test
 
 import os
 import ConfigParser
@@ -30,28 +30,7 @@ class MongoDBWrapper:
         databaseName=config.get(section, allOptions[0])
         addr        =config.get(section, allOptions[1])
         port        =int(config.get(section, allOptions[2]))
-        #TEMPORARY!!!!
-        #app key, secret key, authToken
-        self.DROPBOX={
-                'aswin.setiadi@gmail.com'     :['wnutjjtdxel1kjd', '8o7lycghr5oyqj8', 'QpgYDBNMAjIAAAAAAAAACzAmq7dm0Cy1W3gvFw1uW7-eFWqNTYHSOBG-7juHmRCM'],
-                'aswin_setiadi@hotmail.com'   :['n9knxl91ajgtr9c', 'fws52sln0heuauy', '6JdVwA4dAh0AAAAAAAAB-U6VBBZ-Iff9YpMmq2kJgGkc6vXxwFIAtF6x-B6wgphj']
-        }
 
-        #TEMPORARY!!!
-        self.GOOGLE_DRIVE={
-                'aswin.setiadi@gmail.com'     :{
-                    'clientID'      : '732832513896-4l3c4s2sddpfm35l752m5p5an6oae2r2.apps.googleusercontent.com',
-                    'clientSecret'  : 'AB3lhPz6ldoSC2EWIrUu1qI0',
-                    'redirectURI'   : 'https://www.example.com/oauth2callback',
-                    "auth_uri"      : "https://accounts.google.com/o/oauth2/auth",
-                    "token_uri"     : "https://accounts.google.com/o/oauth2/token",
-                    "credentials"   : '{"_module": "oauth2client.client", "token_expiry": "2015-01-27T04:01:40Z", "access_token": "ya29.CAGg0i66u2j4P08HE-iH7KcZvPGwhhhiuWuSwBHEetg8l5drBBBIJGDzMej8kUV5_lWqYQP0477Zow", \
-                                      "token_uri": "https://accounts.google.com/o/oauth2/token", "invalid": false, "token_response": {"access_token": "ya29.CAGg0i66u2j4P08HE-iH7KcZvPGwhhhiuWuSwBHEetg8l5drBBBIJGDzMej8kUV5_lWqYQP0477Zow", \
-                                      "token_type": "Bearer", "expires_in": 3600, "refresh_token": "1/xljWdWPUJ0eAGr0CyBt0OXMY5lY2rROOuWIOpliZnlEMEudVrK5jSpoR30zcRFq6"}, \
-                                      "client_id": "732832513896-4l3c4s2sddpfm35l752m5p5an6oae2r2.apps.googleusercontent.com", "id_token": null, "client_secret": "AB3lhPz6ldoSC2EWIrUu1qI0", \
-                                      "revoke_uri": "https://accounts.google.com/o/oauth2/revoke", "_class": "OAuth2Credentials", "refresh_token": "1/xljWdWPUJ0eAGr0CyBt0OXMY5lY2rROOuWIOpliZnlEMEudVrK5jSpoR30zcRFq6", "user_agent": null}'
-                }
-            }
         self.client         = MongoClient(addr, port)
         self.db             = self.client[databaseName]
 
@@ -65,7 +44,6 @@ class MongoDBWrapper:
 
     #upload
     def _uploadDropbox(self, accessToken, filePath, virtualPath):
-        #this object initiation automatically get authToken from ros database in DropboxWrapper class
         wrapper= DropboxWrapper(accessToken)
         wrapper.uploadFile(filePath, virtualPath)
 
@@ -76,10 +54,9 @@ class MongoDBWrapper:
         wrapper= GoogleDriveWrapper(credential)
         fileID=wrapper.uploadFile(filePath=filePath, parent_id=parentID)
         return fileID
-
+    ###################################################################################################################
 
     #get storage size
-
     def _getDropboxRemainingStorage(self, accessToken):
         return DropboxWrapper(accessToken).getDropboxStorageSizeLeft()
 
@@ -88,19 +65,14 @@ class MongoDBWrapper:
 
     def _getGoogleDriveRemainingStorage(self, credentials):
         return GoogleDriveWrapper(credentials).getStorageSizeLeft()
+    ###################################################################################################################
 
-
-    #set existing collection
     def setCollection(self, collectionName):
         self.aCollection    = self.db[collectionName]
 
-    def printActiveCollection(self):
-        print self.aCollection
-
-
-    #private function
+    ###################################################################################################################
+    #internal functions assume access token or credentials are handled by the calling function
     def _getLargestRemainingStorage(self, email):
-        self.setCollection(email)
         storageSizePair={}
         #return a list of 1 element(dictionary), chose dict element called 'storage'
         #will return [{u'type': u'dropbox', u'metadata': []},{u'type': u'googledrive', u'metadata': []}], etc
@@ -108,23 +80,25 @@ class MongoDBWrapper:
         for storage in storageList:
             if storage['type'] == 'dropbox':
                 #ROS function here
-                self.accessToken= self.DROPBOX[email][2]
+                #email from phyu need to compare in session list
+                self.accessToken= Test().getAuthToken(email)
                 storageSizePair['dropbox']=self._getDropboxRemainingStorage(self.accessToken)
             elif storage['type'] == 'box':
                 raise NotImplementedError
             elif storage['type'] == 'googledrive':
                 #ROS server here
-                self.credential= self.GOOGLE_DRIVE[email]['credentials']
+                self.credential= Test().getCredentials(email)
                 storageSizePair['googledrive']=self._getGoogleDriveRemainingStorage(self.credential)
         #itermitems() will generate a set of tuples eg. ('a', 1000), the key argument dictate
         #the function to compare the second value(1000), hence the function x[1]
         #return (key, value) tuple so put [0] to get the storage
         chosenStorage= max(storageSizePair.iteritems(), key= lambda x: x[1])[0]
         print chosenStorage, ' has largest remaining storage.'
+        #choseStorage is a string of either:
+        #dropbox,box, googledrive
         return chosenStorage
 
     def _getAllVirtualPathList(self, email):
-        self.setCollection(email)
         aListOfTuple=[]
         storages=self.aCollection.find(
             {},{'_id':0,'metadata.virtualPath':1, 'type':1}
@@ -134,19 +108,9 @@ class MongoDBWrapper:
                 aListOfTuple.append((path['virtualPath'], storage['type']))
         return aListOfTuple
 
-    def _lastItemCheck(self, lastItem, pointer):
-        #left with last item, could be a file or a folder
-        matchObj=re.match(r'.+(\.).+', lastItem)
-        if matchObj is not None:
-            #its a file, add if there are no duplicate files
-            if lastItem not in pointer.keys():
-                pointer[lastItem]='file'
-        else:
-            #its a folder, add if there are no duplicate folders
-            if lastItem not in pointer.keys():
-                pointer[lastItem]={}
 
     def _replaceVirtualOldPath(self, email, newVirtualPath, chosenStorage=None, newRecord=None):
+        #if newRecord arg is provided, it means the calling method wants to store a file in googledrive
         """
         NOTE: new file/folder must not be in root
         replace parent path record with this new record
@@ -170,7 +134,7 @@ class MongoDBWrapper:
         #check if parent path exist
         for virtualPathItem in aListOfTuple:
             if virtualPathItem[0] == path:
-                #path exist for folder to be created
+                #path exist for folder/file to be created
                 ########################################################################
                 exist= True
 
@@ -200,17 +164,19 @@ class MongoDBWrapper:
                             }
                         }
                     )
-                print 'db updated.'
+                #print 'a record has been updated.'
                 break
                 ########################################################################
 
-        #parentPath does not exist
+        #parentPath does not exist, add this newVirtualPath to database
         if not exist:
             if chosenStorage is None:
-                #storing folder in any storage
+                #this can only mean the calling method intends to store new folderPath record, which can be inserted
+                #in any storage, thus chosenStorage arg is not provided
                 chosenStorage=self._getLargestRemainingStorage(email)
             if newRecord is None:
-                #storing folder in any storage OR storing file in dropbox if chosenStorage is not None
+                #this can only mean the calling method intends to store new folder record OR
+                #dropbox file record with chosenStorage as dropbox
                 newRecord={
                     'virtualPath':newVirtualPath
                 }
@@ -218,36 +184,15 @@ class MongoDBWrapper:
                 {'type':chosenStorage},
                 {'$push':{'metadata':newRecord}}
             )
-            print 'db updated'
+            #print 'db updated'
 
 
 
-    def _removePath(self, email, storage, path):
+    #public function
+    ###################################################################################################################
+    def addAccount(self, email):
         self.setCollection(email)
-
-        test= self.aCollection.update(
-            #if this empty, can only update first storagerecord type and will wipe
-            #all entry in that storage according to the parameter
-            {'type':storage},
-            {
-                '$pull':{
-                    'metadata':{
-                        'virtualPath':path
-                    }
-                }
-            }
-        )
-        '''
-        newRecord={'virtualPath':'/parent/path'}
-        self.aCollection.update(
-            {'type':storage},
-            {'$push':{'metadata':newRecord}}
-        )
-        '''
-
-    #utility function
-    def addAccount(self, collectionName):
-        self.setCollection(collectionName)
+        #we need placeholder cause mongodb won't create a collection until there is a record added to it
         placeHolder= {
             'placeholder'           :'placeholder'
 
@@ -270,13 +215,14 @@ class MongoDBWrapper:
         }
         if storagetype=='googledrive':
             #ROSS storage here
-            self.credential= self.GOOGLE_DRIVE[email]['credentials']
+            self.credential= Test.getCredentials(email)
             #all files that is going to gDrive will be stored in same folder, TCSA
             #gDrive handle file naming with id instead of original name, so same files can exist
             #but can uniquely identifiable
             folderMetaData=GoogleDriveWrapper(self.credential).createTCSAFolder()
-            print folderMetaData['id']
+            #print folderMetaData['id']
             newStorageRecord['rootID']=folderMetaData['id']
+
 
         docID= self.aCollection.insert(newStorageRecord)
         print docID
@@ -287,11 +233,10 @@ class MongoDBWrapper:
 
     def upload(self, email, virtualPath, fileLocation):
         self.setCollection(email)
-        fileSize= os.stat(fileLocation).st_size
+        fileSize     = os.stat(fileLocation).st_size
         #print "file size: ",fileSize, " bytes"
-        #cos of (group), the / will reach till just before last part of the path
-        filename= re.match(r".*/(.*)", fileLocation).group(1)
-
+        #cos of greedy first .*, the / will reach till just before last part of the path
+        filename     = re.match(r".*/(.*)", fileLocation).group(1)
 
         chosenStorage=self._getLargestRemainingStorage(email)
         if chosenStorage == 'dropbox':
@@ -359,31 +304,41 @@ class MongoDBWrapper:
         self.client.disconnect()
 
     def getFolderTree(self,email):
+        self.setCollection(email)
         folderTree={'root':{}}
 
-        aList=self._getAllVirtualPathList(email)
-
-        for aPath in aList:
+        virtualPathList=self._getAllVirtualPathList(email)
+        #apath -> tuple(virtualPath, storageType)
+        for aPath in virtualPathList:
             pointer=folderTree['root']
+            #index 0 will be empty string infront '/'
             splittedPath=aPath[0].split('/')[1:]
 
-            #item(file/folder) inside root folder
-            if len(splittedPath)==1:
-                self._lastItemCheck(splittedPath[-1], pointer)
-            else:
-
+            if len(splittedPath)!=1:
+                #this virtualPath can not be either a file or a folder in root
                 for i in range(0, len(splittedPath)-1):
-                    #folder ald exist
+                    #for each folder in the splittedPath
                     if splittedPath[i] in pointer.keys():
+                            #folder ald exist
                             pointer=pointer[splittedPath[i]]
                     else:
-                    #folder not exist yet
+                    #folder/file not exist yet
                             pointer[splittedPath[i]]={}
                             pointer=pointer[splittedPath[i]]
 
-                self._lastItemCheck(splittedPath[-1], pointer)
-        pprint.pprint(folderTree)
+            #left with last part of the path, could be a file or a folder
+            matchObj=re.match(r'.+(\.).+', lastItem)
+            if matchObj is not None:
+                #its a file, add if there is no existing record of it
+                if splittedPath[-1] not in pointer.keys():
+                    pointer[splittedPath[-1]]='file'
+            else:
+                #its a folder, add if there is no existing record of it
+                if splittedPath[-1] not in pointer.keys():
+                    pointer[splittedPath[-1]]={}
 
+        return folderTree
+        #pprint.pprint(folderTree)
         self.client.disconnect()
 
     def delFile(self, email, virtualPath):
@@ -503,6 +458,32 @@ class MongoDBWrapper:
             {'_id':1}
         )
         return txt[0]['_id']
+
+    #experiment function
+    ###################################################################################################################
+    def _removePath(self, email, storage, path):
+        self.setCollection(email)
+
+        test= self.aCollection.update(
+            #if this empty, can only update first storagerecord type and will wipe
+            #all entry in that storage according to the parameter
+            {'type':storage},
+            {
+                '$pull':{
+                    'metadata':{
+                        'virtualPath':path
+                    }
+                }
+            }
+        )
+        '''
+        newRecord={'virtualPath':'/parent/path'}
+        self.aCollection.update(
+            {'type':storage},
+            {'$push':{'metadata':newRecord}}
+        )
+        '''
+
 
 if __name__ == '__main__':
     #only call these lines when this file is ran

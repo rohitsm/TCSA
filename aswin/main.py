@@ -99,8 +99,6 @@ class Main:
         #t='/as'
         #m=re.match(r'/as$', t)
         #print m.group()
-        test=1^20
-        print test
         while not self.exit:
             #test= DropboxWrapper("asetiadi", 'aswin_setiadi@hotmail.com')
             #test.getAuthTokenFromXML('files/authList.xml')

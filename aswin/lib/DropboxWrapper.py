@@ -23,6 +23,7 @@ class DropboxWrapper:
     def uploadFile(self, filePath, virtualPath):
         #assume filePath contain filename, virtualPath does not
         matchObj= re.match(r".*/(.*)", filePath)
+        filename='/'+matchObj.group(1)
         f           = open(filePath, 'rb')
         #argument for filePath and storagePath is the same
         #so no problem with saving filenames with same name in dropbox because
@@ -31,7 +32,8 @@ class DropboxWrapper:
         #saving to dropbox folder can don't have initial /
         #eg saving in /animal/monkey.pdf just write animal/monkey.pdf
         #works for both uploading and downloading
-        response    = self.client.put_file(virtualPath+'/'+matchObj.group(1), f)
+        #but try to use it constantly
+        response    = self.client.put_file(virtualPath+filename, f)
         f.close()
 
     def downloadFile(self, saveLocation, storagePath):
@@ -39,11 +41,11 @@ class DropboxWrapper:
         #this will extract the filename from storagePath
         #.* is greedy in nature, so it will cut at last /
         matchObj= re.match(r".*/(.*)", storagePath)
-        out         = open(saveLocation+'/'+matchObj.group(1), 'wb')
+        fileName= '/'+matchObj.group(1)
+
+        out         = open(saveLocation+fileName, 'wb')
         out.write(f.read())
         out.close()
-        print "downloaded, metadata:/n"
-        pprint.pprint(metadata)
 
     def deleteFile(self, filePath):
         '''
