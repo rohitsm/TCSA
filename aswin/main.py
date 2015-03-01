@@ -1,4 +1,5 @@
 from lib.MongoDBWrapper import MongoDBWrapper
+import pprint
 import os
 
 class Main:
@@ -43,13 +44,20 @@ class Main:
                                    "choose 1-3 to add storage for account %s: " % (email)))
         MongoDBWrapper().addStorage(self.storageType[storage], email)
 
-    #arg: email, folder path in TCSA
     def upload(self):
+        '''
+        test case:
+        gdrive:
+        1) /furniture
+
+        2)upload /furniture/table.jpg to dropbox
+        1 is removed, 2 added in dropbox
+        '''
         email           ='aswin.setiadi@gmail.com'
         #to upload file in root folder, pass ''
         #below example means uploading file monkey.jpg to TCSA at /images folder
-        virtualPath     ='/images'
-        fileLocation    ='files/monkey.jpg'
+        virtualPath     ='/furniture/chair/chair'
+        fileLocation    ='files/table.jpg'
         MongoDBWrapper().upload(email, virtualPath, fileLocation)
         print 'file stored in online storage. destroying local copy..'
         os.remove(fileLocation)
@@ -67,7 +75,7 @@ class Main:
     #arg: email
     def getfoldertree(self):
         email='aswin.setiadi@gmail.com'
-        MongoDBWrapper().getFolderTree(email)
+        pprint.pprint(MongoDBWrapper().getFolderTree(email))
 
     #arg: email, file path in tcsa
     def deleteFile(self):
@@ -132,8 +140,10 @@ class Main:
             else:
                 print "please enter 1-10 only!!!"
 
-test=Main()
-test.start()
+if __name__=='__main__':
+
+    test=Main()
+    test.start()
 '''
 s=slurpy.Slurpy()
 s.register(os)

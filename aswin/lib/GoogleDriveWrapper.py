@@ -73,7 +73,7 @@ class GoogleDriveWrapper:
             if download_url:
                 resp, content= self.driveService._http.request(download_url)
                 if resp.status == 200:
-                    print 'status : %s' % resp
+                    #print 'status : %s' % resp
                     out = open(saveLocation+'/'+file['title'], 'wb')
                     out.write(content)
                     out.close()
