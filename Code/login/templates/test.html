@@ -16,9 +16,6 @@
     <!-- Custom styles for this template -->
     <link href="../static/css/login.css" rel="stylesheet">
 
-    <script>
-      var message = {{message}};
-    </script>
     
   </head>
 
@@ -43,7 +40,7 @@
 
           <div>
             <!-- Call corresponding form action here -->
-            <form class="form-signin" role="form" method="POST" action="/login1">
+            <form class="form-signin" type="submit" id="login_form" role="form" method="POST" action="/testajax">
 
               <h2 class="form-signin-heading">Please sign in</h2>
               
@@ -57,7 +54,7 @@
               
               
               <div class="col-sm-6 col-xs-12" id="btns">
-                <button type="submit" id="Submit" name="Submit" class="btn-block btn-primary btn">Sign In</button>
+                <button type="submit" id="Submit2" name="Submit2" class="btn-block btn-primary btn">Sign In</button>
               </div>
               <div class="col-sm-6 col-sm-6" id="btns">
                 <button type="submit" class="btn-block btn-default btn">Forgot Password</button>
