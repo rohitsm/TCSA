@@ -47,7 +47,7 @@ body {
   /*-webkit-background-size: cover;*/
 
   background-size: cover;
-  background-repeat: no-repeat;
+  /*background-repeat: no-repeat;*/
 
 }
 body {
@@ -185,7 +185,7 @@ body {
 }
 
 div#btns{
-  padding-top: 20px;
+  padding: 10px;
 }
 /*
  * Footer
@@ -193,9 +193,10 @@ div#btns{
 
 /* Custom page footer */
 .footer {
-  position: fixed;
+  position: absolute;
   padding-top: 19px;
   color: #777;
+  width: 100%;
   border-top: 1px solid #e5e5e5;
 }
 .mastfoot {
