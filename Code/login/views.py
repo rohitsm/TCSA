@@ -26,6 +26,7 @@ from gdrive_conn import gdrive_connect
 
 # Additional views
 from account_settings import *
+from test_routes import *
 
 # URL format: recaptcha_url? + secret=your_secret & response=response_string&remoteip=user_ip_address'
 recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify'
@@ -58,34 +59,6 @@ def routes(app, login_manager):
 			return redirect(url_for('profile'))	
 		
 		return render_template('index.html')
-
-	# To test DB connection
-	@app.route('/testdb')
-	def testdb():
-		if db.session.query("1").from_statement("SELECT 1").all():
-			return "Works"
-		else:
-			return "Not Working"
-
-	@app.route('/testupload', methods=['GET', 'POST'])
-	def testupload():
-		
-		if request.method == 'POST':
-			filename =  request.json['filename']
-			file_content = request.json['file_content']
-			user_email = request.json['user_email']
-			
-			# Debug 
-			print "\n==============BEGIN TEST UPLOAD=============="
-			print "filename: ", filename
-			print "file_content", file_content
-			print "user_email", user_email
-			print "\n==============END TEST UPLOAD=============="
-			
-			return json.dumps({'status':'OK','filename':filename, 'file_content':file_content, 'user_email':user_email});
-		else:
-			print"GET Request"
-			return render_template('signup.html')
 
 	@app.route('/login', methods=['GET', 'POST'])
 	@app.route('/signin', methods=['GET', 'POST'])
