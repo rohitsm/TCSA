@@ -1,7 +1,7 @@
 from login import db
 from werkzeug import generate_password_hash, check_password_hash
 from sqlalchemy import Table, Column, String, ForeignKey, BLOB
-from sqlalchemy.form import relationship, backref
+from sqlalchemy.orm import relationship, backref
 
 
 # Sets salted hash of the password
