@@ -541,14 +541,11 @@ class MongoDBWrapper:
         #   print t[i]
         #experiment
         self.setCollection(email)
-
-
-
         aList=[
             #delete red folder only in /fruit folder
             ('/fruit/re', 'googledrive'),
             ('/fruit/redd', 'googledrive'),
-            ('/fruit/red', 'googledrive'),
+            #('/fruit/red', 'googledrive'),
             ('/fruit/red/apple.jpg', 'googledrive'),
             ('/fruit/red/lightred/guava.jpg', 'googledrive'),
             ('/fruit/orange/oranges.jpg', 'dropbox'),
@@ -563,6 +560,7 @@ class MongoDBWrapper:
             ('/utensil/steel/fork.jpg', 'dropbox'),
             ('/steel/knife.jpg', 'dropbox')
         ]
+        print len(aList)
         parentFolder= re.match(r'(.*)/[^/]+$', folderPath).group(1)
         print parentFolder
         if parentFolder=="":
@@ -592,7 +590,6 @@ class MongoDBWrapper:
                 try:
                     reObj= re.match(r'^%s($|/.+)' % parentFolder, aList[i][0])
                 except IndexError as e:
-
                     print i
 
                 if reObj is not None:
@@ -605,15 +602,14 @@ class MongoDBWrapper:
                         #this item contain parent folder but not folder to be deleted
                         bList.append(aList[i])
             #now bList contain all virtualPath that contain parentFolder without folder to be deleted
-            if bList:
-                #bList not empty can only mean there is another record keeping parentPath history, so return
-                return
-            else:
-                #no record to keep, must add a parentFolder record to the database
+            if not bList:
+                #bList is empty can only mean there is no other record keeping parentPath history
+                #must add a parentFolder record to the database
                 s=self._getAnyStorage()
                 aList.append((parentFolder, s))
 
         pprint.pprint(aList)
+        print len(aList)
 
 
 
@@ -672,4 +668,4 @@ if __name__ == '__main__':
     #                 '/images/monkey.jpg',
     #                 'C:/Users/aswin/Downloads')
     #mongodb._removePath('aswin.setiadi@gmail.com', 'googledrive', '/fruits/orange/orange.jpg')
-    #mongodb.deleteFolder('aswin.setiadi@gmail.com', '/utensil/steel')
+    mongodb.deleteFolder('aswin.setiadi@gmail.com', '/fruit/red')
