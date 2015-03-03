@@ -45,6 +45,7 @@ class DropboxWrapper:
 
         out         = open(saveLocation+fileName, 'wb')
         out.write(f.read())
+        f.close()
         out.close()
 
     def deleteFile(self, filePath):

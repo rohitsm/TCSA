@@ -17,7 +17,8 @@ class Main:
             7:self.createFolder,
             8:self.deleteFolder,
             9:self.renameFolder,
-            10:self.doexit
+            10:self.renameFile,
+            11:self.doexit
         }
 
         self.storageType = {
@@ -56,11 +57,12 @@ class Main:
         email           ='aswin.setiadi@gmail.com'
         #to upload file in root folder, pass ''
         #below example means uploading file monkey.jpg to TCSA at /images folder
-        virtualPath     ='/furniture/chair/chair'
-        fileLocation    ='files/table.jpg'
+        virtualPath     ='/fruits/orange'
+        fileLocation    ='files/orange.jpg'
         MongoDBWrapper().upload(email, virtualPath, fileLocation)
         print 'file stored in online storage. destroying local copy..'
-        os.remove(fileLocation)
+        #todo
+        #os.remove(fileLocation)
         print 'local copy destroyed'
 
     #arg: email, file path in tcsa, save path(must be full path!!)
@@ -80,7 +82,7 @@ class Main:
     #arg: email, file path in tcsa
     def deleteFile(self):
         email='aswin.setiadi@gmail.com'
-        virtualPath='/furniture/chair/chair/chair.jpg'
+        virtualPath='/images/images/monkey.jpg'
         MongoDBWrapper().delFile(email, virtualPath)
 
 
@@ -88,7 +90,7 @@ class Main:
     def createFolder(self):
         #to create folder in root folder, pass''
         email       ='aswin.setiadi@gmail.com'
-        virtualPath ='/files/animal/primate'
+        virtualPath ='/fruits/orange'
         MongoDBWrapper().createFolder(email, virtualPath)
 
 
@@ -96,6 +98,9 @@ class Main:
         pass
 
     def renameFolder(self):
+        pass
+
+    def renameFile(self):
         pass
 
     def doexit(self):
@@ -131,7 +136,8 @@ class Main:
                                 "7. createfolder\n"
                                 "8. deletefolder\n"
                                 "9. renamefolder\n"
-                                "10. exit\n"
+                                "10. renamefile\n"
+                                "11. exit\n"
                                 "enter 1-10:"
                                 ))
             if choice in self.selection.keys():
