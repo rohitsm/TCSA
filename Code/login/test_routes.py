@@ -33,11 +33,11 @@ def testajax():
 		print "AJAX email:", email
 		print "AJAX password: ", password
 
-		return json.dumps({'status':'OK','email':email, 'password':password})
+		# return json.dumps({'status':'OK','email':email, 'password':password})
+		return render_template('profile.html')
 	
 	# GET Request
 	return render_template('test.html')
-
 
 
 @app.route('/testupload', methods=['GET', 'POST'])
@@ -59,3 +59,4 @@ def testupload():
 	else:
 		print"GET Request"
 		return render_template('signup.html')
+
