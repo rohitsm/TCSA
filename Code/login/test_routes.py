@@ -15,7 +15,7 @@ from flask import render_template, flash, redirect, request, url_for
 from flask import session, abort
 from flask.ext.login import login_user, logout_user, login_required, current_user
 
-# CORS
+# CORS - Cross-Origin Resource Sharing
 from flask.ext.cors import CORS, cross_origin
 
 # To test DB connection
