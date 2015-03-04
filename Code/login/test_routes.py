@@ -15,6 +15,9 @@ from flask import render_template, flash, redirect, request, url_for
 from flask import session, abort
 from flask.ext.login import login_user, logout_user, login_required, current_user
 
+# CORS
+from flask.ext.cors import CORS, cross_origin
+
 # To test DB connection
 @app.route('/testdb')
 def testdb():
@@ -24,17 +27,37 @@ def testdb():
 		return "Not Working"
 
 @app.route('/testajax', methods=['GET', 'POST'])
+@cross_origin()
 def testajax():
 	
 	if request.method == 'POST':
 		email = cgi.escape(request.form['Email'], True).lower()
 		password = request.form['Password']
 
+		# DEBUG
 		print "AJAX email:", email
 		print "AJAX password: ", password
 
-		# return json.dumps({'status':'OK','email':email, 'password':password})
-		return render_template('profile.html')
+		return json.dumps({'status':'OK','email':email})
+		# return render_template('profile.html')
+	
+	# GET Request
+	return render_template('test.html')
+
+@app.route('/testajax2', methods=['GET', 'POST'])
+@cross_origin()
+def testajax2():
+	
+	if request.method == 'POST':
+		email = cgi.escape(request.form['Email'], True).lower()
+		passphrase = request.form['Passphrase']
+
+		# DEBUG
+		print "AJAX email_2:", email
+		print "AJAX passphrase_2: ", passphrase
+
+		return json.dumps({'status':'OK','email':email})
+		# return render_template('profile.html')
 	
 	# GET Request
 	return render_template('test.html')

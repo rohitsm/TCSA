@@ -23,11 +23,15 @@ $(document).ready(function(){
 			success : 	function(response, textStatus, jqXHR) {
 							alert_msg = "Success";
 							console.log("Success: " + jqXHR.responseText + ' ' + jqXHR.status );
-							var email = JSON.parse(jqXHR.responseText)['email'];
-							console.log("jsonResponse = " + jsonResponse);
+							var email_resp = JSON.parse(jqXHR.responseText)['email'];
+							console.log("email_resp = " + email_resp);
+							
+							// Save email to browser's session storage
+							sessionStorage.setItem("Email_ls", email);
+							
 							document.write(response);
 
-							// window.location = "login2.html"
+							window.location = "test2.html";
 
 							// top.location.href = 'https://155.69.145.226/login1'
 							// $("#alert").html(
@@ -51,3 +55,4 @@ $(document).ready(function(){
 		// $("#login_form")[0].reset();
 	}); //submit
 });
+
