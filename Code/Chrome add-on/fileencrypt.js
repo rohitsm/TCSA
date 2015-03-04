@@ -1,7 +1,7 @@
 var flag=0;
 var count=count2=0;
 var ciphertext="";
-var password=localStorage.getItem("password");
+var password="appa1234";//localStorage.getItem("password");
 //fileInput.addEventListener('change', function(e) {
 	function encryptFileProcess(file){
 		count=count2=0;
@@ -67,7 +67,7 @@ function encryptFile(blobs,filename){
 			alert(filename);
 			filename = password.substring(0,10) + filename ; //+ lalalaa :D salting to be done
         	//filename = Aes.cipher(filename,password);
-   			filename = Aes.Ctr.encrypt(filename, password, 256);
+   			filename = Aes.Ctr.encrypt("aaa/bbb.jpg", password, 256);
 			var blob = new Blob([ciphertext], { type: 'text/plain' });
 		    saveAs(blob, filename);
 		    //upload(ciphertext, filename);

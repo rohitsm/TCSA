@@ -1,0 +1,45 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+		<link href="css/jquery.contextMenu.css" rel="stylesheet" type="text/css" />
+	</head>
+	<body>
+		<div class="contextMenuField"> Cccccccdddeee 
+			hello world
+			<div id="status"> </div>
+			<button id="newFolder">New Folder</button>
+		</div>
+	<script src="http://code.jquery.com/jquery-latest.min.js"> </script>
+	<script src="js/jquery.ui.position.js" ></script>
+    <script src="js/jquery.contextMenu.js" ></script>
+	<script src="js/TreeModel-min.js"></script>
+	<script src="js/metadata.js"></script>
+
+	<script type="text/javascript" class="showcase">
+	$(function(){
+	    $.contextMenu({
+	        selector: '.contextMenuField', 
+	        callback: function(key, options) {
+	            var m = "clicked: " + key;
+	            if(key==="delete"){
+	            	alert("detlete");
+	            }
+	            //window.console && console.log(m) || alert(m); 
+	        },
+	        items: {
+	            "delete": {name: "Delete", icon: "delete"},
+	            "sep1": "---------",
+	            "newFolder": { name: "New Folder", icon: "Folder"},
+	            "quit": {name: "Quit", icon: "quit"}
+	        }
+	    });
+	    
+	    $('.contextMenuField').on('click', function(e){
+	    	alert("lololo");
+	        console.log('clicked', this);
+	    })
+	});
+    </script>
+
+	</body>
+</html>

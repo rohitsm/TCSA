@@ -2,7 +2,7 @@ var blobs = [];
 var count=count2=0;
 var plaintext="";
 var contentBytes=[];
-var password=localStorage.getItem("password");
+var password="appa1234";//localStorage.getItem("password");
 var file;
 var newstr='';
 function decryptFileProcess(file){
@@ -44,6 +44,7 @@ function decryptFile(e){
 				var blob = new Blob([contentBytes], { type: 'application/octet-stream' });
 				var filename = file.name.replace(/\.txt$/,'');
 			    filename= Aes.Ctr.decrypt(filename, password, 256);
+			    alert(filename);
 			    //filename = filename.replace(/\.encrypted$/,'');
 			    var removName= filename.substring(0,10);
 			   	filename= filename.replace(removName, '');

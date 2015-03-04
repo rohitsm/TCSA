@@ -3,6 +3,7 @@ var previous=1;
 $(document).ready(function(){
 	$("#fileRegion").hide();
 	$("#upload").click(function(){
+		//window.location="filedisplay.html";
 		$("#download").hide();
 		$("#fileRegion").show();
 		var fileInput=document.getElementById("fileInput");
@@ -18,7 +19,6 @@ $(document).ready(function(){
 				
 			}*/
 			file=fileInput.files;
-
 		});
 		encrypt.addEventListener('click',function(e){
 
