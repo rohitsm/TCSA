@@ -1,6 +1,7 @@
 from lib.MongoDBWrapper import MongoDBWrapper
 import pprint
 import os
+import re
 
 class Main:
 
@@ -68,7 +69,7 @@ class Main:
     #arg: email, file path in tcsa, save path(must be full path!!)
     def download(self):
         email           ='aswin.setiadi@gmail.com'
-        virtualPath     ='/movies/comedy/monkey.jpg'
+        virtualPath     ='/fruits/orange/orange.jpg'
         saveLocation    ='C:/Users/aswin/Downloads'
         MongoDBWrapper().download(email, virtualPath, saveLocation)
 
@@ -82,7 +83,7 @@ class Main:
     #arg: email, file path in tcsa
     def deleteFile(self):
         email='aswin.setiadi@gmail.com'
-        virtualPath='/images/images/monkey.jpg'
+        virtualPath='/furniture/chair/chair.jpg'
         MongoDBWrapper().delFile(email, virtualPath)
 
 
@@ -90,11 +91,14 @@ class Main:
     def createFolder(self):
         #to create folder in root folder, pass''
         email       ='aswin.setiadi@gmail.com'
-        virtualPath ='/fruits/orange'
+        virtualPath ='/image/img'
         MongoDBWrapper().createFolder(email, virtualPath)
 
 
     def deleteFolder(self):
+        email='aswin.setiadi@gmail.com'
+        folderPath='/furniture/chair'
+        MongoDBWrapper().deleteFolder(email, folderPath)
         pass
 
     def renameFolder(self):
@@ -147,7 +151,26 @@ class Main:
                 print "please enter 1-10 only!!!"
 
 if __name__=='__main__':
-
+    '''
+    root=["/aswin//setiadi","/aswin/setiadi/img.jpg","/aswin/setiadi.jpg","/aswin/.setiadi","/aswin/setiadi", "/aswin", "/aswinn/l"]
+    path2=["/name/aswin/setiadi.jpg","/name/aswin/setiadi", "/name/aswin", "/name/aswinn"]
+    path3=["/name/aswin/setiadi.jpg","/name/aswin/setiadi", "/name/aswin", "/namee/aswinn"]
+    folder="/aswin"
+    folder2="/name/aswin"
+    folder3="/name/aswin"
+    for item in root:
+        #parent folder, folder, file
+        reObj=re.match(r'(^%s$)|(^%s/.*/(\.?[^/\.]+$))|(^%s/.*/([^/]+\.[^/]+)$)' % (folder,folder,folder), item)
+        if reObj is not None:
+            #item containt folder path
+            print "[%s]"%reObj.group(1)
+            print "[%s]"%reObj.group(3)
+            print "[%s]"%reObj.group(5)
+            print "#####################"
+        else:
+            print "[%s]"%item
+            print "$$$$$$$$$$$$$$$$$$$$$"
+    '''
     test=Main()
     test.start()
 '''

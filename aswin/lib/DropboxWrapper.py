@@ -3,6 +3,7 @@ __author__ = 'aswin'
 import dropbox
 import pprint
 import re
+from Test import Test
 
 class DropboxWrapper:
 
@@ -50,6 +51,7 @@ class DropboxWrapper:
 
     def deleteFile(self, filePath):
         '''
+        deleting non-existent file/folder will raise an error
         sample response from file_delete(path)
         {
             "size": "0 bytes",
@@ -69,7 +71,9 @@ class DropboxWrapper:
         response=self.client.file_delete(filePath)
         return response
 
-
+if __name__=='__main__':
+    d= DropboxWrapper(Test().getAuthToken('aswin.setiadi@gmail.com'))
+    d.deleteFile('/fruits/orange')
 """
 aswin= DropboxWrapper('aswin.setiadi@gmail.com')
 aswin.initClient()
