@@ -12,6 +12,7 @@ pip install flask-sqlalchemy
 pip install MySQL-python
 pip install Flask-Admin
 pip install Flask-Login
+pip install flask-cors
 
 # Third party packages
 pip install dropbox

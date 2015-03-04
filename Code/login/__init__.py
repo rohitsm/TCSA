@@ -6,6 +6,9 @@ from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager
 
+# CORS
+from flask.ext.cors import CORS, cross_origin
+
 app = Flask(__name__, static_url_path='/static')
 
 # Load config file
@@ -13,6 +16,9 @@ app.config.from_object('config')
 
 # Connect to MySQL with the defaults
 db = SQLAlchemy(app)
+
+# Flask-CORS
+cors = CORS(app)
 
 # Flask-Login
 login_manager = LoginManager()
