@@ -8,8 +8,9 @@ from Test import Test
 import os
 import ConfigParser
 
+#ross library
 from login.dropbox_conn import get_dropbox_access_token
-
+from login.gdrive_conn import get_gdrive_refresh_token
 class MongoDBWrapper:
     """
     This class handle communication between the python program and the mongodb
@@ -42,10 +43,12 @@ class MongoDBWrapper:
 
 
     ###################################################################################################################
-    def _getAccessToken(self):
+    def _getAccessToken(self, email):
+        return Test().getAuthToken(email)
         pass
 
-    def _getCredential(self):
+    def _getCredential(self, email):
+        return Test().getCredentials(email)
         pass
 
     ###################################################################################################################
@@ -73,13 +76,14 @@ class MongoDBWrapper:
             if storage['type'] == 'dropbox':
                 #ROS function here
                 #email from phyu need to compare in session list
-                self.accessToken= Test().getAuthToken(email)
+                #inside ross dropbox_conn implemented session checking
+                self.accessToken= self._getAccessToken(email)
                 storageSizePair['dropbox']=self._getDropboxRemainingStorage(self.accessToken)
             elif storage['type'] == 'box':
                 raise NotImplementedError
             elif storage['type'] == 'googledrive':
                 #ROS server here
-                self.credential= Test().getCredentials(email)
+                self.credential= self._getCredential(email)
                 storageSizePair['googledrive']=self._getGoogleDriveRemainingStorage(self.credential)
         #itermitems() will generate a set of tuples eg. ('a', 1000), the key argument dictate
         #the function to compare the second value(1000), hence the function x[1]
@@ -308,7 +312,7 @@ class MongoDBWrapper:
         }
         if storagetype=='googledrive':
             #ROSS storage here
-            self.credential= Test().getCredentials(email)
+            self.credential= self._getCredential(email)
             #all files that is going to gDrive will be stored in same folder, TCSA
             #gDrive handle file naming with id instead of original name, so same files can exist
             #but can uniquely identifiable
@@ -408,7 +412,7 @@ class MongoDBWrapper:
                 #call respective storage api
                 if eachStorage['type']=='dropbox':
                     #call ross func
-                    self.accessToken=Test().getAuthToken(email)
+                    self.accessToken=self._getAccessToken(email)
                     wrapper=DropboxWrapper(self.accessToken)
                     wrapper.downloadFile(savePath, virtualPath)
                 elif eachStorage['type']=='box':
@@ -417,7 +421,7 @@ class MongoDBWrapper:
                 elif eachStorage['type']=='googledrive':
                     fileID=eachStorage['metadata'][0]['fileID']
                     #call ross func to get crendentials
-                    self.credential=Test().getCredentials(email)
+                    self.credential=self._getCredential(email)
                     wrapper=GoogleDriveWrapper(self.credential)
                     wrapper.downloadFile(fileID, savePath)
                 break
@@ -502,12 +506,12 @@ class MongoDBWrapper:
 
         if virtualPathStorage=='dropbox':
             #ros function here
-            self.accessToken=Test().getAuthToken(email)
+            self.accessToken=self._getAccessToken(email)
             wrapper=DropboxWrapper(self.accessToken)
             wrapper.deleteFile(virtualPath)
         elif virtualPathStorage=='googledrive':
             #ros function here
-            self.credential=Test().getCredentials(email)
+            self.credential=self._getCredential(email)
 
             #find file fileID
             #storage is pymongo cursor object, put [0] will become record object/ dictionary
@@ -626,7 +630,7 @@ class MongoDBWrapper:
                         if not existInDropbox:
                             #delete this folder along with subfolder/files recurseively in user's dropbox storage
                             #ros function here
-                            self.accessToken=Test().getAuthToken(email)
+                            self.accessToken=self._getAccessToken(email)
                             wrapper=DropboxWrapper(self.accessToken)
                             wrapper.deleteFile(folderPath)
                             existInDropbox=True
@@ -638,7 +642,7 @@ class MongoDBWrapper:
                         if obj is not None:
                             #its a file
                             #ros function here
-                            self.credential=Test().getCredentials(email)
+                            self.credential=self._getCredential(email)
 
                             #find file fileID
                             fileID=self._getGoogleDriveFileID(vPath[0])
@@ -673,7 +677,7 @@ class MongoDBWrapper:
                             if not existInDropbox:
                                 #delete this folder along with subfolder/files recurseively in user's dropbox storage
                                 #ros function here
-                                self.accessToken=Test().getAuthToken(email)
+                                self.accessToken=self._getAccessToken(email)
                                 wrapper=DropboxWrapper(self.accessToken)
                                 wrapper.deleteFile(folderPath)
                                 existInDropbox=True
@@ -685,7 +689,7 @@ class MongoDBWrapper:
                             if obj is not None:
                                 #its a file
                                 #ros function here
-                                self.credential=Test().getCredentials(email)
+                                self.credential=self._getCredential(email)
 
                                 #find file fileID
                                 fileID=self._getGoogleDriveFileID(virtualPathList[i][0])
