@@ -6,17 +6,32 @@
 	<body>
 		<div class="contextMenuField"> Cccccccdddeee 
 			hello world
+			<button id="logout">Log Out</button>
 			<div id="status"> </div>
 			<button id="newFolder">New Folder</button>
 			<button id="back">Back</button>
 			<button id="home">Home</button>
+
+      		<div id="fileRegion">
+      			<input type="file" id="fileInput" multiple>
+     			<button id="encrypt">Encrypt</button>
+    		</div>
+      		<button id="upload">Upload</button>
+
 
 		</div>
 	<script src="http://code.jquery.com/jquery-latest.min.js"> </script>
 	<script src="js/jquery.ui.position.js" ></script>
     <script src="js/jquery.contextMenu.js" ></script>
 	<script src="js/TreeModel-min.js"></script>
+	<script src="js/metadataEncryption.js"></script>
 	<script src="js/metadata.js"></script>
+	<script src="js/ui.js"></script>
+	<script src="js/fileencrypt.js"></script>
+	<script src="js/FileSaver.js"></script>
+	<script src="js/AES_CV.js"></script>
+  	<script src="js/AES_ctr.js"></script>
+
 
 	<script type="text/javascript" class="showcase">
 	$(function(){
@@ -38,7 +53,7 @@
 	    });
 	    
 	    $('.contextMenuField').on('click', function(e){
-	    	alert("lololo");
+	    	//alert("lololo");
 	        console.log('clicked', this);
 	    })
 	});

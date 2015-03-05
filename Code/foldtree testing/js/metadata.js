@@ -12,6 +12,7 @@ var metadata=localStorage.getItem("metadata");
 var html = "";
 constructTree(metadata);
 var children = getChildNodes(currentPath);
+//$("#fileRegion").hide():
 
 for(var i=0; i<children.length; i++) {
 	if(children[i].lastIndexOf(".")==-1)
@@ -30,8 +31,7 @@ document.getElementById("status").innerHTML = html;
 $(".haha").click(function () {
  	var value = $(this).text();
  	var tempPath= localStorage.getItem('path');
- 	tempPath+="/"+value;
- 	 alert(tempPath);   
+ 	tempPath+="/"+value; 
  	localStorage.setItem('path', tempPath);   
 }); 
 
@@ -109,3 +109,34 @@ $("#back").click(function(){
 	localStorage.setItem("path",newPath);
 	window.location="index.html";
 });
+
+$("#newFolder").click(function(){
+	var metadata=localStorage.getItem("metadata");
+	var curPath=localStorage.getItem("path");
+	var foldername = prompt("Please enter your folder name");
+	if(foldername!=null){
+		while(foldername==""){
+			foldername = prompt("Please enter your folder name");
+		}
+		curPath+="/"+foldername;
+		metadata+="\n"+curPath;
+		localStorage.setItem("metadata",metadata);
+		window.location="index.html";
+	}
+
+});
+
+$("#logout").click(function(){
+	var metadata=localStorage.getItem("metadata");
+	encryptMetadata(metadata);
+	localStorage.removeItem("metadata");
+	localStorage.removeItem("password");
+	localStorage.removeItem("path");
+});
+/*$("#upload").click(function(){
+	var fileInput=document.getElementById("fileInput");
+	if(fileInput.files.length==0){
+		alert("Please Input the file");
+	}
+
+});*/

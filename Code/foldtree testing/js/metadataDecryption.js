@@ -4,16 +4,20 @@ var count=count2=0;
 var plaintext="";
 var password="appa1234";
 var str=encryptedMetadata; //load file bytes to buffer
-var buf=str.split("-");
-for (var i = 0; i < buf.length-1; i++){
-	blobs.push(new Blob([buf[i]]));
-	count++;
+decryptMeta(str);
+function decryptMeta(str){
+	count=count2=0;
+	var buf=str.split("-");
+	for (var i = 0; i < buf.length-1; i++){
+		blobs.push(new Blob([buf[i]]));
+		count++;
+	}
+	decryptMetadata(blobs);
 }
-
-decryptMetadata(blobs);
 
 
 function decryptMetadata(e){
+
 	  if(count2<count){
 			var reader = new FileReader();
     		reader.readAsText(blobs[count2]);
@@ -28,7 +32,7 @@ function decryptMetadata(e){
 		}
 		else{
 			alert(plaintext);
-			plaintext+= "\n"+ "root/testing6/haha.jpg";
+			//plaintext+= "\n"+ "root/testing6/haha.jpg";
 			localStorage.setItem("metadata",plaintext);
 		}
 }
