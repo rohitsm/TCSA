@@ -38,11 +38,19 @@ $(document).ready(function(){
 			success : 	function(response, textStatus, jqXHR) {
 							alert_msg = "Success";
 							console.log("Success: " + jqXHR.responseText + ' ' + jqXHR.status );
-							var email = JSON.parse(jqXHR.responseText)['email'];
-							console.log("email = " + email);
-							document.write(response);
+							var status = JSON.parse(jqXHR.responseText)['status'];
+							if (status == "OK"){
+								console.log("Status: " + status);
+								var email = JSON.parse(jqXHR.responseText)['email'];
+								console.log("email = " + email);
+								document.write(response);
+								window.location = "viewer.html"
+							}
 
-							window.location = "viewer.html"
+							console.log("Error!");
+							window.location = "test.html"
+
+
 
 							// top.location.href = 'https://155.69.145.226/login1'
 							// $("#alert").html(
