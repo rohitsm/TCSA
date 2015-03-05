@@ -12,7 +12,7 @@ $(document).ready(function(){
 		console.log("Was preventDefault() called: " + event.isDefaultPrevented());
 		
 		$.ajax ({
-			url	: "http://127.0.0.1:5000/testajax",
+			url	: "https://cloudstag.me/testajax",
 			// url	: "/login1",
 			type: "POST",
 			data: { 'Email' : email,
