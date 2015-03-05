@@ -5,13 +5,12 @@ from pymongo import MongoClient
 from DropboxWrapper import DropboxWrapper
 from GoogleDriveWrapper import GoogleDriveWrapper
 from Test import Test
-
 import os
 import ConfigParser
 
+from login.dropbox_conn import get_dropbox_access_token
 
 class MongoDBWrapper:
-
     """
     This class handle communication between the python program and the mongodb
     database        =database
@@ -42,20 +41,14 @@ class MongoDBWrapper:
         self.credential     = None
 
 
-    #upload
-    def _uploadDropbox(self, accessToken, filePath, virtualPath):
-        wrapper= DropboxWrapper(accessToken)
-        wrapper.uploadFile(filePath, virtualPath)
-
-    def _uploadBox(self):
-        raise NotImplementedError
-
-    def _uploadGoogleDrive(self, credential, filePath, parentID):
-        wrapper= GoogleDriveWrapper(credential)
-        fileID=wrapper.uploadFile(filePath=filePath, parent_id=parentID)
-        return fileID
     ###################################################################################################################
+    def _getAccessToken(self):
+        pass
 
+    def _getCredential(self):
+        pass
+
+    ###################################################################################################################
     #get storage size
     def _getDropboxRemainingStorage(self, accessToken):
         return DropboxWrapper(accessToken).getDropboxStorageSizeLeft()
@@ -338,11 +331,27 @@ class MongoDBWrapper:
         #cos of greedy first .*, the / will reach till just before last part of the path
         filename     = re.match(r".*/(.*)", fileLocation).group(1)
 
+
+
+
+
+        #ef _uploadGoogleDrive(self, credential, filePath, parentID):
+        #wrapper= GoogleDriveWrapper(credential)
+        #fileID=wrapper.uploadFile(filePath=filePath, parent_id=parentID)
+        #return fileID
+
+
+
         chosenStorage=self._getLargestRemainingStorage(email)
-        #chosenStorage='dropbox'
+
+        #NOTE
         #access token, credentials etc. already taken care by _getLargestRemainingStorage()
+
+
         if chosenStorage == 'dropbox':
-            self._uploadDropbox(self.accessToken, fileLocation, virtualPath)
+            wrapper= DropboxWrapper(self.accessToken)
+            wrapper.uploadFile(fileLocation, virtualPath)
+
             #update database
             if virtualPath != '':
                 #file not in root folder, may need to remove existing folder record
@@ -360,7 +369,9 @@ class MongoDBWrapper:
                 {'type':'googledrive'},
                 {'_id':0, 'rootID':1}
             ))[0]['rootID']
-            file=self._uploadGoogleDrive(self.credential, fileLocation, rootID)
+
+            wrapper =GoogleDriveWrapper(self.credential)
+            file    =wrapper.uploadFile(filePath=fileLocation, parent_id=rootID)
 
             #UPDATE DATABASE
             newRecord={
