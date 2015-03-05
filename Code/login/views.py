@@ -201,12 +201,10 @@ def routes(app, login_manager):
 					print "to login2 (else)"			
 					session['email'] = email
 					return render_template('login2.html', email=email)
-			else:
-				flash('Incorrect email/password')
-			
-			# if user doesn't exist in records.
-			flash('No record found. Please signup for a new account.')
-			return redirect(url_for('login'))
+			else:		
+				# if user doesn't exist in records.
+				flash('No record found. Please signup for a new account.')
+				return redirect(url_for('login'))
 
 		# GET requests
 		print "GET seen"
