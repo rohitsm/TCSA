@@ -32,3 +32,4 @@ views.routes(app, login_manager)
 # Create directory to store public keys
 # if not os.path.exists('pb_keys'):
 #	os.makedirs('pb_keys')
+

@@ -20,6 +20,10 @@ $(document).ready(function(){
 			},
 			contentType: "application/x-www-form-urlencoded; charset=UTF-8", 
 			crossOrigin: true,
+			xhrFields: {
+						withCredentials: false
+						},
+			headers: { 'Access-Control-Allow-Origin': '*' },
 			success : 	function(response, textStatus, jqXHR) {
 							alert_msg = "Success";
 							console.log("Success: " + jqXHR.responseText + ' ' + jqXHR.status );
