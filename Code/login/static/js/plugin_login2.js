@@ -40,30 +40,38 @@ $(document).ready(function(){
 						withCredentials: false
 						},
 			success : 	function(response, textStatus, jqXHR) {
-							alert_msg = "Success";
+							// alert_msg = "Success";
 							console.log("Success: " + jqXHR.responseText + ' ' + jqXHR.status );
 							var status = JSON.parse(jqXHR.responseText)['status'];
+							console.log("Status: " + status);
 							if (status == "OK"){
-								console.log("Status: " + status);
-								var email = JSON.parse(jqXHR.responseText)['email'];
-								console.log("email = " + email);
+								var email_resp = JSON.parse(jqXHR.responseText)['email'];
+								console.log("email_resp = " + email_resp);
+
+								// DEBUG
 								document.write(response);
-								window.location = "viewer.html"
-						}
-
-						console.log("Error!");
-						window.location = "test.html"
-
-						// top.location.href = 'https://155.69.145.226/login1'
-						$("#alert").html(
-							'<div class="alert alert-success text-center">' +
-								'<span class="glyphicon glyphicon-exclamation-sign">' + alert_msg + '</span>' + 
-							'</div>'
-						);
-						},
+								// Save email to browser's session storage
+								// sessionStorage.setItem("Email_ls", email_resp);								
+								window.location = "viewer.html";
+							}
+							else{
+								alert('Invalid email or password!');
+								window.location = "test.html";
+								$("#login_form")[0].reset();
+								alert_msg = "Incorrect email or password!";							
+								console.log("error: " + jqXHR.status + " " + textStatus + ' ' + jqXHR.responseText );
+								$("#alert").html(
+									'<div class="alert alert-danger text-center">' +
+										'<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true">'+ alert_msg +'</span>' + 
+									'</div>'
+								);
+								// DEBUG
+								// document.write(response);								
+							}
+						}, // success
 
 			error 	:	function(jqXHR, textStatus, errorThrown) {
-							alert_msg = "Incorrect email or password!";							
+							alert_msg = "Woah horsey! Something's not right!";							
 							console.log("error: " + jqXHR.status + " " + textStatus + ' ' + jqXHR.responseText + ' ' + errorThrown);
 							$("#alert").html(
 								'<div class="alert alert-danger text-center">' +

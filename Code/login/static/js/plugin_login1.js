@@ -39,6 +39,7 @@ $(document).ready(function(){
 								window.location = "test2.html";
 							}
 							else{
+								alert('Invalid email or password!');
 								window.location = "test.html";
 								$("#login_form")[0].reset();
 								alert_msg = "Incorrect email or password!";							
@@ -54,7 +55,7 @@ $(document).ready(function(){
 						}, // success
 
 			error 	:	function(jqXHR, textStatus, errorThrown) {
-							alert_msg = "Incorrect email or password!";							
+							alert_msg = "Woah horsey! Something's not right!";						
 							console.log("error: " + jqXHR.status + " " + textStatus + ' ' + jqXHR.responseText + ' ' + errorThrown);
 							$("#alert").html(
 								'<div class="alert alert-danger text-center">' +
