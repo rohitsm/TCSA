@@ -8,9 +8,11 @@ from Test import Test
 import os
 import ConfigParser
 
+
 #ross library
-from login.dropbox_conn import get_dropbox_access_token
-from login.gdrive_conn import get_gdrive_refresh_token
+from Code.login.dropbox_conn import get_dropbox_access_token
+from Code.login.gdrive_conn import get_gdrive_refresh_token
+
 class MongoDBWrapper:
     """
     This class handle communication between the python program and the mongodb
@@ -26,10 +28,11 @@ class MongoDBWrapper:
         config= ConfigParser.ConfigParser()
         config.read(os.path.join(os.path.abspath(os.path.dirname(__file__)),'mongodbconfig.ini'))
         section=config.sections()[0]
-        allOptions=config.options(section)
+        allOptions  =config.options(section)
         databaseName=config.get(section, allOptions[0])
         addr        =config.get(section, allOptions[1])
         port        =int(config.get(section, allOptions[2]))
+
 
         self.client         = MongoClient(addr, port)
         self.db             = self.client[databaseName]
@@ -44,12 +47,10 @@ class MongoDBWrapper:
 
     ###################################################################################################################
     def _getAccessToken(self, email):
-        return Test().getAuthToken(email)
-        pass
+        return get_dropbox_access_token()
 
     def _getCredential(self, email):
-        return Test().getCredentials(email)
-        pass
+        return get_gdrive_refresh_token()
 
     ###################################################################################################################
     #get storage size
