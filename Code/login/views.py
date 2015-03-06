@@ -5,7 +5,7 @@ import json
 import urllib2
 
 # Flask
-from flask import render_template, flash, redirect, request, url_for
+from flask import render_template, flash, redirect, request, url_for, send_from_directory
 from flask import session, abort
 from flask.ext.login import login_user, logout_user, login_required, current_user
 from forms import SignupForm, LoginForm_1, LoginForm_2
@@ -14,7 +14,7 @@ from forms import SignupForm, LoginForm_1, LoginForm_2
 from login import app
 
 # DB
-from login import db
+# from login import db
 from models import User, User_Profile, hash_pass
 from models import get_user_record, set_user_record
 
@@ -59,6 +59,15 @@ def routes(app, login_manager):
 			return redirect(url_for('profile'))	
 		
 		return render_template('index.html')
+
+	@app.route('/robots')
+	@app.route('/robots.txt')
+	def static_from_root():
+		'''
+		To ward off search engine crawlers
+		'''
+	    return send_from_directory(app.static_folder, request.path[1:])
+
 
 	@app.route('/login', methods=['GET', 'POST'])
 	@app.route('/signin', methods=['GET', 'POST'])
@@ -255,7 +264,6 @@ def routes(app, login_manager):
 						login_user(user, remember = remember_me)
 						# flash('You were successfully logged in')
 						return redirect(url_for('profile'))
-
 				else:
 					# if user doesn't exist in records.
 					flash('Email not found (login2)')
