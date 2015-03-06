@@ -66,7 +66,7 @@ def routes(app, login_manager):
 		'''
 		To ward off search engine crawlers
 		'''
-	    return send_from_directory(app.static_folder, request.path[1:])
+		return send_from_directory(app.static_folder, request.path[1:])
 
 
 	@app.route('/login', methods=['GET', 'POST'])
