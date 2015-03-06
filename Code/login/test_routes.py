@@ -61,7 +61,7 @@ def testajax():
 				print "to testajax (else)"			
 				session['p_email'] = p_email
 				print "testajax: Logged in!"
-				return json.dumps({'status':'OK','email': p_email})
+				return json.dumps({'status':'OK','email': session['p_email']})
 		else: 
 			# if user doesn't exist in records
 			print "testajax: User record not found in DB"
@@ -75,13 +75,14 @@ def testajax():
 # @cross_origin()
 def testajax2():
 	form = LoginForm_2()
-	print "inside testajax2"
 	
 	if request.method == 'POST':
+		print "inside testajax2"
 
-		p_email = session['p_email']
-		print "email = ", p_email
-		if p_email == cgi.escape(request.form['Email'], True).lower():
+		# p_email = session['p_email']
+		print "email = ", session['p_email']
+		p_email = cgi.escape(request.form['Email'], True).lower()
+		if p_email == email:
 			p_passphrase = request.form['Passphrase']
 		
 			# DEBUG
