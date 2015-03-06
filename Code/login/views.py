@@ -8,13 +8,14 @@ import urllib2
 from flask import render_template, flash, redirect, request, url_for, send_from_directory
 from flask import session, abort
 from flask.ext.login import login_user, logout_user, login_required, current_user
+
+# Forms
 from forms import SignupForm, LoginForm_1, LoginForm_2
 
 # App
 from login import app
 
 # DB
-# from login import db
 from models import User, User_Profile, hash_pass
 from models import get_user_record, set_user_record
 

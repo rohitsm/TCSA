@@ -23,10 +23,11 @@ $(document).ready(function(){
 			xhrFields: {
 						withCredentials: false
 						},
-			headers: {
-	                    'Access-Control-Allow-Origin' : '*',
-	                    // 'Access-Control-Allow-Methods' : 'POST, GET, OPTIONS'
-					},
+			// headers: {
+	  //                   'Access-Control-Allow-Origin' : '*',
+	  //                   'Access-Control-Allow-Methods' : 'POST, GET'
+	  //                   'Access-Control-Allow-Headers' : 'Origin, X-Requested-With, Content-Type, Accept'
+			// 		},
 
 			success : 	function(response, textStatus, jqXHR) {
 							alert_msg = "Success";

@@ -15,10 +15,14 @@ from flask import render_template, flash, redirect, request, url_for
 from flask import session, abort
 from flask.ext.login import login_user, logout_user, login_required, current_user
 
+# Forms
+from forms import LoginForm_1, LoginForm_2
+
+# DB
 from models import get_user_record, set_user_record
 
 # CORS - Cross-Origin Resource Sharing
-# from flask.ext.cors import CORS, cross_origin
+# from flask.extself.cors import CORS, cross_origin
 
 # To test DB connection
 @app.route('/testdb')
@@ -28,9 +32,11 @@ def testdb():
 	else:
 		return "Not Working"
 
-@app.route('/testajax', methods=['GET', 'POST', 'OPTIONS'])
+@app.route('/testajax', methods=['GET', 'POST'])
 # @cross_origin()
 def testajax():
+	form = LoginForm_1()
+	print "inside testajax1"
 	
 	if request.method == 'POST':
 		p_email = cgi.escape(request.form['Email'], True).lower()
@@ -68,6 +74,8 @@ def testajax():
 @app.route('/testajax2', methods=['GET', 'POST'])
 # @cross_origin()
 def testajax2():
+	form = LoginForm_2()
+	print "inside testajax2"
 	
 	if request.method == 'POST':
 
