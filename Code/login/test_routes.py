@@ -59,7 +59,7 @@ def testajax():
 			# Session used to pass email to second stage of login
 			else:
 				print "to testajax (else)"			
-				session['p_email'] = p_email
+				# session['p_email'] = p_email
 				print "testajax: Logged in!"
 				return json.dumps({'status':'OK','email': session['p_email']})
 		else: 
@@ -80,9 +80,9 @@ def testajax2():
 		print "inside testajax2"
 
 		# p_email = session['p_email']
-		print "email = ", session['p_email']
+		# print "email = ", session['p_email']
 		p_email = cgi.escape(request.form['Email'], True).lower()
-		if p_email == email:
+		# if p_email:
 			p_passphrase = request.form['Passphrase']
 		
 			# DEBUG
@@ -103,8 +103,8 @@ def testajax2():
 				else: 
 					session.pop('p_email', None)
 					print "to profile"
-					session['user'] = p_email
-					login_user(user, remember = remember_me)
+					# session['user'] = p_email
+					# login_user(user, remember = remember_me)
 					# flash('You were successfully logged in')
 					return json.dumps({'status':'OK','email': p_email})
 			else: 
