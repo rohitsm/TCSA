@@ -27,14 +27,18 @@ $(document).ready(function(){
 		console.log("Was preventDefault() called: " + event.isDefaultPrevented());
 		
 		$.ajax ({
-			url	: "https://cloudstag.me/testajax",
-			// url	: "/login1",
+			// url	: "https://cloudstag.me/testajax2",
+
+			url	: "https://cloudstag.me/testajax2",
 			type: "POST",
 			data: { 'Email' : local_email,
 					'Passphrase': passphrase
 			},
 			contentType: "application/x-www-form-urlencoded; charset=UTF-8", 
 			crossOrigin: true,
+			xhrFields: {
+						withCredentials: false
+						},
 			success : 	function(response, textStatus, jqXHR) {
 							alert_msg = "Success";
 							console.log("Success: " + jqXHR.responseText + ' ' + jqXHR.status );
@@ -45,19 +49,17 @@ $(document).ready(function(){
 								console.log("email = " + email);
 								document.write(response);
 								window.location = "viewer.html"
-							}
+						}
 
-							console.log("Error!");
-							window.location = "test.html"
+						console.log("Error!");
+						window.location = "test.html"
 
-
-
-							// top.location.href = 'https://155.69.145.226/login1'
-							// $("#alert").html(
-							// 	'<div class="alert alert-success text-center">' +
-							// 		'<span class="glyphicon glyphicon-exclamation-sign">' + alert_msg + '</span>' + 
-							// 	'</div>'
-							// );
+						// top.location.href = 'https://155.69.145.226/login1'
+						$("#alert").html(
+							'<div class="alert alert-success text-center">' +
+								'<span class="glyphicon glyphicon-exclamation-sign">' + alert_msg + '</span>' + 
+							'</div>'
+						);
 						},
 
 			error 	:	function(jqXHR, textStatus, errorThrown) {

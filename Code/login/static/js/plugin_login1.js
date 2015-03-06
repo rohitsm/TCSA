@@ -24,25 +24,34 @@ $(document).ready(function(){
 						},
 
 			success : 	function(response, textStatus, jqXHR) {
-							alert_msg = "Success";
+							// alert_msg = "Success";
 							console.log("Success: " + jqXHR.responseText + ' ' + jqXHR.status );
-							var email_resp = JSON.parse(jqXHR.responseText)['email'];
-							console.log("email_resp = " + email_resp);
-							
-							// Save email to browser's session storage
-							sessionStorage.setItem("Email_ls", email);
-							
-							document.write(response);
+							var status = JSON.parse(jqXHR.responseText)['status'];
+							console.log("Status: " + status);
+							if (status == "OK"){
+								var email_resp = JSON.parse(jqXHR.responseText)['email'];
+								console.log("email_resp = " + email_resp);
 
-							// window.location = "test2.html";
-
-							// top.location.href = 'https://155.69.145.226/login1'
-							// $("#alert").html(
-							// 	'<div class="alert alert-success text-center">' +
-							// 		'<span class="glyphicon glyphicon-exclamation-sign">' + alert_msg + '</span>' + 
-							// 	'</div>'
-							// );
-						},
+								// DEBUG
+								document.write(response);
+								// Save email to browser's session storage
+								sessionStorage.setItem("Email_ls", email_resp);								
+								window.location = "test2.html";
+							}
+							else{
+								window.location = "test.html";
+								$("#login_form")[0].reset();
+								alert_msg = "Incorrect email or password!";							
+								console.log("error: " + jqXHR.status + " " + textStatus + ' ' + jqXHR.responseText );
+								$("#alert").html(
+									'<div class="alert alert-danger text-center">' +
+										'<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true">'+ alert_msg +'</span>' + 
+									'</div>'
+								);
+								// DEBUG
+								// document.write(response);								
+							}
+						}, // success
 
 			error 	:	function(jqXHR, textStatus, errorThrown) {
 							alert_msg = "Incorrect email or password!";							
@@ -52,6 +61,7 @@ $(document).ready(function(){
 									'<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true">'+ alert_msg +'</span>' + 
 								'</div>'
 							);
+							$("#login_form")[0].reset();
 						} 
 
 		}); //Ajax
