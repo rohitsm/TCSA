@@ -15,8 +15,10 @@ from flask import render_template, flash, redirect, request, url_for
 from flask import session, abort
 from flask.ext.login import login_user, logout_user, login_required, current_user
 
+from models import get_user_record, set_user_record
+
 # CORS - Cross-Origin Resource Sharing
-from flask.ext.cors import CORS, cross_origin
+# from flask.ext.cors import CORS, cross_origin
 
 # To test DB connection
 @app.route('/testdb')
@@ -27,7 +29,7 @@ def testdb():
 		return "Not Working"
 
 @app.route('/testajax', methods=['GET', 'POST', 'OPTIONS'])
-@cross_origin(origin='*')
+# @cross_origin()
 def testajax():
 	
 	if request.method == 'POST':
@@ -44,27 +46,27 @@ def testajax():
 			if not form.authenticate(p_email, p_password):
 				print "form verify = false"
 				# Invalid login. Return error
-				print "testajax2: Invalid email or password"
+				print "testajax: Invalid email or password"
 				return json.dumps({'status':'NotOK', 'Error': 'Invalid email or password'})			
 
 			# Success; Pass email to second stage of login as arg
 			# Session used to pass email to second stage of login
 			else:
-				print "to login2 (else)"			
+				print "to testajax (else)"			
 				session['p_email'] = p_email
-				print "testajax2: Logged in!"
+				print "testajax: Logged in!"
 				return json.dumps({'status':'OK','email': p_email})
 		else: 
 			# if user doesn't exist in records
-			print "testajax2: User record not found in DB"
+			print "testajax: User record not found in DB"
 			return json.dumps({'status':'NotOK', 'Error': 'No record found. Please sign up for a new account!'})
 
 	# GET requests
-	print "testajax2: GET"
-	return redirect(url_for('signup'))
+	print "testajax: GET"
+	return render_template('test.html')
 
 @app.route('/testajax2', methods=['GET', 'POST'])
-@cross_origin(origin='*')
+# @cross_origin()
 def testajax2():
 	
 	if request.method == 'POST':
@@ -103,7 +105,7 @@ def testajax2():
 
 	# GET requests
 	print "testajax2: GET"
-	return redirect(url_for('signup'))
+	return render_template('test2.html')
 
 
 @app.route('/testupload', methods=['GET', 'POST'])

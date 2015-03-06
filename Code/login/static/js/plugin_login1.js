@@ -23,7 +23,11 @@ $(document).ready(function(){
 			xhrFields: {
 						withCredentials: false
 						},
-			headers: { 'Access-Control-Allow-Origin': '*' },
+			headers: {
+	                    'Access-Control-Allow-Origin' : '*',
+	                    // 'Access-Control-Allow-Methods' : 'POST, GET, OPTIONS'
+					},
+
 			success : 	function(response, textStatus, jqXHR) {
 							alert_msg = "Success";
 							console.log("Success: " + jqXHR.responseText + ' ' + jqXHR.status );
@@ -35,7 +39,7 @@ $(document).ready(function(){
 							
 							document.write(response);
 
-							window.location = "test2.html";
+							// window.location = "test2.html";
 
 							// top.location.href = 'https://155.69.145.226/login1'
 							// $("#alert").html(
