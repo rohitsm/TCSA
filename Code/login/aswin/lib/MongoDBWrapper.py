@@ -10,8 +10,8 @@ import ConfigParser
 
 
 #ross library
-from Code.login.dropbox_conn import get_dropbox_access_token
-from Code.login.gdrive_conn import get_gdrive_refresh_token
+#from Code.login.dropbox_conn import get_dropbox_access_token
+#from Code.login.gdrive_conn import get_gdrive_refresh_token
 
 class MongoDBWrapper:
     """
@@ -44,14 +44,19 @@ class MongoDBWrapper:
         #for googledrive
         self.credential     = None
 
-
+        self.STORAGE_LIMIT_BUFFER=1024.0
+        self.ros=False
     ###################################################################################################################
     def _getAccessToken(self, email):
-        return get_dropbox_access_token()
-
+        if self.ros:
+            return get_dropbox_access_token()
+        else:
+            return Test().getAuthToken(email)
     def _getCredential(self, email):
-        return get_gdrive_refresh_token()
-
+        if self.ros:
+            return get_gdrive_refresh_token()
+        else:
+            return Test().getCredentials(email)
     ###################################################################################################################
     #get storage size
     def _getDropboxRemainingStorage(self, accessToken):
@@ -69,7 +74,8 @@ class MongoDBWrapper:
 
     ###################################################################################################################
     def _getLargestRemainingStorage(self, email):
-        storageSizePair={}
+        aList=[]
+        #storageSizePair={}
         #return a list of 1 element(dictionary), chose dict element called 'storage'
         #will return [{u'type': u'dropbox', u'metadata': []},{u'type': u'googledrive', u'metadata': []}], etc
         storageList=self.aCollection.find({},{'_id':0,'type':1})
@@ -79,21 +85,25 @@ class MongoDBWrapper:
                 #email from phyu need to compare in session list
                 #inside ross dropbox_conn implemented session checking
                 self.accessToken= self._getAccessToken(email)
-                storageSizePair['dropbox']=self._getDropboxRemainingStorage(self.accessToken)
+                #storageSizePair['dropbox']=self._getDropboxRemainingStorage(self.accessToken)
+                aList.append(("dropbox", self._getDropboxRemainingStorage(self.accessToken)))
             elif storage['type'] == 'box':
                 raise NotImplementedError
             elif storage['type'] == 'googledrive':
                 #ROS server here
                 self.credential= self._getCredential(email)
-                storageSizePair['googledrive']=self._getGoogleDriveRemainingStorage(self.credential)
+                #storageSizePair['googledrive']=self._getGoogleDriveRemainingStorage(self.credential)
+                aList.append(("googledrive", self._getGoogleDriveRemainingStorage(self.credential)))
+
         #itermitems() will generate a set of tuples eg. ('a', 1000), the key argument dictate
         #the function to compare the second value(1000), hence the function x[1]
         #return (key, value) tuple so put [0] to get the storage
-        chosenStorage= max(storageSizePair.iteritems(), key= lambda x: x[1])[0]
-        print chosenStorage, ' has largest remaining storage.'
+        #chosenStorage= max(storageSizePair.iteritems(), key= lambda x: x[1])[0]
+        aList= sorted(aList, key= lambda x: x[1])
+        print aList[0][0], ' has largest remaining storage.'
         #choseStorage is a string of either:
         #dropbox,box, googledrive
-        return chosenStorage
+        return aList
 
     def _getAnyStorage(self):
         #can be dropbox,box, googledrive
@@ -346,8 +356,13 @@ class MongoDBWrapper:
         #return fileID
 
 
+        aListofTuple=self._getLargestRemainingStorage(email)
+        if fileSize>(aListofTuple[0][1]-self.STORAGE_LIMIT_BUFFER):
+            print "upload fail due to file size larger than the largest available cloud storag, aborting upload operation..."
+            self.client.disconnect()
+            return
 
-        chosenStorage=self._getLargestRemainingStorage(email)
+        chosenStorage=aListofTuple[0][0]
 
         #NOTE
         #access token, credentials etc. already taken care by _getLargestRemainingStorage()

@@ -17,9 +17,7 @@ class Main:
             6:self.deleteFile,
             7:self.createFolder,
             8:self.deleteFolder,
-            9:self.renameFolder,
-            10:self.renameFile,
-            11:self.doexit
+            9:self.doexit
         }
 
         self.storageType = {
@@ -58,7 +56,7 @@ class Main:
         email           ='aswin.setiadi@gmail.com'
         #to upload file in root folder, pass ''
         #below example means uploading file monkey.jpg to TCSA at /images folder
-        virtualPath     ='/fruits/orange'
+        virtualPath     ='/fruits'
         fileLocation    ='files/orange.jpg'
         MongoDBWrapper().upload(email, virtualPath, fileLocation)
         print 'file stored in online storage. destroying local copy..'
@@ -136,9 +134,7 @@ class Main:
                                 "6. deletefile\n"
                                 "7. createfolder\n"
                                 "8. deletefolder\n"
-                                "9. renamefolder\n"
-                                "10. renamefile\n"
-                                "11. exit\n"
+                                "9. exit\n"
                                 "enter 1-10:"
                                 ))
             if choice in self.selection.keys():

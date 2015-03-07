@@ -5,10 +5,10 @@ from login import app
 from forms import SignupForm, LoginForm_1, LoginForm_2
 from models import User_1, User_2
 from flask import session
+from lib.MongoDBWrapper import MongoDBWrapper
 
 # DB
 from login import db
-<<<<<<< HEAD
 
 @app.route('/')
 def index():

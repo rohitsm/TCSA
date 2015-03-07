@@ -3,7 +3,7 @@ __author__ = 'aswin'
 import dropbox
 import pprint
 import re
-from Test import Test
+#from Test import Test
 
 class DropboxWrapper:
 
@@ -72,8 +72,9 @@ class DropboxWrapper:
         return response
 
 if __name__=='__main__':
-    d= DropboxWrapper(Test().getAuthToken('aswin.setiadi@gmail.com'))
-    d.deleteFile('/fruits/orange')
+    print "hello"
+    #d= DropboxWrapper(Test().getAuthToken('aswin.setiadi@gmail.com'))
+    #d.deleteFile('/fruits/orange')
 """
 aswin= DropboxWrapper('aswin.setiadi@gmail.com')
 aswin.initClient()
