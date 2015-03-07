@@ -2,7 +2,7 @@ Code/bin/*
 Code/include/*
 Code/lib/*
 /pb_keys/*
-cloudstag_me_certs/*
+Apache\ configs] and\ SSL\ certs/*
 *.Python
 *.pyc
 config.py
