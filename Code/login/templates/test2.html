@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -16,6 +15,9 @@
     <!-- Custom styles for this template -->
     <link href="../static/css/login.css" rel="stylesheet">
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script type="text/javascript" src="../static/js/plugin_login2.js" ></script>
+
   </head>
 
   <body>
@@ -27,31 +29,25 @@
               <h3 class="masthead-brand ">TCSA Inc.</h3>
               <ul class="nav masthead-nav">
                 <h3 class="masthead-brand">Cloud Storage Aggregator</h3>
-              </ul> 
+              </ul>
             </div>
           </div>
-        <!-- Flash messages -->
-          {% with messages = get_flashed_messages() %}
-            {% if messages %}
-              <div class="alert alert-danger text-center" role="alert">
-                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+          
+          <!-- Flash messages -->
+          <div id="alert" role="alert">
 
-                {% for message in messages %}
-                  {{message}}
-                {% endfor %}
-              </div>
-            {% endif %}
-          {% endwith %}
+            <!-- <p id="hello">Hello</p> -->
+            <!-- <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> -->
+          </div>
           
           <div>
-            <!-- Call corresponding form action here -->
-            <form class="form-signin" role="form" method="POST" action="/login1">
+            <form class="form-signin" id="login_form" method="POST">
 
-              <h2 class="form-signin-heading">Please sign in</h2>
+              <h2 class="form-signin-heading" id="form-h2">Enter passphrase</h2>
               
-              <input type="email" class="form-control" placeholder="Email address" name="Email" id="Email" required autofocus>
+              <input type="email" class="form-control" placeholder="Error! Email not found!" name="Email" id="Email" disabled>
 
-              <input type="password" class="form-control" placeholder="Password" name="Password" id="Password" required>
+              <input type="password" class="form-control" placeholder="Passphrase" name="Passphrase" id="Passphrase" required autofocus>
               
               <!-- <label class="checkbox">
                 <input type="checkbox" value="remember-me"> Remember me
@@ -59,28 +55,24 @@
               
               
               <div class="col-sm-6 col-xs-12" id="btns">
-                <button type="submit" id="Submit" name="Submit" class="btn-block btn-primary btn">Sign In</button>
+                <button type="submit" id="Submit2" name="Submit2" class="btn-block btn-primary btn">Sign In</button>
               </div>
               <div class="col-sm-6 col-sm-6" id="btns">
                 <button type="submit" class="btn-block btn-default btn">Forgot Password</button>
               </div>
 
+              <div id="create-account" class="col-sm-6 col-xs-12 text-center ">
+                <button class="btn btn-lg btn-success"><a href="signup.html">Create an account</a></button>
+              </div>
             </form>  
-
-            <br>
-            
-            <div id="create-account" class="form-signin text-center ">
-              <h3 class="btn btn-success"><a href="{{url_for('signup')}}">Create an account</h3>
-            </div>
             
           </div> 
 
           <!-- Copyright and Footer-->
 
           <footer>
-            <div class="mastfoot inner text-center">
-              <p>Copyright © 2014 The TCSA Project. All rights reserved</p>
-              
+            <div class="mastfoot inner">
+              Copyright © 2014 The TCSA Project. All rights reserved
             </div>  
           </footer>
 
@@ -90,7 +82,7 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script> -->
     <script src="../static/js/bootstrap.min.js"></script>
   </body>
 </html>

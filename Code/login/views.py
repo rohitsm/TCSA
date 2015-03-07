@@ -5,16 +5,17 @@ import json
 import urllib2
 
 # Flask
-from flask import render_template, flash, redirect, request, url_for
+from flask import render_template, flash, redirect, request, url_for, send_from_directory
 from flask import session, abort
 from flask.ext.login import login_user, logout_user, login_required, current_user
+
+# Forms
 from forms import SignupForm, LoginForm_1, LoginForm_2
 
 # App
 from login import app
 
 # DB
-from login import db
 from models import User, User_Profile, hash_pass
 from models import get_user_record, set_user_record
 
@@ -26,6 +27,7 @@ from gdrive_conn import gdrive_connect
 
 # Additional views
 from account_settings import *
+from test_routes import *
 
 # URL format: recaptcha_url? + secret=your_secret & response=response_string&remoteip=user_ip_address'
 recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify'
@@ -59,33 +61,14 @@ def routes(app, login_manager):
 		
 		return render_template('index.html')
 
-	# To test DB connection
-	@app.route('/testdb')
-	def testdb():
-		if db.session.query("1").from_statement("SELECT 1").all():
-			return "Works"
-		else:
-			return "Not Working"
+	@app.route('/robots')
+	@app.route('/robots.txt')
+	def static_from_root():
+		'''
+		To ward off search engine crawlers
+		'''
+		return send_from_directory(app.static_folder, request.path[1:])
 
-	@app.route('/testupload', methods=['GET', 'POST'])
-	def testupload():
-		
-		if request.method == 'POST':
-			filename =  request.json['filename']
-			file_content = request.json['file_content']
-			user_email = request.json['user_email']
-			
-			# Debug 
-			print "\n==============BEGIN TEST UPLOAD=============="
-			print "filename: ", filename
-			print "file_content", file_content
-			print "user_email", user_email
-			print "\n==============END TEST UPLOAD=============="
-			
-			return json.dumps({'status':'OK','filename':filename, 'file_content':file_content, 'user_email':user_email});
-		else:
-			print"GET Request"
-			return render_template('signup.html')
 
 	@app.route('/login', methods=['GET', 'POST'])
 	@app.route('/signin', methods=['GET', 'POST'])
@@ -228,12 +211,10 @@ def routes(app, login_manager):
 					print "to login2 (else)"			
 					session['email'] = email
 					return render_template('login2.html', email=email)
-			else:
-				flash('Incorrect email/password')
-			
-			# if user doesn't exist in records.
-			flash('No record found. Please signup for a new account.')
-			return redirect(url_for('login'))
+			else:		
+				# if user doesn't exist in records.
+				flash('No record found. Please signup for a new account.')
+				return redirect(url_for('login'))
 
 		# GET requests
 		print "GET seen"
@@ -284,7 +265,6 @@ def routes(app, login_manager):
 						login_user(user, remember = remember_me)
 						# flash('You were successfully logged in')
 						return redirect(url_for('profile'))
-
 				else:
 					# if user doesn't exist in records.
 					flash('Email not found (login2)')
