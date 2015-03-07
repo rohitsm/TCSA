@@ -1,36 +1,3 @@
-<<<<<<< HEAD
-{% extends "layout.html" %}
- 
-{% block content %}
-  <h2>Sign up</h2>
-    
-  {% for message in form.email.errors %}
-    <div class="flash">{{ message }}</div>
-  {% endfor %}
-   
-  {% for message in form.password.errors %}
-    <div class="flash">{{ message }}</div>
-  {% endfor %}
-
-  {% for message in form.passphrase.errors %}
-    <div class="flash">{{ message }}</div>
-  {% endfor %}
-   
-  <form action="{{ url_for('signup') }}" method="POST">     
-    {{ form.email.label }}
-    {{ form.email }}
-     
-    {{ form.password.label }}
-    {{ form.password }}
-
-    {{ form.passphrase.label }}
-    {{ form.passphrase}}
-     
-    {{ form.submit }}
-  </form>
-     
-{% endblock %}
-=======
 
 <!DOCTYPE html>
 <html lang="en">
@@ -53,6 +20,9 @@
     <!-- Custom JS for this template -->
     <script type="text/javascript" src="../static/js/signup.js"></script>
 
+    <!-- RECAPTCHA JS for this template -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
   </head>
 
   <body>
@@ -67,7 +37,7 @@
 
           </ul>
         </nav>
-        <h3>TCSA Inc.</h3>
+        <h3 id="page-header"><a class="masthead-brand" href="{{url_for('profile')}}">TCSA Inc.</a></h3>
       </div>
 
       <!-- Flash messages -->
@@ -113,11 +83,18 @@
             </div>
 
             <div class="form-group">
-              <label id="file-upload" for="exampleInputFile">Upload your public key here </label>
-              <input type="file" name="PB_Key" required>
-            </div>            
+              <label id="file-upload" for="PB_Key">Upload your public key here </label>
+              <input class="btn btn-default" type="file"  name="PB_Key" required>
+            </div>  
+
+            <br>     
+            <!-- RECAPTCHA -->
+            <div class="g-recaptcha" data-sitekey="6LfCowITAAAAAMJshL909sV3cRZPJ92PQIqNetJN">
+            </div>
+            <br><br>
 
             <button type="submit" class="btn btn-danger col-md-offset-4 col-xs-offset-4">Submit</button>
+          </div>
         </div>
       </form>
 
@@ -132,4 +109,3 @@
 
   </body>
 </html>
->>>>>>> ross_v3
