@@ -21,6 +21,9 @@ from forms import LoginForm_1, LoginForm_2
 # DB
 from models import get_user_record, set_user_record
 
+# Aswin's function import
+from MongoDBWrapper import *
+
 # To test DB connection
 @app.route('/testdb')
 def testdb():
@@ -133,8 +136,10 @@ def testupload():
 			print "filename: ", filename
 			print "file_content", file_content
 			print "\n==============END TEST UPLOAD=============="
-			
-			return json.dumps({'status':'OK', 'user_email':user_email, 'filename':filename, 'file_content':file_content})
+			if (upload(email=user_email, filename=filename, filecontent=file_content)):
+				return json.dumps({'status':'OK'})
+			else:
+				return json.dumps({'status':'NotOK'})
 
 		elif req == 'download':
 			# Retrives file from DB and sends it to plugin
@@ -147,7 +152,11 @@ def testupload():
 			print "filename: ", filename
 			print "\n==============END TEST UPLOAD=============="
 			
-			return json.dumps({'status':'OK', 'user_email':user_email,'filename':filename})
+			file_content = download(email=user_email, filename=filename)
+			if file_content:
+				return json.dumps({'status':'OK', 'file_content':file_content})
+			else:
+				return json.dumps({'status':'NotOK'})
 
 		elif req == 'upload_metadata':
 			# Gets encrypted metadata from plugin and sends to DB for saving
@@ -159,8 +168,11 @@ def testupload():
 			print "user_email", user_email
 			print "metadata: ", metadata
 			print "\n==============END TEST UPLOAD=============="
-			
-			return json.dumps({'status':'OK', 'user_email':user_email,'metadata':metadata})
+
+			if (upload_metadata(email=user_email, metadata=metadata)):
+				return json.dumps({'status':'OK'})
+			else:
+				return json.dumps({'status':'NotOK'})
 
 		elif req == 'download_metadata':
 			# Retrives entire metadata (right from the root directory) from DB and sends it to plugin
@@ -170,12 +182,23 @@ def testupload():
 			print "user_email", user_email
 			print "\n==============END TEST UPLOAD=============="
 			
-			return json.dumps({'status':'OK', 'user_email':user_email})
+			metadata = download_metadata(email=user_email):
+			if metadata:
+				return json.dumps({'status':'OK', 'metadata':metadata})
+			else:
+				return json.dumps({'status':'NotOK'})
+
+		elif req == 'delete':
+			filename =  request.json['filename']
+
+			if (deleteFile(email=user_email, filename=filename)):
+				return json.dumps({'status':'OK'})
+			else:
+				return json.dumps({'status':'NotOK'})
 
 		else:
 			print "request parameter error"
 			return json.dumps({'status': 'NotOK'})
-
 
 	else:
 		print"GET Request"
