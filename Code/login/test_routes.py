@@ -136,7 +136,7 @@ def testupload():
 			
 			return json.dumps({'status':'OK', 'user_email':user_email, 'filename':filename, 'file_content':file_content})
 
-		else if req == 'download':
+		elif req == 'download':
 			# Retrives file from DB and sends it to plugin
 
 			filename =  request.json['filename']
@@ -149,7 +149,7 @@ def testupload():
 			
 			return json.dumps({'status':'OK', 'user_email':user_email,'filename':filename})
 
-		else if req == 'upload_metadata':
+		elif req == 'upload_metadata':
 			# Gets encrypted metadata from plugin and sends to DB for saving
 
 			metadata = request.json['metadata']
@@ -162,7 +162,7 @@ def testupload():
 			
 			return json.dumps({'status':'OK', 'user_email':user_email,'metadata':metadata})
 
-		else if req == 'download_metadata':
+		elif req == 'download_metadata':
 			# Retrives entire metadata (right from the root directory) from DB and sends it to plugin
 
 			# Debug 
