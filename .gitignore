@@ -1,11 +1,7 @@
 Code/bin/*
 Code/include/*
 Code/lib/*
-<<<<<<< HEAD
-pb_keys/*
-=======
 /pb_keys/*
->>>>>>> ross_v3
 Apache\ configs\ and\ SSL\ certs/*
 *.Python
 *.pyc
