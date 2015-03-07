@@ -50,4 +50,5 @@ $(document).ready(function(){
 		}); //Ajax
 		// $("#login_form")[0].reset();
 	}); //submit
+
 });

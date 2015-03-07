@@ -46,6 +46,7 @@ def get_gdrive_refresh_token():
 
 	# Get the refresh token from the DB
 	refresh_token = get_gdrive_token(email)
+
 	# print "refresh_token form db = ", refresh_token
 	if refresh_token:
 		return refresh_token

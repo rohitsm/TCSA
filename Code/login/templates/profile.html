@@ -76,10 +76,11 @@
           <div class="panel panel-primary text-center">
             <div class="panel-heading">Dropbox
             </div>
-            <div class="panel-body">
-              {% if db_conn %}
+
+    			  <div class="panel-body">
+    			    {% if db_conn %}
               <strong>STATUS:</strong> <span class="label label-success">Connected</span>
-              <br> <br>
+    			    <br> <br>
                 <a href="{{ url_for('dropbox_disconnect') }}">
                   <img src="../static/images/db_logo.png" alt="Disconnect Dropbox account" method="post" class="img-rounded">
                   <br> <br>
@@ -94,14 +95,14 @@
                   Connect your Dropbox account here!
                 </a>
               {% endif %}
-            </div>
+        	  </div>
           </div>
         </div>
         <div class="col-md-4">
           <div class="panel panel-info text-center">
-            <div class="panel-heading">Google Drive
-            </div>
-            <div class="panel-body">
+    				  <div class="panel-heading">Google Drive
+  				  </div>
+    				<div class="panel-body">
               {% if gd_conn %}
               <strong>STATUS:</strong> <span class="label label-success">Connected</span>
               <br> <br>
@@ -120,18 +121,18 @@
                 </a>
               {% endif %}
             </div>
-          </div>
+    			</div>
         </div>
         <div class="col-md-4">
           <div class="panel panel-primary text-center">
             <div class="panel-heading">Dropbox
             </div>
             <div class="panel-body">
-              Connect your (Service_Name) account here!
-              <br>
-              <!-- <img src="..." alt="..." class="img-rounded"> -->
-            </div>
-          </div>
+    			    Connect your (Service_Name) account here!
+    			    <br>
+    			    <!-- <img src="..." alt="..." class="img-rounded"> -->
+    			  </div>
+    			</div>
         </div>
       </div>
 
