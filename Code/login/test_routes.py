@@ -57,7 +57,7 @@ def testajax():
 				print "to testajax (else)"			
 				# session['p_email'] = p_email
 				print "testajax: Logged in!"
-				return json.dumps({'status':'OK','email': session['p_email']})
+				return json.dumps({'status':'OK','email': p_email})
 		else: 
 			# if user doesn't exist in records
 			print "testajax: User record not found in DB"
