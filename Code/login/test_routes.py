@@ -21,9 +21,6 @@ from forms import LoginForm_1, LoginForm_2
 # DB
 from models import get_user_record, set_user_record
 
-# CORS - Cross-Origin Resource Sharing
-# from flask.extself.cors import CORS, cross_origin
-
 # To test DB connection
 @app.route('/testdb')
 def testdb():
@@ -33,7 +30,6 @@ def testdb():
 		return "Not Working"
 
 @app.route('/testajax', methods=['GET', 'POST'])
-# @cross_origin()
 def testajax():
 	form = LoginForm_1()
 	print "inside testajax1"
@@ -72,7 +68,6 @@ def testajax():
 	return render_template('test.html')
 
 @app.route('/testajax2', methods=['GET', 'POST'])
-# @cross_origin()
 def testajax2():
 	form = LoginForm_2()
 	
@@ -83,34 +78,34 @@ def testajax2():
 		# print "email = ", session['p_email']
 		p_email = cgi.escape(request.form['Email'], True).lower()
 		# if p_email:
-			p_passphrase = request.form['Passphrase']
-		
-			# DEBUG
-			print "AJAX email_2:", p_email
-			print "AJAX passphrase_2: ", p_passphrase
+		p_passphrase = request.form['Passphrase']
+	
+		# DEBUG
+		print "AJAX email_2:", p_email
+		print "AJAX passphrase_2: ", p_passphrase
 
-			# Verify 2nd stage of login using email + passphrase
-			user = get_user_record(p_email)
-			print "user.email (login2) : ", user.email
-			if user:				
-				if not form.authenticate(p_email, p_passphrase):
-					print "form verify 2 = false"
-					# Invalid login. Return error
-					print "testajax2: Invalid email or password"
-					return json.dumps({'status':'NotOK', 'Error': 'Invalid email or password'})			
+		# Verify 2nd stage of login using email + passphrase
+		user = get_user_record(p_email)
+		print "user.email (login2) : ", user.email
+		if user:				
+			if not form.authenticate(p_email, p_passphrase):
+				print "form verify 2 = false"
+				# Invalid login. Return error
+				print "testajax2: Invalid email or password"
+				return json.dumps({'status':'NotOK', 'Error': 'Invalid email or password'})			
 
-				#Success; Redirect to profile page
-				else: 
-					session.pop('p_email', None)
-					print "to profile"
-					# session['user'] = p_email
-					# login_user(user, remember = remember_me)
-					# flash('You were successfully logged in')
-					return json.dumps({'status':'OK','email': p_email})
+			#Success; Redirect to profile page
 			else: 
-				# if user doesn't exist in records
-				print "testajax2: User record not found in DB"
-				return json.dumps({'status':'NotOK', 'Error': 'No record found. Please sign up for a new account!'})
+				session.pop('p_email', None)
+				print "to profile"
+				# session['user'] = p_email
+				# login_user(user, remember = remember_me)
+				# flash('You were successfully logged in')
+				return json.dumps({'status':'OK','email': p_email})
+		else: 
+			# if user doesn't exist in records
+			print "testajax2: User record not found in DB"
+			return json.dumps({'status':'NotOK', 'Error': 'No record found. Please sign up for a new account!'})
 
 	# GET requests
 	print "testajax2: GET"
@@ -121,18 +116,67 @@ def testajax2():
 def testupload():
 	
 	if request.method == 'POST':
-		filename =  request.json['filename']
-		file_content = request.json['file_content']
+		req = request.json['req']
 		user_email = request.json['user_email']
-		
-		# Debug 
-		print "\n==============BEGIN TEST UPLOAD=============="
-		print "filename: ", filename
-		print "file_content", file_content
+		print "req = ", req
 		print "user_email", user_email
-		print "\n==============END TEST UPLOAD=============="
 		
-		return json.dumps({'status':'OK','filename':filename, 'file_content':file_content, 'user_email':user_email})
+		if req == 'upload':
+			# Gets encrypted file contents from plugin and sends to DB for saving
+			
+			filename =  request.json['filename']
+			file_content = request.json['file_content']
+			
+			# Debug 
+			print "\n==============(if req == 'upload')=============="
+			print "user_email", user_email
+			print "filename: ", filename
+			print "file_content", file_content
+			print "\n==============END TEST UPLOAD=============="
+			
+			return json.dumps({'status':'OK', 'user_email':user_email, 'filename':filename, 'file_content':file_content})
+
+		else if req == 'download':
+			# Retrives file from DB and sends it to plugin
+
+			filename =  request.json['filename']
+
+			# Debug 
+			print "\n==============(else if req == 'download')=============="
+			print "user_email", user_email
+			print "filename: ", filename
+			print "\n==============END TEST UPLOAD=============="
+			
+			return json.dumps({'status':'OK', 'user_email':user_email,'filename':filename})
+
+		else if req == 'upload_metadata':
+			# Gets encrypted metadata from plugin and sends to DB for saving
+
+			metadata = request.json['metadata']
+
+			# Debug 
+			print "\n==============(else if req == 'upload_metadata')=============="
+			print "user_email", user_email
+			print "metadata: ", metadata
+			print "\n==============END TEST UPLOAD=============="
+			
+			return json.dumps({'status':'OK', 'user_email':user_email,'metadata':metadata})
+
+		else if req == 'download_metadata':
+			# Retrives entire metadata (right from the root directory) from DB and sends it to plugin
+
+			# Debug 
+			print "\n==============(else if req == 'download_metadata')=============="
+			print "user_email", user_email
+			print "\n==============END TEST UPLOAD=============="
+			
+			return json.dumps({'status':'OK', 'user_email':user_email})
+
+		else:
+			print "request parameter error"
+			return json.dumps({'status': 'NotOK'})
+
+
 	else:
 		print"GET Request"
 		return render_template('signup.html')
