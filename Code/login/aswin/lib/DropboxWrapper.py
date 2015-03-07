@@ -18,7 +18,8 @@ class DropboxWrapper:
         #print "used: ", quota_info['normal']
         quotaLeft   = quota_info['quota']-quota_info['shared']-quota_info['normal']
         print "dropbox storage remaining: %s bytes" % quotaLeft
-        return quotaLeft
+        return (quotaLeft, quota_info['quota'])
+
 
 
     def uploadFile(self, filePath, virtualPath):

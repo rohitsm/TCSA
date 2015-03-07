@@ -24,9 +24,10 @@ class GoogleDriveWrapper:
 
     def getStorageSizeLeft(self):
         userAbout       = self.driveService.about().get().execute()
-        storageRemaining= long(userAbout['quotaBytesTotal'])-long(userAbout['quotaBytesUsedAggregate'])
+        quota           = long(userAbout['quotaBytesTotal'])
+        storageRemaining= quota-long(userAbout['quotaBytesUsedAggregate'])
         print 'gDrive storage remaining: %s bytes' % storageRemaining
-        return storageRemaining
+        return (storageRemaining,quota)
 
     #by default from argument parentFolderID, folder will be created inside root
     def createFolder(self, folderName, parentFolderID='root'):

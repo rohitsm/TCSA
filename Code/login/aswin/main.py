@@ -17,7 +17,8 @@ class Main:
             6:self.deleteFile,
             7:self.createFolder,
             8:self.deleteFolder,
-            9:self.doexit
+            9:self.spreadStorage,
+            10:self.doexit
         }
 
         self.storageType = {
@@ -99,8 +100,8 @@ class Main:
         MongoDBWrapper().deleteFolder(email, folderPath)
         pass
 
-    def renameFolder(self):
-        pass
+    def spreadStorage(self):
+        MongoDBWrapper().spreadData('aswin.setiadi@gmail.com')
 
     def doexit(self):
         self.exit = True
@@ -134,7 +135,8 @@ class Main:
                                 "6. deletefile\n"
                                 "7. createfolder\n"
                                 "8. deletefolder\n"
-                                "9. exit\n"
+                                "9. spreadstorage\n"
+                                "10. exit\n"
                                 "enter 1-10:"
                                 ))
             if choice in self.selection.keys():

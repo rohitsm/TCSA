@@ -1,4 +1,6 @@
+from __future__ import division
 __author__ = 'aswin'
+
 import pprint
 import re
 from pymongo import MongoClient
@@ -7,7 +9,7 @@ from GoogleDriveWrapper import GoogleDriveWrapper
 from Test import Test
 import os
 import ConfigParser
-
+import sys
 
 #ross library
 #from Code.login.dropbox_conn import get_dropbox_access_token
@@ -45,35 +47,33 @@ class MongoDBWrapper:
         self.credential     = None
 
         self.STORAGE_LIMIT_BUFFER=1024.0
-        self.ros=False
     ###################################################################################################################
     def _getAccessToken(self, email):
-        if self.ros:
-            return get_dropbox_access_token()
-        else:
+            #return get_dropbox_access_token()
             return Test().getAuthToken(email)
     def _getCredential(self, email):
-        if self.ros:
-            return get_gdrive_refresh_token()
-        else:
+            #return get_gdrive_refresh_token()
             return Test().getCredentials(email)
     ###################################################################################################################
     #get storage size
-    def _getDropboxRemainingStorage(self, accessToken):
+    def _getDropboxStorage(self, accessToken):
+        #tuple (quotaleft, totalquota)
         return DropboxWrapper(accessToken).getDropboxStorageSizeLeft()
 
-    def _getBoxRemainingStorage(self):
+    def _getBoxStorage(self):
         pass
 
-    def _getGoogleDriveRemainingStorage(self, credentials):
+    def _getGoogleDriveStorage(self, credentials):
+        #tuple (quotaleft, totalquota)
         return GoogleDriveWrapper(credentials).getStorageSizeLeft()
+
     ###################################################################################################################
 
     def setCollection(self, email):
         self.aCollection    = self.db[email]
 
     ###################################################################################################################
-    def _getLargestRemainingStorage(self, email):
+    def _getRemainingStorage(self, email):
         aList=[]
         #storageSizePair={}
         #return a list of 1 element(dictionary), chose dict element called 'storage'
@@ -86,23 +86,27 @@ class MongoDBWrapper:
                 #inside ross dropbox_conn implemented session checking
                 self.accessToken= self._getAccessToken(email)
                 #storageSizePair['dropbox']=self._getDropboxRemainingStorage(self.accessToken)
-                aList.append(("dropbox", self._getDropboxRemainingStorage(self.accessToken)))
+                s=self._getDropboxStorage(self.accessToken)
+                aList.append(("dropbox", s[0], s[1]))
             elif storage['type'] == 'box':
                 raise NotImplementedError
             elif storage['type'] == 'googledrive':
                 #ROS server here
                 self.credential= self._getCredential(email)
                 #storageSizePair['googledrive']=self._getGoogleDriveRemainingStorage(self.credential)
-                aList.append(("googledrive", self._getGoogleDriveRemainingStorage(self.credential)))
+                ss=self._getGoogleDriveStorage(self.credential)
+                aList.append(("googledrive", ss[0], ss[1] ))
 
         #itermitems() will generate a set of tuples eg. ('a', 1000), the key argument dictate
         #the function to compare the second value(1000), hence the function x[1]
         #return (key, value) tuple so put [0] to get the storage
         #chosenStorage= max(storageSizePair.iteritems(), key= lambda x: x[1])[0]
+
+        #sorted in ascending order
         aList= sorted(aList, key= lambda x: x[1])
-        print aList[0][0], ' has largest remaining storage.'
-        #choseStorage is a string of either:
-        #dropbox,box, googledrive
+        print aList[-1][0], ' has largest remaining storage.'
+        #(storage name, storage left, storage size)
+        #aList is a list of tuple e.g:('dropbox',123.45)
         return aList
 
     def _getAnyStorage(self):
@@ -355,8 +359,8 @@ class MongoDBWrapper:
         #fileID=wrapper.uploadFile(filePath=filePath, parent_id=parentID)
         #return fileID
 
-
-        aListofTuple=self._getLargestRemainingStorage(email)
+        #(storagename, quotaleft, totalquota)
+        aListofTuple=self._getRemainingStorage(email)
         if fileSize>(aListofTuple[0][1]-self.STORAGE_LIMIT_BUFFER):
             print "upload fail due to file size larger than the largest available cloud storag, aborting upload operation..."
             self.client.disconnect()
@@ -365,7 +369,7 @@ class MongoDBWrapper:
         chosenStorage=aListofTuple[0][0]
 
         #NOTE
-        #access token, credentials etc. already taken care by _getLargestRemainingStorage()
+        #access token, credentials etc. already taken care by _getRemainingStorage()
 
 
         if chosenStorage == 'dropbox':
@@ -727,18 +731,25 @@ class MongoDBWrapper:
 
 
     def renameFolder(self):
-        aList=[
-            '/fruit/red/apple.jpg',
-            '/fruit/orange/oranges.jpg'
-        ]
-
-
+        raise NotImplementedError
 
     def renameFile(self):
         raise NotImplementedError
 
-
-
+    def spreadData(self, email):
+        self.setCollection(email)
+        #storages will be a list of tuple(storagename, quotaleft,totalquota)
+        storages=self._getRemainingStorage(email)
+        print storages
+        totalStorages   = sum([t[2] for t in storages])
+        totalUsage      = sum([t[2]-t[1] for t in storages])
+        ratio           = totalUsage/totalStorages
+        print ratio
+        for storage in storages:
+            if storage[1]>ratio*storage[2]:
+                print "%s exceed ratio" % storage[0]
+            else:
+                print "%s below ratio" % storage[0]
     def getTempFolderName(self, email):
         self.setCollection(email)
         aRecord=self.aCollection.find(
@@ -750,6 +761,7 @@ class MongoDBWrapper:
 if __name__ == '__main__':
     #only call these lines when this file is ran
     mongodb = MongoDBWrapper()
+    mongodb.spreadData('aswin.setiadi@gmail.com')
     #mongodb.delFile('aswin.setiadi@gmail.com','/animal/monkey.jpg')
     #mongodb.removePath('aswin.setiadi@gmail.com', 'dropbox', '/parent/path')
     #mongodb.getFolderTree('aswin.setiadi@gmail.com')
