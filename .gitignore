@@ -1,12 +1,10 @@
 Code/bin/*
 Code/include/*
 Code/lib/*
+pb_keys/*
+Apache\ configs\ and\ SSL\ certs/*
 *.Python
 *.pyc
-<<<<<<< HEAD
-config.py
-=======
 config.py
 tcsa.wsgi
 test.py
->>>>>>> ross_v3
