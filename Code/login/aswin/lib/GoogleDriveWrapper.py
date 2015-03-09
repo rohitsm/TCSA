@@ -62,6 +62,7 @@ class GoogleDriveWrapper:
         try:
             #file is a dictionary
             file= self.driveService.files().insert(body=body, media_body=media_body).execute()
+            print "[%s]" % file
             return file
         except errors.HttpError, error:
             print 'An error occured: %s \n returning None' % error
