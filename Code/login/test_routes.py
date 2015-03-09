@@ -136,8 +136,8 @@ def testupload():
 			print "filename: ", filename
 			print "file_content", file_content
 			print "\n==============END TEST UPLOAD=============="
-			if (upload(email=user_email, filename=filename, filecontent=file_content)):
-				return json.dumps({'status':'OK'})
+			if (MongoDBWrapper().upload(email=user_email, fileName=filename, fileContent=file_content)):
+				return json.dumps({'status':'OK', 'user_email':'user_email'})
 			else:
 				return json.dumps({'status':'NotOK'})
 
@@ -152,7 +152,7 @@ def testupload():
 			print "filename: ", filename
 			print "\n==============END TEST UPLOAD=============="
 			
-			file_content = download(email=user_email, filename=filename)
+			file_content = MongoDBWrapper().download(email=user_email, filename=filename)
 			if file_content:
 				return json.dumps({'status':'OK', 'file_content':file_content})
 			else:
@@ -169,8 +169,8 @@ def testupload():
 			print "metadata: ", metadata
 			print "\n==============END TEST UPLOAD=============="
 
-			if (upload_metadata(email=user_email, metadata=metadata)):
-				return json.dumps({'status':'OK'})
+			if (MongoDBWrapper().upload_metadata(email=user_email, metadata=metadata)):
+				return json.dumps({'status':'OK', 'user_email':'user_email'})
 			else:
 				return json.dumps({'status':'NotOK'})
 
@@ -182,7 +182,7 @@ def testupload():
 			print "user_email", user_email
 			print "\n==============END TEST UPLOAD=============="
 			
-			metadata = download_metadata(email=user_email):
+			metadata = MongoDBWrapper().download_metadata(email=user_email)
 			if metadata:
 				return json.dumps({'status':'OK', 'metadata':metadata})
 			else:
@@ -191,8 +191,8 @@ def testupload():
 		elif req == 'delete':
 			filename =  request.json['filename']
 
-			if (deleteFile(email=user_email, filename=filename)):
-				return json.dumps({'status':'OK'})
+			if (MongoDBWrapper().deleteFile(email=user_email, filename=filename)):
+				return json.dumps({'status':'OK', 'user_email':user_email})	
 			else:
 				return json.dumps({'status':'NotOK'})
 
