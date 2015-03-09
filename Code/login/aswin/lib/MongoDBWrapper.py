@@ -343,12 +343,15 @@ class MongoDBWrapper:
 
 
 
-    def upload(self, email, virtualPath, fileLocation):
+    def upload(self, email, fileName, fileContent):
+        #email          =user email
+        #virtualpath    =
+        #fileLocation   =file content
         self.setCollection(email)
-        fileSize     = os.stat(fileLocation).st_size
+        ##fileSize     = os.stat(fileLocation).st_size
         #print "file size: ",fileSize, " bytes"
         #cos of greedy first .*, the / will reach till just before last part of the path
-        filename     = re.match(r".*/(.*)", fileLocation).group(1)
+        #filename     = re.match(r".*/(.*)", fileLocation).group(1)
 
 
 
@@ -367,22 +370,24 @@ class MongoDBWrapper:
             return
 
         chosenStorage=aListofTuple[0][0]
-
         #NOTE
         #access token, credentials etc. already taken care by _getRemainingStorage()
 
 
         if chosenStorage == 'dropbox':
             wrapper= DropboxWrapper(self.accessToken)
-            wrapper.uploadFile(fileLocation, virtualPath)
+            wrapper.uploadFile(fileName, fileContent)
 
             #update database
-            if virtualPath != '':
+            #if virtualPath != '':
                 #file not in root folder, may need to remove existing folder record
-                if not self._replaceVirtualOldPath(virtualPath+'/'+filename, chosenStorage=chosenStorage):
+                #if not self._replaceVirtualOldPath(virtualPath+'/'+filename, chosenStorage=chosenStorage):
                     #no existing parentPath record, call below method
                     #note: in practice, this won't happen cause user cant create file in non existing parent folder
-                    self._addNewVirtualPath(virtualPath+'/'+filename, chosenStorage)
+                 #   self._addNewVirtualPath(virtualPath+'/'+filename, chosenStorage)
+            #else:
+                #file in root folder, add new instance of record
+            self._addNewVirtualPath('/'+fileName, chosenStorage)
 
         elif chosenStorage == 'box':
             raise NotImplementedError
@@ -394,24 +399,31 @@ class MongoDBWrapper:
                 {'_id':0, 'rootID':1}
             ))[0]['rootID']
 
+            #todo
+            fileLocation= 'Code/aswin/files/'+self.getTempFolderName(email)
+            open(fileLocation+'/'+fileName, 'wb').write(fileContent)
             wrapper =GoogleDriveWrapper(self.credential)
-            file    =wrapper.uploadFile(filePath=fileLocation, parent_id=rootID)
+            file    =wrapper.uploadFile(filePath=fileLocation+'/'+fileName, parent_id=rootID)
 
             #UPDATE DATABASE
             newRecord={
-                'virtualPath': virtualPath+'/'+filename,
+                'virtualPath': '/'+fileNname,
                 'fileID'     : file['id']
             }
-            if virtualPath != '':
+            #if virtualPath != '':
                 #file not in root folder, may need to remove existing folder record
-                if not self._replaceVirtualOldPath(virtualPath+'/'+filename, chosenStorage=chosenStorage, newRecord=newRecord):
+            #    if not self._replaceVirtualOldPath(virtualPath+'/'+filename, chosenStorage=chosenStorage, newRecord=newRecord):
                     #no existing parentPath record, call below method
                     #note: in practice, this won't happen cause user cant create file in non existing parent folder
-                    self._addNewVirtualPath(virtualPath+'/'+filename, chosenStorage, newRecord)
+            #        self._addNewVirtualPath(virtualPath+'/'+filename, chosenStorage, newRecord)
+            #else:
+                #file in root folder, add new instance of record
+            self._addNewVirtualPath('/'+fileName, chosenStorage, newRecord)
 
         self.client.disconnect()
+        return True
 
-    def download(self, email, virtualPath, savePath):
+    def download(self, email, filename):
         #find where the file is stored, return pymongo cursor object, convert to list
         self.setCollection(email)
         record= self.aCollection.find(
@@ -420,12 +432,13 @@ class MongoDBWrapper:
                  'type':1,
                  'metadata':{
                      '$elemMatch':{
-                        'virtualPath':virtualPath
+                        'virtualPath':'/'+filename
                      }
                  }
             }
 
         )
+        content= False
         for eachStorage in record:
             if 'metadata' in eachStorage:
                 print 'found record in %s' % eachStorage['type']
@@ -434,7 +447,8 @@ class MongoDBWrapper:
                     #call ross func
                     self.accessToken=self._getAccessToken(email)
                     wrapper=DropboxWrapper(self.accessToken)
-                    wrapper.downloadFile(savePath, virtualPath)
+                    content= wrapper.downloadFile(filename)
+
                 elif eachStorage['type']=='box':
                     raise
 
@@ -443,11 +457,36 @@ class MongoDBWrapper:
                     #call ross func to get crendentials
                     self.credential=self._getCredential(email)
                     wrapper=GoogleDriveWrapper(self.credential)
-                    wrapper.downloadFile(fileID, savePath)
+                    content= wrapper.downloadFile(fileID)
                 break
             else:
                 print 'no record found in %s' % eachStorage['type']
         self.client.disconnect()
+
+        return content
+
+    def upload_metadata(self, email, metadata):
+        self.setCollection(email)
+        self.aCollection.update(
+                {'type':self._getAnyStorage()},
+                {'$push':{'metadata':{'foldertree':metadata}}}
+            )
+        self.client.disconnect()
+        return True
+
+    def download_metadata(self, email):
+        self.setCollection(email)
+        metadata=self.aCollection.find(
+            {},{'_id':0,'metadata.foldertree':1, 'type':1}
+        )
+        for result in metadata:
+            for md in result['metadata']:
+
+                self.client.disconnect()
+                return md['foldertree']
+        self.client.disconnect()
+        return False
+
 
     def getFolderTree(self,email):
         self.setCollection(email)
@@ -489,7 +528,7 @@ class MongoDBWrapper:
         #pprint.pprint(folderTree)
 
 
-    def delFile(self, email, virtualPath):
+    def delete(self, email, fileName, virtualPath):
         #/animal/monkey.jpg
         #/creature/animal.jpg
         #/animal/horse.jpg
@@ -511,16 +550,17 @@ class MongoDBWrapper:
                 ('/animal11/t.jpg','googledrive'),
                 ('/file.pdf', 'googledrive')
         ]
+        f='/'+fileName
         virtualPathStorage=None
         self.setCollection(email)
         #get all path and their respective storage,including the path to be deleted
         temp=self._getAllVirtualPathList()
         for t in temp:
-            if t[0]==virtualPath:
+            if t[0]==f:
                 #found the storage where file is stored
                 virtualPathStorage=t[1]
                 #remove this path in all path list
-                temp.remove((virtualPath, virtualPathStorage))
+                temp.remove((f, virtualPathStorage))
                 print 'virtualpathStorage found...'
                 break
 
@@ -528,7 +568,7 @@ class MongoDBWrapper:
             #ros function here
             self.accessToken=self._getAccessToken(email)
             wrapper=DropboxWrapper(self.accessToken)
-            wrapper.deleteFile(virtualPath)
+            wrapper.deleteFile(f)
         elif virtualPathStorage=='googledrive':
             #ros function here
             self.credential=self._getCredential(email)
@@ -541,7 +581,7 @@ class MongoDBWrapper:
                      'type':1,
                      'metadata':{
                          '$elemMatch':{
-                            'virtualPath':virtualPath
+                            'virtualPath':f
                          }
                      }
                 }
@@ -553,8 +593,11 @@ class MongoDBWrapper:
                 wrapper.deleteFile(fileID)
 
         #delete virtualPath record in db
-        self._removePath(virtualPath, virtualPathStorage)
+        self._removePath(f, virtualPathStorage)
         print "file deleted from database..."
+        self.client.disconnect()
+        return True
+
 
         #check if there is a need to add parent folder record
         mObj=re.match(r'(^.+/)[^/]+$', virtualPath)

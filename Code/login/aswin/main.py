@@ -57,7 +57,7 @@ class Main:
         email           ='aswin.setiadi@gmail.com'
         #to upload file in root folder, pass ''
         #below example means uploading file monkey.jpg to TCSA at /images folder
-        virtualPath     ='/fruits'
+        virtualPath     =''
         fileLocation    ='files/orange.jpg'
         MongoDBWrapper().upload(email, virtualPath, fileLocation)
         print 'file stored in online storage. destroying local copy..'
@@ -68,7 +68,7 @@ class Main:
     #arg: email, file path in tcsa, save path(must be full path!!)
     def download(self):
         email           ='aswin.setiadi@gmail.com'
-        virtualPath     ='/fruits/orange/orange.jpg'
+        virtualPath     ='/files/testfile.txt'
         saveLocation    ='C:/Users/aswin/Downloads'
         MongoDBWrapper().download(email, virtualPath, saveLocation)
 

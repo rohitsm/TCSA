@@ -12,26 +12,31 @@ except ImportError:
 '''
 
 if __name__=="__main__":
-    form        =cgi.FieldStorage()
+    form            =cgi.FieldStorage()
     #these 3 should be the argument for the data in ajax call
     #uploading to root folder should have string '' in TCSApath
     #uploading to a folder e.g. imageFolder should put string '/imageFolder' in TCSApath
     fileitem        =form['file']
     email           =form['email']
-    TCSAfolderPath  =form['TCSApath']
+    ##TCSAfolderPath  =form['TCSApath']
+    fn              =form['filename']
 
     #check if file has reached to this server completely
     if fileitem.filename:
             #retrieve filename without the folder path to prevent directory traversal attack
-            fn=os.path.basename(fileitem.filename)
+            ##fn=os.path.basename(fileitem.filename)
             #generate folder according to each unique user record ID
-            folderPath= 'files/'+MongoDBWrapper().getTempFolderName(email)
-            open(folderPath+'/'+fn, 'wb').write(fileitem.file.read())
+            tempFolder= MongoDBWrapper().getTempFolderName(email)
+            os.makedirs('files/'+tempFolder
 
-            MongoDBWrapper.upload(email, TCSAfolderPath, folderPath+'/'+fn)
+            )
+            filePath='files/'+tempFolder+'/'+fn
+            open(filePath, 'wb').write(fileitem.file.read())
+
+            MongoDBWrapper().upload(email, '', filePath)
             print 'file uploaded to cloud storage..'
             #delete this unique folder belonging to this user
-            os.remove(folderPath)
+            os.remove(filePath)
             print 'file deleted from local folder..'
 
 

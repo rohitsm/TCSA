@@ -67,7 +67,7 @@ class GoogleDriveWrapper:
             print 'An error occured: %s \n returning None' % error
             return None
 
-    def downloadFile(self, fileID, saveLocation):
+    def downloadFile(self, fileID):
         try:
             file        = self.driveService.files().get(fileId=fileID).execute()
             download_url= file.get('downloadUrl')
@@ -75,12 +75,13 @@ class GoogleDriveWrapper:
                 resp, content= self.driveService._http.request(download_url)
                 if resp.status == 200:
                     #print 'status : %s' % resp
-                    out = open(saveLocation+'/'+file['title'], 'wb')
-                    out.write(content)
-                    out.close()
+                    #out = open(saveLocation+'/'+file['title'], 'wb')
+                    #out.write(content)
+                    #out.close()
+                    return content
                 else:
                     print 'An error occured: %s' % resp
-                    return None
+                    return False
         except errors.HttpError, error:
             print 'An error occured: %s' % error
 

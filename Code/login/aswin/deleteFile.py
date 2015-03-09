@@ -7,4 +7,5 @@ if __name__== '__main__':
     form  =cgi.FieldStorage()
     email       =form['email']
     filePath    =form['TCSApath']
-    MongoDBWrapper().delFile(email, filePath)
+    ##/file.xyz means file in the root
+    MongoDBWrapper().delFile(email, '/'+filePath)

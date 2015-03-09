@@ -22,11 +22,11 @@ class DropboxWrapper:
 
 
 
-    def uploadFile(self, filePath, virtualPath):
+    def uploadFile(self, fileName, fileContent):
         #assume filePath contain filename, virtualPath does not
-        matchObj= re.match(r".*/(.*)", filePath)
-        filename='/'+matchObj.group(1)
-        f           = open(filePath, 'rb')
+        #matchObj= re.match(r".*/(.*)", filePath)
+        #filename='/'+matchObj.group(1)
+        #f           = open(filePath, 'rb')
         #argument for filePath and storagePath is the same
         #so no problem with saving filenames with same name in dropbox because
         #files with same name will be stored in different folder
@@ -35,20 +35,28 @@ class DropboxWrapper:
         #eg saving in /animal/monkey.pdf just write animal/monkey.pdf
         #works for both uploading and downloading
         #but try to use it constantly
-        response    = self.client.put_file(virtualPath+filename, f)
-        f.close()
 
-    def downloadFile(self, saveLocation, storagePath):
-        f, metadata = self.client.get_file_and_metadata(storagePath)
+        #fileName   = name of the encrypted file
+        #fileContent= stream of char of the file
+        f='/'+fileName
+        response    = self.client.put_file(f, fileContent)
+        return response
+        #f.close()
+
+    def downloadFile(self, fileName):
+        f, metadata = self.client.get_file_and_metadata('/'+fileName)
         #this will extract the filename from storagePath
         #.* is greedy in nature, so it will cut at last /
-        matchObj= re.match(r".*/(.*)", storagePath)
-        fileName= '/'+matchObj.group(1)
+        #matchObj= re.match(r".*/(.*)", storagePath)
+        #fileName= '/'+matchObj.group(1)
 
-        out         = open(saveLocation+fileName, 'wb')
-        out.write(f.read())
+        #out         = open(saveLocation+fileName, 'wb')
+        #out.write(f.read())
+        content= f.read()
         f.close()
-        out.close()
+        #return a stream of char of the file
+        return content
+        #out.close()
 
     def deleteFile(self, filePath):
         '''
