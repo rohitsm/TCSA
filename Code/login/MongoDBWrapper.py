@@ -355,81 +355,86 @@ class MongoDBWrapper:
         #email          =user email
         #virtualpath    =
         #fileLocation   =file content
-        self.setCollection(email)
-        fileSize= len(fileContent)
-        ##fileSize     = os.stat(fileLocation).st_size
-        #print "file size: ",fileSize, " bytes"
-        #cos of greedy first .*, the / will reach till just before last part of the path
-        #filename     = re.match(r".*/(.*)", fileLocation).group(1)
+        try:
+            print "__aswin upload__"
+            self.setCollection(email)
+            fileSize= len(fileContent)
+            ##fileSize     = os.stat(fileLocation).st_size
+            #print "file size: ",fileSize, " bytes"
+            #cos of greedy first .*, the / will reach till just before last part of the path
+            #filename     = re.match(r".*/(.*)", fileLocation).group(1)
 
 
 
 
 
-        #ef _uploadGoogleDrive(self, credential, filePath, parentID):
-        #wrapper= GoogleDriveWrapper(credential)
-        #fileID=wrapper.uploadFile(filePath=filePath, parent_id=parentID)
-        #return fileID
+            #ef _uploadGoogleDrive(self, credential, filePath, parentID):
+            #wrapper= GoogleDriveWrapper(credential)
+            #fileID=wrapper.uploadFile(filePath=filePath, parent_id=parentID)
+            #return fileID
 
-        #(storagename, quotaleft, totalquota)
-        aListofTuple=self._getRemainingStorage(email)
-        #-1 cause sorted in ascending order
-        if fileSize>(aListofTuple[-1][1]-self.STORAGE_LIMIT_BUFFER):
-            print "upload fail due to file size larger than the largest available cloud storag, aborting upload operation..."
+            #(storagename, quotaleft, totalquota)
+            aListofTuple=self._getRemainingStorage(email)
+            #-1 cause sorted in ascending order
+            if fileSize>(aListofTuple[-1][1]-self.STORAGE_LIMIT_BUFFER):
+                print "upload fail due to file size larger than the largest available cloud storag, aborting upload operation..."
+                self.client.disconnect()
+                return
+            #
+            chosenStorage=aListofTuple[-1][0]
+            #NOTE
+            #access token, credentials etc. already taken care by _getRemainingStorage()
+
+
+            if chosenStorage == 'dropbox':
+                wrapper= DropboxWrapper(self.accessToken)
+                wrapper.uploadFile(fileName, fileContent)
+
+                #update database
+                #if virtualPath != '':
+                    #file not in root folder, may need to remove existing folder record
+                    #if not self._replaceVirtualOldPath(virtualPath+'/'+filename, chosenStorage=chosenStorage):
+                        #no existing parentPath record, call below method
+                        #note: in practice, this won't happen cause user cant create file in non existing parent folder
+                     #   self._addNewVirtualPath(virtualPath+'/'+filename, chosenStorage)
+                #else:
+                    #file in root folder, add new instance of record
+                self._addNewVirtualPath('/'+fileName, chosenStorage)
+
+            elif chosenStorage == 'box':
+                raise NotImplementedError
+
+            elif chosenStorage == 'googledrive':
+                #get TCSA folder id
+                rootID  =list(self.aCollection.find(
+                    {'type':'googledrive'},
+                    {'_id':0, 'rootID':1}
+                ))[0]['rootID']
+
+                #todo
+                fileLocation= 'files/'+self.getTempFolderName(email)
+                filePath =fileLocation+'/'+fileName
+                open(filePath, 'wb').write(fileContent)
+                wrapper =GoogleDriveWrapper(self.credential)
+                file    =wrapper.uploadFile(filePath=filePath, parent_id=rootID)
+
+                #UPDATE DATABASE
+                newRecord={
+                    'virtualPath': '/'+fileName,
+                    'fileID'     : file['id']
+                }
+
+                self._addNewVirtualPath('/'+fileName, chosenStorage, newRecord)
+
             self.client.disconnect()
-            return
-        #
-        chosenStorage=aListofTuple[-1][0]
-        #NOTE
-        #access token, credentials etc. already taken care by _getRemainingStorage()
-
-
-        if chosenStorage == 'dropbox':
-            wrapper= DropboxWrapper(self.accessToken)
-            wrapper.uploadFile(fileName, fileContent)
-
-            #update database
-            #if virtualPath != '':
-                #file not in root folder, may need to remove existing folder record
-                #if not self._replaceVirtualOldPath(virtualPath+'/'+filename, chosenStorage=chosenStorage):
-                    #no existing parentPath record, call below method
-                    #note: in practice, this won't happen cause user cant create file in non existing parent folder
-                 #   self._addNewVirtualPath(virtualPath+'/'+filename, chosenStorage)
-            #else:
-                #file in root folder, add new instance of record
-            self._addNewVirtualPath('/'+fileName, chosenStorage)
-
-        elif chosenStorage == 'box':
-            raise NotImplementedError
-
-        elif chosenStorage == 'googledrive':
-            #get TCSA folder id
-            rootID  =list(self.aCollection.find(
-                {'type':'googledrive'},
-                {'_id':0, 'rootID':1}
-            ))[0]['rootID']
-
-            #todo
-            fileLocation= 'files/'+self.getTempFolderName(email)
-            filePath =fileLocation+'/'+fileName
-            open(filePath, 'wb').write(fileContent)
-            wrapper =GoogleDriveWrapper(self.credential)
-            file    =wrapper.uploadFile(filePath=filePath, parent_id=rootID)
-
-            #UPDATE DATABASE
-            newRecord={
-                'virtualPath': '/'+fileName,
-                'fileID'     : file['id']
-            }
-
-            self._addNewVirtualPath('/'+fileName, chosenStorage, newRecord)
-
-        self.client.disconnect()
-        return True
+            return True
+        except:
+            print "upload fail due to exception"
 
     def download(self, email, filename):
         #find where the file is stored, return pymongo cursor object, convert to list
         self.setCollection(email)
+        print "__aswin download__"
         record= self.aCollection.find(
             {},
             {    '_id':0,
@@ -470,6 +475,7 @@ class MongoDBWrapper:
         return content
 
     def upload_metadata(self, email, metadata):
+        print "__aswin upload_metadata__"
         self.setCollection(email)
         r=list(mongodb.aCollection.find(
         {"foldertree":1},{"_id":0,"value":1}
@@ -492,6 +498,7 @@ class MongoDBWrapper:
         return True
 
     def download_metadata(self, email):
+        print "__aswin download_metadata__"
         self.setCollection(email)
         metadata=list(self.aCollection.find(
             {"foldertree":1},{"_id":0,"value":1}
@@ -554,6 +561,7 @@ class MongoDBWrapper:
         #delete /animal1/t.jpg
 
         #for test cases
+        print "__aswin delete__"
         aList=[
             ('/animal/monkey.jpg','dropbox'),
              #('/creature/animal','dropbox'),
