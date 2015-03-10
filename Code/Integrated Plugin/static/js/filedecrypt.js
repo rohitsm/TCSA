@@ -5,20 +5,67 @@ var contentBytes=[];
 var password="appa1234";//localStorage.getItem("password");
 var file;
 var newstr='';
-function decryptFileProcess(file){
-	var fr = new FileReader();
-	fr.readAsText(file);
-	
-	fr.onload = function(e) {
-	  var str=e.target.result; //load file bytes to buffer
+
+function download(useremail,filename){
+      data= { 
+      		'req': 'download',
+		    'user_email': useremail,
+		    'filename':filename
+  		}
+
+      $.ajax({
+        url :  "https://cloudstag.me/testupload",
+        type: 'POST',
+        data: JSON.stringify(data, null, '\t'),
+        contentType: 'application/json;charset=UTF-8',
+       	crossOrigin: true,
+        xhrFields: {
+        	withCredentials: false
+        },
+        success: function(repsonse,textStatus, jqXHR) {
+          var status= JSON.parse(jqXHR.responseText)['status'];
+          if(status=='OK'){
+            str = JSON.parse(jqXHR.responseText)['file_content'];  
+			decryptFileProcess(str);
+          }
+          else{
+            alert("Success but error");
+            window.location="index.html";
+          }
+        },    
+        error: function(jqXHR,textStatus,error) {
+        	console.log("error" + jqXHR.status + " " + textStatus + " " + jqXHR.responseText + " " + error);
+        	window.location="index.html";
+        }
+      });
+}
+
+function decryptFileProcess(str){
+	  var str=str; //load file bytes to buffer
 	  var buf=str.split("-");
 	  
 		for (var i = 0; i < buf.length-1; i++){
 	    	blobs.push(new Blob([buf[i]]));
 	    	count++;
 	    }
-	};
+	decryptFile();
 }
+
+// function decryptFileProcess(file){
+// 	var fr = new FileReader();
+// 	fr.readAsText(file);
+	
+// 	fr.onload = function(e) {
+// 	  var str=e.target.result; //load file bytes to buffer
+// 	  var buf=str.split("-");
+	  
+// 		for (var i = 0; i < buf.length-1; i++){
+// 	    	blobs.push(new Blob([buf[i]]));
+// 	    	count++;
+// 	    }
+// 	};
+// 	decryptFile();
+// }
 
 function decryptFile(e){
 		console.log("Part "+ (count2+1) + " of "+ count);
@@ -42,16 +89,10 @@ function decryptFile(e){
 		        }
 
 				var blob = new Blob([contentBytes], { type: 'application/octet-stream' });
-				var filename = file.name.replace(/\.txt$/,'');
-			    filename= Aes.Ctr.decrypt(filename, password, 256);
-			    alert(filename);
-			    //filename = filename.replace(/\.encrypted$/,'');
-			    var removName= filename.substring(0,10);
-			   	filename= filename.replace(removName, '');
+				var filename= localStorage.getItem("filename");
 			    saveAs(blob, filename);
 			    plaintext="";
-			    alert(filename);
-				//alert(filename.toString(CryptoJS.enc.Utf8));
+			    window.location="index.html";
 		}
 				
 }
