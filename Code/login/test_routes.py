@@ -180,7 +180,7 @@ def testupload():
 			# Debug 
 			print "\n==============(else if req == 'download_metadata')=============="
 			print "user_email", user_email
-			print "\n==============END TEST DOWNLOAD METADATA=============="
+			print "\n==============END TEST DOWNLOAD_METADATA=============="
 			
 			metadata = MongoDBWrapper().download_metadata(email=user_email)
 			if metadata:

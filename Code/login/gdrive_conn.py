@@ -58,7 +58,6 @@ def refresh_access_token(email, cred):
 		Get refresh token for this purpose from db. To look in db records,
 		use corresponding email (taken from session). After renewing, write
 		new credentials back to DB
-
 	Args:
 		cred: From DB; contains expired access_token; also contains refresh_token
 	Returns:
@@ -100,11 +99,9 @@ def refresh_access_token(email, cred):
 		return None
 
 def get_user_info(credentials):
-	"""Send a request to the UserInfo API to retrieve the user's information.
-
+	""" Send a request to the UserInfo API to retrieve the user's information.
 	Args:
-		credentials: oauth2client.client.OAuth2Credentials instance to authorize the
-		             request.
+		credentials: oauth2client.client.OAuth2Credentials instance to authorize the request.
 	Returns:
 		User information as a dict.
 	"""	
@@ -123,18 +120,15 @@ def get_user_info(credentials):
 		# logging.error('An error occurred: %s', e)
 		print "An error occurred: ", e
 
-def gdrive_connect():
-	"""Interfaces with views.py
-
+def get_gdrive_credentials(email):
+	""" Interface for external functions to get the credentials from DB records
+	Args: 
+		email: To query the DB records
 	Returns:
-		User information as a JSON string if it exists otherwise None. 
+		credentials: oauth2client.client.OAuth2Credentials object. 
 	"""
-	try:
-		email = session.get('user')
-		print "inside gdrive_connect: Email = ", email
-		if email is None:
-			return None
 
+	try:
 		cred = get_gdrive_refresh_token(email)
 		print "gdrive_connect() - cred from db = ", cred
 		# Convert JSON represenation to an instance of 'OAuth2Credentials'
@@ -151,9 +145,7 @@ def gdrive_connect():
 			print "credentials.access_token_expired"
 			credentials = refresh_access_token(email, credentials)
 
-		user_info = get_user_info(credentials)
-		# print "\n\nuser_info = ", json.dumps(user_info, indent=4, sort_keys=True)
-		return json.dumps(user_info)
+		return credentials
 
 	except client.AccessTokenRefreshError as e:
 		flash('Drive access revoked!')
@@ -170,6 +162,26 @@ def gdrive_connect():
 	except TypeError as e:
 		print "no record found in DB. \nTypeError", e
 		return None
+
+def gdrive_connect():
+	""" Interfaces with views.py
+	Returns:
+		User information as a JSON string if it exists otherwise None. 
+	"""
+	try:
+		email = session.get('user')
+		print "inside gdrive_connect: Email = ", email
+		if email is None:
+			return None
+
+		# Get 'credentials' (oauth2client.client.OAuth2Credentials) object from DB
+		credentials = get_gdrive_credentials(email)
+		print "get_gdrive_credentials(email): credentials = ", credentials
+
+		user_info = get_user_info(credentials)
+		# print "\n\nuser_info = ", json.dumps(user_info, indent=4, sort_keys=True)
+		return json.dumps(user_info)
+
 
 @app.route('/gdrive-auth-finish')
 def gdrive_auth_finish():
@@ -223,7 +235,7 @@ def get_auth_flow_object():
 
 @app.route('/gdrive-disconnect')
 def gdrive_disconnect():
-	"""Disconnect Google Drive refresh_token from DB records
+	""" Disconnect Google Drive refresh_token from DB records
 	"""
 	print "inside gdrive-disconnect"
 	email = session.get('user')
