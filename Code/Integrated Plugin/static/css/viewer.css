@@ -3,6 +3,7 @@
 body {
   padding-top: 50px;
   padding-bottom: 20px;
+  margin-bottom: 60px;
 }
 
 h4#welcome{
@@ -25,7 +26,25 @@ div #upload, #download{
 	padding: 5px;
 }
 
-div #encrypt {
+div #encryptBtn {
 	/*clear: both;*/
 	padding: 10px;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+}
+
+p.text-center {
+	padding-top: 20px;
+
 }

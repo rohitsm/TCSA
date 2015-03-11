@@ -184,10 +184,12 @@
             var username= "admin@tcsa.com";
                   var filename= localStorage.getItem("path");
                   filename+="/"+item;
+                  var todelete=filename;
                   filename = password.substring(0,10) + filename;
                   filename = Sha256.hash(filename);
                   alert("deleting " + filename);
-                  //deleteFile(username,filename);
+                  deleteFile(username,filename,todelete);
+                  
                 }
                 //window.console && console.log(m) || alert(m); 
             },

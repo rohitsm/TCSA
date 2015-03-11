@@ -27,8 +27,6 @@ $(document).ready(function(){
 		console.log("Was preventDefault() called: " + event.isDefaultPrevented());
 		
 		$.ajax ({
-			// url	: "https://cloudstag.me/testajax2",
-
 			url	: "https://cloudstag.me/testajax2",
 			type: "POST",
 			data: { 'Email' : local_email,

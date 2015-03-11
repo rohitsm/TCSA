@@ -1,4 +1,4 @@
-function deleteFile(useremail,filename){
+function deleteFile(useremail,filename,todelete){
 	//alert("user_email "+useremail+"\nfilename "+filename);
 	//alert("Downloading "+ filename + " from user "+ useremail);
       data= { 
@@ -22,6 +22,9 @@ function deleteFile(useremail,filename){
           if(status=='OK'){
           	alert("OK");
             window.location="index.html";
+            var metadata= localStorage.getItem("metadata");
+            metadata=metadata.replace(todelete+"\n","");
+            localStorage.setItem("metadata",metadata);
           }
           else{
             alert("Success but error");
