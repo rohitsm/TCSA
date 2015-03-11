@@ -119,6 +119,7 @@ def get_user_info(credentials):
 	except Exception as e:
 		# logging.error('An error occurred: %s', e)
 		print "An error occurred: ", e
+		return None
 
 def get_gdrive_credentials(email):
 	""" Interface for external functions to get the credentials from DB records
@@ -130,14 +131,15 @@ def get_gdrive_credentials(email):
 
 	try:
 		cred = get_gdrive_refresh_token(email)
-		print "gdrive_connect() - cred from db = ", cred
-		# Convert JSON represenation to an instance of 'OAuth2Credentials'
-		credentials = Credentials.new_from_json(cred)
-		
+		print "Inside get_gdrive_credentials - cred from db = ", cred
+
 		# No record found in DB
-		if credentials is None:
+		if cred is None:
 			print "No records for credentials found in DB = none"
 			return None		
+		
+		# Convert JSON represenation to an instance of 'OAuth2Credentials'
+		credentials = Credentials.new_from_json(cred)
 
 		# Expired access_token
 		if credentials.access_token_expired:
@@ -176,6 +178,8 @@ def gdrive_connect():
 	# Get 'credentials' (oauth2client.client.OAuth2Credentials) object from DB
 	credentials = get_gdrive_credentials(email)
 	print "get_gdrive_credentials(email): credentials = ", credentials
+	if credentials is None:
+		return None
 
 	user_info = get_user_info(credentials)
 	# print "\n\nuser_info = ", json.dumps(user_info, indent=4, sort_keys=True)
@@ -206,7 +210,6 @@ def gdrive_auth_finish():
 		flash('Error in adding Gdrive token to DB')
 		print "Error, Could not add credentials to DB"
 		return redirect(url_for('profile'))
-
 
 @app.route('/gdrive-auth-start')
 def gdrive_auth_start():
