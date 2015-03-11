@@ -191,7 +191,7 @@ def testupload():
 		elif req == 'delete':
 			filename =  request.json['filename']
 
-			if (MongoDBWrapper().deleteFile(email=user_email, filename=filename)):
+			if (MongoDBWrapper().delete(email=user_email, fileName=filename)):
 				return json.dumps({'status':'OK', 'user_email':user_email})	
 			else:
 				return json.dumps({'status':'NotOK'})
