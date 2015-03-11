@@ -17,6 +17,8 @@
 
     <!-- Custom styles for this template -->
     <link href="../static/css/viewer.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+    <link href="../static/css/jquery.contextMenu.css" rel="stylesheet" type="text/css" />
 
   </head>
 
@@ -48,9 +50,9 @@
     </nav>
 
     <!-- Main jumbotron -->
-    <div class="jumbotron">
-      <div class="container text-center">
-        <h4>Select files to upload</h4>
+    <!-- <div class="jumbotron">
+      <div class="container text-center"> -->
+        <!-- <h4>Select files to upload</h4>
         
           <div class="row">
             <div id="encrypt" class="text-center">
@@ -67,11 +69,11 @@
             </div>
             <div class="col-md-4 col-md-offset-0" id="download">
               <button type="button" class="btn btn-danger btn-lg" >Download</button>
-            </div>  -->           
-          </div>
+            </div>             
+          < /div> -->
   
-      </div>    
-    </div>
+      <!-- </div>    
+    </div> -->
 
     <div class="container">
       <!-- Example row of columns -->
@@ -80,10 +82,10 @@
           <div class="panel panel-default text-center">
             <div class="panel-heading">Sidebar
             </div>
-            <div class="panel-body">
+            <div class="panel-body" id="sidebar">
               
 
-              Enter content here
+              <span id="newFolderBtn"><button type="button" class="btn btn-success" id="newFolder" aria-expanded>New Folder</button></span>
 
 
 
@@ -91,20 +93,39 @@
           </div>
         </div>
         <div class="col-md-10">
-          <div class="panel panel-default text-center">
-            <div class="panel-heading">Main bar
+          <div class="panel panel-default ">
+            <div class="panel-heading text-center">
+              <span id="backBtn"><button type="button" class="btn btn-danger" id="back" aria-expanded>Back</button></span>
+              <span id="homeBtn"><button type="button" class="btn btn-primary" id="home" aria-expanded>Home</button></span>
+              
             </div>
-            <div class="panel-body">
+            <div class="panel-body" id="mainbar">
               
 
-              Enter folder tree content here
+              <div class="contextMenuField"> 
+                  <div id="status"> </div>
+                  
+                      <div class="row" id="fileRegion">
+                      </br>
+                        <div class="col-md-5">
+                          <span class="btn btn-success btn-file">
+                              <input type="file" id="fileInput" multiple>
+                          </span>
+                        </div>
+                        <div class="col-md-5">
+                            <button type="button" class="btn btn-danger" id="encrypt" aria-expanded>Encrypt</button>
+                        </div>
+                    </div>
+                      </br></br>
+                      <button type="button" class="btn btn-warning" id="upload" aria-expanded>Upload</button>
+                </div>
 
 
             </div>
           </div>
         </div>
     </div> <!-- /container -->
-    <hr>
+
 
     <footer class="footer">
       <div class="container">
@@ -116,6 +137,56 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="../static/js/bootstrap.min.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.min.js"> </script>
+    <script src="../static/js/jquery-1.11.2.js"></script>
+    <script src="../static/js/SHA.js"></script>
+    <script src="../static/js/jquery.contextMenu.js" ></script>
+    <script src="../static/js/TreeModel-min.js"></script>
+    <script src="../static/js/metadataEncryption.js"></script>
+    <script src="../static/js/ui.js"></script>
+    <script src="../static/js/fileencrypt.js"></script>
+    <script src="../static/js/filedecrypt.js"></script>
+    <script src="../static/js/FileSaver.js"></script>
+    <script src="../static/js/AES_CV.js"></script>
+    <script src="../static/js/AES_ctr.js"></script>
+    <script src="../static/js/deletefile.js"></script>
+    <script src="../static/js/metadata.js"></script>
+    <script type="text/javascript" class="showcase">
+    var item = "";
+    $(function(e){
+        $.contextMenu({
+            selector: '.haha', 
+            callback: function(key, options) {
+                var m = "clicked: " + key;
+                if(key==="delete"){
+                  var username= "admin@tcsa.com";
+                  var filename= localStorage.getItem("path");
+                  filename+="/"+item;
+                  var todelete=filename;
+                  filename = password.substring(0,10) + filename;
+                  filename = Sha256.hash(filename);
+                  alert("deleting " + filename);
+                  deleteFile(username,filename,todelete);
+                  
+                }
+                //window.console && console.log(m) || alert(m); 
+            },
+            items: {
+                "delete": {name: "Delete", icon: "delete"},
+                "sep1": "---------",
+                "newFolder": { name: "New Folder", icon: "Folder"},
+                "quit": {name: "Quit", icon: "quit"}
+            }
+        });
+        
+        $('.haha').on('mousedown', function(e){
+          if(e.which==3) {
+            item = $(e.target).text();
+            console.log('clicked', item);
+          }
+        })
+    });
+    </script>
    
   </body>
 </html>

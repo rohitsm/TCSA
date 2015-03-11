@@ -1,5 +1,5 @@
 body {
-  font-family: 'Arvo', serif;
+  /*font-family: 'Arvo', serif;*/
   font-size: 16px;
   line-height: 1.5em;
   /*color: #1c4c51; */
@@ -9,6 +9,18 @@ body {
 td {
   vertical-align:middle;
   padding-left:10px;
+}
+
+a.haha{
+  padding: 10px;
+}
+
+div.contextMenuField{
+  padding: 10px;
+}
+
+div.status {
+  padding: 10px;
 }
 
 th {
