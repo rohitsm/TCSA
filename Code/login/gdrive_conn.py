@@ -36,14 +36,11 @@ OAUTH_SCOPE = 'https://www.googleapis.com/auth/drive'
 # Create JSON element from dict CLIENT_SECRET
 # CLIENT_SECRET = json.dumps(app.config['CLIENT_SECRET'])
 
-def get_gdrive_refresh_token():
+def get_gdrive_refresh_token(email):
 	""" Get user credentials from database
 	"""
-	email = session.get('user')
 	print "inside get_gdrive_access_token() \nemail = ", email
-	if email is None:
-		return None
-
+	
 	# Get the refresh token from the DB
 	refresh_token = get_gdrive_token(email)
 
@@ -54,7 +51,7 @@ def get_gdrive_refresh_token():
 	print "Error no record of refresh_token found in DB. Not connected to Google Drive"
 	return None
 
-def refresh_access_token(cred):
+def refresh_access_token(email, cred):
 	""" Take credentials (with expired access token) as arg and return
 		credentials with renewed access token.
 
@@ -69,12 +66,6 @@ def refresh_access_token(cred):
 	"""
 
 	try:	
-		# Get email from session. Email used for querying DB
-		email = session.get('user')
-		print "inside gdrive-auth-finish. \nEmail = ", email
-		if email is None:
-			abort(403)
-
 		# Extract out refresh_token from cred
 		refresh_token = cred.refresh_token
 
@@ -138,8 +129,13 @@ def gdrive_connect():
 	Returns:
 		User information as a JSON string if it exists otherwise None. 
 	"""
-	try:		
-		cred = get_gdrive_refresh_token()
+	try:
+		email = session.get('user')
+		print "inside gdrive_connect: Email = ", email
+		if email is None:
+			return None
+
+		cred = get_gdrive_refresh_token(email)
 		print "gdrive_connect() - cred from db = ", cred
 		# Convert JSON represenation to an instance of 'OAuth2Credentials'
 		credentials = Credentials.new_from_json(cred)
@@ -153,7 +149,7 @@ def gdrive_connect():
 		if credentials.access_token_expired:
 			# Get new access_token
 			print "credentials.access_token_expired"
-			credentials = refresh_access_token(credentials)
+			credentials = refresh_access_token(email, credentials)
 
 		user_info = get_user_info(credentials)
 		# print "\n\nuser_info = ", json.dumps(user_info, indent=4, sort_keys=True)
