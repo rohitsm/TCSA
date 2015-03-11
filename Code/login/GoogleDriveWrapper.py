@@ -53,6 +53,8 @@ class GoogleDriveWrapper:
 
     def uploadFile(self, filePath, parent_id):
         filename        = re.match(r".*/(.*)", filePath).group(1)
+        if '.' not in filename:
+            filename=filename+'.txt'
         media_body      = MediaFileUpload(filePath, resumable=True)
         body={
             'title'         : filename

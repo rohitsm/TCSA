@@ -1,11 +1,13 @@
 __author__ = 'aswin'
 
-import dropbox
+from dropbox.client import DropboxClient
+from dropbox.datastore import DatastoreManager
+import pprint
 
 class DropboxWrapper:
 
     def __init__(self, accessToken):
-        self.client     = dropbox.client.DropboxClient(accessToken)
+        self.client     = DropboxClient(accessToken)
     #Dropbox operation utilities~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     def getDropboxStorageSizeLeft(self):
@@ -56,6 +58,7 @@ class DropboxWrapper:
         f.close()
         #return a stream of char of the file
         if metadata:
+            print content
             return content
         else:
             return False
@@ -86,9 +89,38 @@ class DropboxWrapper:
         else:
             return False
 
+    def getMetadata(self, files=None, cursor=None):
+        if files is None:
+             files = {}
+
+        has_more = True
+
+        while has_more:
+            result = self.client.delta(cursor)
+            pprint.pprint(result)
+            cursor = result['cursor']
+            has_more = result['has_more']
+
+        for lowercase_path, metadata in result['entries']:
+            if metadata is not None:
+               files[lowercase_path] = metadata
+
+            else:
+                # no metadata indicates a deletion
+
+        # remove if present
+                files.pop(lowercase_path, None)
+
+        # in case this was a directory, delete everything under it
+        for other in files.keys():
+            if other.startswith(lowercase_path + '/'):
+                del files[other]
+
+        return files, cursor
+
 if __name__=='__main__':
-    num=123
-    print type(str(num))
+    v=DropboxWrapper('QpgYDBNMAjIAAAAAAAAAUXlgq8MsLMwwyh7mtxIckd1PEGg6vrUf7RiLdniemrsE')
+    v.downloadFile('/Getting Started.pdf')
     #t={'aswin':"workhard!"}
     #l={}
     #k=None
