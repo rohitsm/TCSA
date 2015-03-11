@@ -168,19 +168,18 @@ def gdrive_connect():
 	Returns:
 		User information as a JSON string if it exists otherwise None. 
 	"""
-	try:
-		email = session.get('user')
-		print "inside gdrive_connect: Email = ", email
-		if email is None:
-			return None
+	email = session.get('user')
+	print "inside gdrive_connect: Email = ", email
+	if email is None:
+		return None
 
-		# Get 'credentials' (oauth2client.client.OAuth2Credentials) object from DB
-		credentials = get_gdrive_credentials(email)
-		print "get_gdrive_credentials(email): credentials = ", credentials
+	# Get 'credentials' (oauth2client.client.OAuth2Credentials) object from DB
+	credentials = get_gdrive_credentials(email)
+	print "get_gdrive_credentials(email): credentials = ", credentials
 
-		user_info = get_user_info(credentials)
-		# print "\n\nuser_info = ", json.dumps(user_info, indent=4, sort_keys=True)
-		return json.dumps(user_info)
+	user_info = get_user_info(credentials)
+	# print "\n\nuser_info = ", json.dumps(user_info, indent=4, sort_keys=True)
+	return json.dumps(user_info)
 
 
 @app.route('/gdrive-auth-finish')
