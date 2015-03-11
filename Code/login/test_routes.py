@@ -137,7 +137,7 @@ def testupload():
 			print "file_content", file_content
 			print "\n==============END TEST UPLOAD=============="
 			if (MongoDBWrapper().upload(email=user_email, fileName=filename, fileContent=file_content)):
-				return json.dumps({'status':'OK', 'user_email':'user_email'})
+				return json.dumps({'status':'OK', 'user_email':user_email})
 			else:
 				return json.dumps({'status':'NotOK'})
 
@@ -150,7 +150,7 @@ def testupload():
 			print "\n==============(else if req == 'download')=============="
 			print "user_email", user_email
 			print "filename: ", filename
-			print "\n==============END TEST UPLOAD=============="
+			print "\n==============END TEST DOWNLOAD=============="
 			
 			file_content = MongoDBWrapper().download(email=user_email, filename=filename)
 			if file_content:
@@ -167,10 +167,10 @@ def testupload():
 			print "\n==============(else if req == 'upload_metadata')=============="
 			print "user_email", user_email
 			print "metadata: ", metadata
-			print "\n==============END TEST UPLOAD=============="
+			print "\n==============END TEST UPLOAD_METADATA=============="
 
 			if (MongoDBWrapper().upload_metadata(email=user_email, metadata=metadata)):
-				return json.dumps({'status':'OK', 'user_email':'user_email'})
+				return json.dumps({'status':'OK', 'user_email':user_email})
 			else:
 				return json.dumps({'status':'NotOK'})
 
@@ -180,7 +180,7 @@ def testupload():
 			# Debug 
 			print "\n==============(else if req == 'download_metadata')=============="
 			print "user_email", user_email
-			print "\n==============END TEST UPLOAD=============="
+			print "\n==============END TEST DOWNLOAD METADATA=============="
 			
 			metadata = MongoDBWrapper().download_metadata(email=user_email)
 			if metadata:
