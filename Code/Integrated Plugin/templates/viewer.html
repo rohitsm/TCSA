@@ -17,8 +17,6 @@
 
     <!-- Custom styles for this template -->
     <link href="../static/css/viewer.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-    <link href="css/jquery.contextMenu.css" rel="stylesheet" type="text/css" />
 
   </head>
 
@@ -27,7 +25,7 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">          
-          <h3 id="page-header"><a class="masthead-brand" href="{{url_for('profile')}}">TCSA Inc.</a></h3>
+          <h3 id="page-header"><a class="masthead-brand" href="https://cloudstag.me/">TCSA Inc.</a></h3>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <div class="navbar-form navbar-right">
@@ -39,8 +37,7 @@
                 <span class="caret"></span>          
               </button>
               <ul class="dropdown-menu" role="menu">
-                <li><a href="{{url_for('change_pwd')}}">Change password</a></li>
-                <li><a href="{{url_for('change_pbkey')}}">Change public key</a></li>
+                <li><a href="https://cloudstag.me/user">Account Settings</a></li>
                 <li class="divider"></li>
                 <li><a href="{{url_for('logout')}}">Sign Out</a></li>
               </ul>
@@ -79,71 +76,41 @@
     <div class="container">
       <!-- Example row of columns -->
       <div class="row">
-        <div class="col-md-10">
-          <div class="panel panel-primary text-center">
-            <div class="panel-heading">Files
-            </div>
-            <div class="panel-body">
-                <div class="contextMenuField"> 
-                  <button id="logout">Log Out</button>
-                  <div id="status"> </div>
-                  <button id="newFolder">New Folder</button>
-                  <button id="back">Back</button>
-                  <button id="home">Home</button>
-                      <div id="fileRegion">
-                        <input type="file" id="fileInput" multiple>
-                      <button id="encrypt">Encrypt</button>
-                    </div>
-                      <button id="upload">Upload</button>
-                </div>
-            </div>
-          </div>
-        </div>
         <div class="col-md-2">
-          <div class="panel panel-info text-center">
-            <div class="panel-heading">Google Drive
+          <div class="panel panel-default text-center">
+            <div class="panel-heading">Sidebar
             </div>
             <div class="panel-body">
-              {% if gd_conn %}
-              <strong>STATUS:</strong> <span class="label label-success">Connected</span>
-              <br> <br>
-                <a href="{{ url_for('gdrive_disconnect') }}">
-                  <img src="../static/images/gd_logo.png" alt="Disconnect Google Drive account" method="post" class="img-rounded">
-                  <br> <br>
-                  Disconnect '{{gd_conn}}' account
-                </a>
-              {% else %}
-              <strong>STATUS:</strong> <span class="label label-danger">Not Connected</span>
-              <br><br>
-                <a href="{{ url_for('gdrive_auth_start') }}">
-                  <img src="../static/images/gd_logo_disconn.png" method="post" class="img-rounded">
-                  <br> <br>
-                  Connect your Google Drive account here!
-                </a>
-              {% endif %}
-            </div>
-          </div>
-        </div>
-        <!-- <div class="col-md-4">
-          <div class="panel panel-primary text-center">
-            <div class="panel-heading">Dropbox
-            </div>
-            <div class="panel-body">
-              Connect your (Service_Name) account here!
-              <br>
-               <img src="..." alt="..." class="img-rounded">
-            </div>
-          </div>
-        </div>
-      </div>  -->
+              
 
+              Enter content here
+
+
+
+            </div>
+          </div>
+        </div>
+        <div class="col-md-10">
+          <div class="panel panel-default text-center">
+            <div class="panel-heading">Main bar
+            </div>
+            <div class="panel-body">
+              
+
+              Enter folder tree content here
+
+
+            </div>
+          </div>
+        </div>
     </div> <!-- /container -->
     <hr>
 
-    <footer>
-      <p class="text-center">Copyright © 2014 The TCSA Project. All rights reserved.</p>
+    <footer class="footer">
+      <div class="container">
+        <p class="text-center">Copyright © 2014 The TCSA Project. All rights reserved.</p>
+      </div>
     </footer>
-
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
