@@ -20,11 +20,11 @@ function deleteFile(useremail,filename,todelete){
           var status= JSON.parse(jqXHR.responseText)['status'];
           alert(status);
           if(status=='OK'){
-          	alert("OK");
-            window.location="index.html";
+          	alert("OK" + todelete);
             var metadata= localStorage.getItem("metadata");
-            metadata=metadata.replace(todelete+"\n","");
-            localStorage.setItem("metadata",metadata);
+            test=metadata.replace("\n"+todelete,"");
+            localStorage.setItem("metadata",test);
+            window.location="index.html";
           }
           else{
             alert("Success but error");

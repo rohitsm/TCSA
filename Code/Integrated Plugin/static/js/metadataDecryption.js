@@ -34,7 +34,12 @@ function downloadMetadata(useremail){
           var status= JSON.parse(jqXHR.responseText)['status'];
           if(status=='OK'){
             reply = JSON.parse(jqXHR.responseText)['metadata'];  //how to read the JSON!! from ros == plugin_login1.js
-			      decryptMeta(reply);
+			      if(reply==="NONE"){
+                localStorage.setItem("metadata","");
+                window.location="index.html";
+            }
+            else
+              decryptMeta(reply);
           }
           else{
             alert("error");
