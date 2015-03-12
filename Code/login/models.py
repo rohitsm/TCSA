@@ -61,7 +61,7 @@ def get_token(email, service):
 	elif service.lower() == 'gdrive':
 		access_token = record.gdrive
 
-	print "inside get_token: ", access_token
+	#print "inside get_token: ", access_token
 	return access_token
 
 def set_token(email, service, access_token):

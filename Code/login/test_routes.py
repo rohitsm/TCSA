@@ -32,6 +32,11 @@ def testdb():
 	else:
 		return "Not Working"
 
+@app.route('/gdrive')
+def gdrive_test():
+	#MongoDBWrapper().addStorage()
+	return "GDRIVE SUCCESSFULL!"
+
 @app.route('/testajax', methods=['GET', 'POST'])
 def testajax():
 	form = LoginForm_1()

@@ -131,7 +131,7 @@ def get_gdrive_credentials(email):
 
 	try:
 		cred = get_gdrive_refresh_token(email)
-		print "Inside get_gdrive_credentials - cred from db = ", cred
+		#print "Inside get_gdrive_credentials - cred from db = ", cred
 
 		# No record found in DB
 		if cred is None:
