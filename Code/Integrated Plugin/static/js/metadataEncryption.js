@@ -91,7 +91,10 @@ function uploadMetadata(useremail,ciphertext){
             localStorage.removeItem("password");
             localStorage.removeItem("path");
             localStorage.removeItem("filename");
-            window.location="index.html";
+            sessionStorage.removeItem("Email_ls");
+            sessionStorage.removeItem("password");
+            alert("Successfully logged out");
+            window.location="test.html";
           }
           else{
             alert("error");
