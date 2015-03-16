@@ -73,7 +73,8 @@ def testajax():
 
 	# GET requests
 	print "testajax: GET"
-	return render_template('test.html')
+	flash('Please log in to continue')
+	return render_template('signup.html')
 
 @app.route('/testajax2', methods=['GET', 'POST'])
 def testajax2():
@@ -117,7 +118,8 @@ def testajax2():
 
 	# GET requests
 	print "testajax2: GET"
-	return render_template('test2.html')
+	flash('Please log in to continue')
+	return render_template('signup.html')
 
 
 @app.route('/testupload', methods=['GET', 'POST'])

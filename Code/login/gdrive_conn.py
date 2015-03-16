@@ -205,6 +205,14 @@ def gdrive_auth_finish():
 		# Convert credentials to a JSON representation before storing
 		if set_gdrive_token(email, credentials.to_json()):
 			print "credentials added to DB: type", type(credentials)
+			
+			# Calling MongoDBWrapper 
+			from MongoDBWrapper import *
+
+			# Simultaneously add record in MongoDBWrapper
+			if (MongoDBWrapper().addStorage('googledrive', email)):
+				print "\n\nSuccessfully added GDrive to MongoDB!\n\n"
+
 			return redirect(url_for('profile'))
 
 		flash('Error in adding Gdrive token to DB')

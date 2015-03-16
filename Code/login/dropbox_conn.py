@@ -16,6 +16,9 @@ from login import db
 # Dropbox API
 from dropbox.client import DropboxClient, DropboxOAuth2Flow
 
+# Calling MongoDBWrapper
+from MongoDBWrapper import *
+
 DROPBOX_APP_KEY = app.config['DROPBOX_APP_KEY']
 DROPBOX_APP_SECRET = app.config['DROPBOX_APP_SECRET']
 
@@ -70,6 +73,11 @@ def dropbox_auth_finish():
     print "user adding dropbox token to DB for email ", email
     if set_dropbox_token(email, access_token):
         print "added access_token to DB"
+
+        # Simultaneously add record in MongoDBWrapper
+        if (MongoDBWrapper().addStorage('dropbox', email)):
+            print "\n\nSuccessfully added Dropbox to MongoDB!\n\n"
+            
         #flash('Connected')
         return redirect(url_for('profile'))
 

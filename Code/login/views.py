@@ -29,6 +29,9 @@ from gdrive_conn import gdrive_connect
 from account_settings import *
 from test_routes import *
 
+# Importing MongoDB dependencies
+from MongoDBWrapper import *
+
 # URL format: recaptcha_url? + secret=your_secret & response=response_string&remoteip=user_ip_address'
 recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify'
 
@@ -157,6 +160,10 @@ def routes(app, login_manager):
 					
 					# Add entry into the DB
 					set_user_record(email, pwd_hash, passphrase_hash, pub_key)
+
+					# Creating simultaneous entry in MongoDB
+					if (MongoDBWrapper().addAccount(email)):
+						print "\n\nSuccessfully added entry to MongoDB\n\n"
 					# flash('New account created successfully!')
 					return redirect(url_for('login'))
 
