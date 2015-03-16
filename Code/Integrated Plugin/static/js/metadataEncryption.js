@@ -25,7 +25,6 @@ function encryptMetadata(metadata){
 
 function encryptMeta(blobs){
 		if(count2<count){
-			console.log("Part "+ (count2+1) + " of "+ count);
 			var reader = new FileReader();
     		reader.readAsArrayBuffer(blobs[count2]);
 
@@ -86,14 +85,14 @@ function uploadMetadata(useremail,ciphertext){
           alert(status);
           if(status=='OK'){
             //str=encryptedMetadata;
-            str = alert(JSON.parse(jqXHR.responseText)['user_email']);  
+            str = JSON.parse(jqXHR.responseText)['user_email'];  
             localStorage.removeItem("metadata");
             localStorage.removeItem("password");
             localStorage.removeItem("path");
             localStorage.removeItem("filename");
             sessionStorage.removeItem("Email_ls");
             sessionStorage.removeItem("password");
-            alert("Successfully logged out");
+            alert(str +" is successfully logged out.");
             window.location="test.html";
           }
           else{
