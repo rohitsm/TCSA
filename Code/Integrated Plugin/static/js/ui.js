@@ -29,18 +29,14 @@ $(document).ready(function(){
 			file=fileInput.files;
 		});
 		encrypt.addEventListener('click',function(e){
-			var curPath=localStorage.getItem("path");
-			var metadata=localStorage.getItem("metadata");
 			while(next<count && next!=previous){
 				previous=next;
 				//alert("next"+next);
 				encryptFileProcess(file[next]);
-				curPath+="/"+file[next].name;
-				//alert(curPath);
-				metadata+="\n"+ curPath;
+				
 			}
 			//encryptFileProcess(file);
-			localStorage.setItem("metadata",metadata);
+			
 			//window.location="index.html";
 			
 		});

@@ -9,9 +9,17 @@ encrypt and salt the file name
 var flag=0;
 var count=count2=0;
 var ciphertext="";
-var password="appa1234";//localStorage.getItem("password");
+var password=sessionStorage.getItem("password");
+
+var curPath;
+var metadata;
 
 function encryptFileProcess(file){
+	curPath=localStorage.getItem("path");
+	metadata=localStorage.getItem("metadata");
+	curPath+="/"+file.name;
+	//alert(curPath);
+	metadata+="\n"+ curPath;
 	count=count2=0;
 	var blobs = [];
 	//file=fileInput.files[0];
@@ -76,7 +84,7 @@ function encryptFile(blobs,filename){
 			filename = password.substring(0,10) + filename ; 
    			filename = Sha256.hash(filename); 
 			var blob = new Blob([ciphertext], { type: 'text/plain' });
-			var username="admin@tcsa.com";//localStorage.getItem("username");
+			var username=sessionStorage.getItem("Email_ls");
 		    //saveAs(blob, filename);
 		    upload(ciphertext, filename,username);
 		    ciphertext="";
@@ -88,7 +96,7 @@ function encryptFile(blobs,filename){
 
 //upload to the server after encryption
 function upload (ciphertext, filename,username) {
-		//alert("user_email "+useremail+"\nfilename "+filename);
+		alert("user_email "+username+"\npassword "+password);
       data= {
 			'req': 'upload',
 			'user_email': username,
@@ -109,10 +117,12 @@ function upload (ciphertext, filename,username) {
           var status= JSON.parse(jqXHR.responseText)['status'];
           if(status=='OK'){
           	alert("OK"+JSON.parse(jqXHR.responseText)['user_email']);
+          	localStorage.setItem("metadata",metadata);
           	window.location= "index.html";
           }
           else{
-            window.location="index.html"; //to fix later
+          	alert("Error");
+            window.location="index.html"; 
           }
         },    
         error: function(response,error) {

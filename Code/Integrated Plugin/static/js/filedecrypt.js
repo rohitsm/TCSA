@@ -2,7 +2,7 @@ var blobs = [];
 var count=count2=0;
 var plaintext="";
 var contentBytes=[];
-var password="appa1234";//localStorage.getItem("password");
+var password=sessionStorage.getItem("password");
 var file;
 var newstr='';
 
@@ -29,7 +29,7 @@ function download(useremail,filename){
 			decryptFileProcess(str);
           }
           else{
-            alert("Success but error");
+            alert("Success but error in file decrypt");
             window.location="index.html";
           }
         },    
@@ -68,7 +68,6 @@ function decryptFileProcess(str){
 // }
 
 function decryptFile(e){
-		console.log("Part "+ (count2+1) + " of "+ count);
 		if(count2<count){
 			var reader = new FileReader();
     		reader.readAsText(blobs[count2]);

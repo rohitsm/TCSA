@@ -9,7 +9,7 @@ encryption is the same as file encryption
 
 var count=count2=0;
 var ciphertext="";
-var password="appa1234";
+var password=sessionStorage.getItem("password");
 
 function encryptMetadata(metadata){
 	count=count2=0;
@@ -55,7 +55,7 @@ function encryptMeta(blobs){
 		else{
 			alert("ciphertext metadata= "+ciphertext);
 		    //ciphertext="";
-		    useremail="admin@tcsa.com";//localStorage.getItem("username");
+		    useremail=sessionStorage.getItem("Email_ls");
 		    uploadMetadata(useremail,ciphertext);
 		}			
 }
@@ -87,7 +87,6 @@ function uploadMetadata(useremail,ciphertext){
             //str=encryptedMetadata;
             str = JSON.parse(jqXHR.responseText)['user_email'];  
             localStorage.removeItem("metadata");
-            localStorage.removeItem("password");
             localStorage.removeItem("path");
             localStorage.removeItem("filename");
             sessionStorage.removeItem("Email_ls");
@@ -96,7 +95,7 @@ function uploadMetadata(useremail,ciphertext){
             window.location="test.html";
           }
           else{
-            alert("error");
+            alert(JSON.parse(jqXHR.responseText)['Error']);
             window.location="index.html";
           }
         },    

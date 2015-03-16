@@ -9,9 +9,9 @@ var encryptedMetadata="AwLGq7W/9lSIDn7w5QDerVGZq+2NJjubQXNEaHE8H75XJYPzfyYm02xUa
 var blobs = [];
 var count=count2=0;
 var plaintext="";
-var password="appa1234";
+var password=sessionStorage.getItem("password");
 var reply;
-var useremail="admin@tcsa.com";//localStorage.getItem("username");
+var useremail=sessionStorage.getItem("Email_ls");
 downloadMetadata(useremail);
 
 
@@ -32,17 +32,18 @@ function downloadMetadata(useremail){
         },
         success: function(repsonse,textStatus, jqXHR) {
           var status= JSON.parse(jqXHR.responseText)['status'];
+          
           if(status=='OK'){
             reply = JSON.parse(jqXHR.responseText)['metadata'];  //how to read the JSON!! from ros == plugin_login1.js
 			      if(reply==="NONE"){
-                localStorage.setItem("metadata","");
+                localStorage.setItem("metadata","root/welcome.txt");
                 window.location="index.html";
             }
             else
               decryptMeta(reply);
           }
           else{
-            alert("error");
+            alert("error in downloadMetadata" + JSON.parse(jqXHR.responseText)['Error']);
           }
         },    
         error: function(response,error) {
