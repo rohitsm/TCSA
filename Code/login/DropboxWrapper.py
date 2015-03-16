@@ -1,27 +1,31 @@
 __author__ = 'aswin'
 
 from dropbox.client import DropboxClient
-from dropbox.datastore import DatastoreManager
 import pprint
 
 class DropboxWrapper:
 
     def __init__(self, accessToken):
         self.client     = DropboxClient(accessToken)
+
+
     #Dropbox operation utilities~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     def getDropboxStorageSizeLeft(self):
         #accInfo is a dict object
+        #return tuple (quota left, total quota)
+        #both or long type
         accInfo     = self.client.account_info()
         quota_info  = accInfo['quota_info']
         #print "used: ", quota_info['normal']
         quotaLeft   = quota_info['quota']-quota_info['shared']-quota_info['normal']
         print "dropbox storage remaining: %s bytes" % quotaLeft
+
         return (quotaLeft, quota_info['quota'])
 
 
 
-    def uploadFile(self, fileName, fileContent):
+    def uploadFile(self, dropboxFilePath, fileContent):
         #assume filePath contain filename, virtualPath does not
         #matchObj= re.match(r".*/(.*)", filePath)
         #filename='/'+matchObj.group(1)
@@ -35,36 +39,27 @@ class DropboxWrapper:
         #works for both uploading and downloading
         #but try to use it constantly
 
-        #fileName   = name of the encrypted file
+        #dropboxFilePath   = name of the encrypted file
         #fileContent= stream of char of the file
-        f='/'+fileName
-        response    = self.client.put_file(f, fileContent)
+        response    = self.client.put_file(dropboxFilePath, fileContent, overwrite=True)
         if response:
             return response
         else:
             return False
-        #f.close()
 
-    def downloadFile(self, fileName):
-        f, metadata = self.client.get_file_and_metadata('/'+fileName)
-        #this will extract the filename from storagePath
-        #.* is greedy in nature, so it will cut at last /
-        #matchObj= re.match(r".*/(.*)", storagePath)
-        #fileName= '/'+matchObj.group(1)
-
-        #out         = open(saveLocation+fileName, 'wb')
-        #out.write(f.read())
+    def downloadFile(self, dropboxFilePath):
+        #f          =file like object
+        #metadata   = dict object, describing file
+        f, metadata = self.client.get_file_and_metadata(dropboxFilePath)
         content= f.read()
         f.close()
         #return a stream of char of the file
         if metadata:
-            print content
             return content
         else:
             return False
-        #out.close()
 
-    def deleteFile(self, filePath):
+    def deleteFile(self, dropboxFilePath):
         '''
         deleting non-existent file/folder will raise an error
         sample response from file_delete(path)
@@ -83,32 +78,37 @@ class DropboxWrapper:
             "revision": 492341
         }
         '''
-        response=self.client.file_delete(filePath)
+        response=self.client.file_delete(dropboxFilePath)
         if response:
             return response
         else:
             return False
 
-    def getMetadata(self, files=None, cursor=None):
+    def getFileList(self, files=None, cursor=None, excludedFolder=None):
+        '''
+
+        :param files            : list of the files
+        :param cursor           : cursor object to iterate through delta function of dropbox
+        :param excludedFolder   : folder to be excluded, so the files within won't be added to the list
+        :return                 : [filepath, filesize]
+        '''
         if files is None:
              files = {}
 
         has_more = True
-
         while has_more:
             result = self.client.delta(cursor)
-            pprint.pprint(result)
             cursor = result['cursor']
             has_more = result['has_more']
 
+        #raw_input("pause dropboxWrapper")
         for lowercase_path, metadata in result['entries']:
             if metadata is not None:
-               files[lowercase_path] = metadata
+                # no metadata indicates a deleted file record
 
+                files[lowercase_path] = metadata['size']
             else:
-                # no metadata indicates a deletion
-
-        # remove if present
+                # remove if present
                 files.pop(lowercase_path, None)
 
         # in case this was a directory, delete everything under it
@@ -116,14 +116,14 @@ class DropboxWrapper:
             if other.startswith(lowercase_path + '/'):
                 del files[other]
 
-        return files, cursor
+        return files
 
 if __name__=='__main__':
-    v=DropboxWrapper('QpgYDBNMAjIAAAAAAAAAUXlgq8MsLMwwyh7mtxIckd1PEGg6vrUf7RiLdniemrsE')
-    v.downloadFile('/Getting Started.pdf')
+    #v=DropboxWrapper('QpgYDBNMAjIAAAAAAAAAUXlgq8MsLMwwyh7mtxIckd1PEGg6vrUf7RiLdniemrsE')
+    #v.downloadFile('/Getting Started.pdf')
     #t={'aswin':"workhard!"}
     #l={}
-    #k=None
+    k=None
     #if k:
     #    print "yes"
     #d= DropboxWrapper(Test().getAuthToken('aswin.setiadi@gmail.com'))

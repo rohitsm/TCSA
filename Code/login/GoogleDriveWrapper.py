@@ -2,9 +2,12 @@ __author__ = 'aswin'
 
 import httplib2
 import re
+import StringIO
 
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
+from googleapiclient.http import MediaIoBaseUpload
+
 from googleapiclient import errors
 from oauth2client.client import Credentials
 
@@ -53,8 +56,8 @@ class GoogleDriveWrapper:
 
     def uploadFile(self, filePath, parent_id):
         filename        = re.match(r".*/(.*)", filePath).group(1)
-        if '.' not in filename:
-            filename=filename+'.txt'
+        #if '.' not in filename:
+        #    filename=filename+'.txt'
         media_body      = MediaFileUpload(filePath, resumable=True)
         body={
             'title'         : filename
@@ -67,7 +70,23 @@ class GoogleDriveWrapper:
             return file
         except errors.HttpError, error:
             print 'An error occured: %s \n returning None' % error
-            return None
+            return False
+
+    def uploadFileContent(self, filename, filecontent, parent_id):
+        #convert filecontent from string to stringIO object
+        filedata= StringIO.StringIO(filecontent)
+        media_body  =MediaIoBaseUpload(filedata, mimetype='text/plain')
+        body={
+            'title' :filename
+        }
+        if parent_id:
+            body['parents']=[{'id':parent_id}]
+        try:
+            fileMetadata= self.driveService.files().insert(body=body, media_body=media_body).execute()
+            return fileMetadata
+        except errors.HttpError, error:
+            print 'An error occured: %s \n returning False' % error
+            return False
 
     def downloadFile(self, fileID):
         try:
@@ -86,12 +105,16 @@ class GoogleDriveWrapper:
                     return False
         except errors.HttpError, error:
             print 'An error occured: %s' % error
+            return False
 
     def deleteFile(self, fileID):
         try:
             self.driveService.files().delete(fileId=fileID).execute()
+            return True
         except errors.HttpError, error:
             print 'An error occurred: %s' % error
+            return False
+
 
 #aswin= GoogleDriveWrapper('aswin.setiadi@gmail.com')
 #aswin.initDriveService()

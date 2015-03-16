@@ -100,6 +100,7 @@ class MongoDBWrapper:
                 ss=self._getGoogleDriveStorage(self.credential)
                 aList.append(("googledrive", ss[0], ss[1] ))
 
+        raw_input("pause line 102")
         #itermitems() will generate a set of tuples eg. ('a', 1000), the key argument dictate
         #the function to compare the second value(1000), hence the function x[1]
         #return (key, value) tuple so put [0] to get the storage
