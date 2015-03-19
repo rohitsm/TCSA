@@ -4,14 +4,15 @@ __author__ = 'aswin'
 import pprint
 import re
 from pymongo import MongoClient
-from pymongo.collection import Collection
+#from pymongo.collection import Collection
 from DropboxWrapper import DropboxWrapper
 from GoogleDriveWrapper import GoogleDriveWrapper
 import sys,os
 import traceback
 import ConfigParser
-import shutil
-import heapq
+#import shutil
+#import heapq
+from operator import itemgetter
 
 #ross library
 #from gdrive_conn import get_gdrive_credentials
@@ -72,15 +73,20 @@ class MongoDBWrapper:
     ###################################################################################################################
 
     def setCollection(self, email):
-        self.aCollection    = self.db[email]
-
+        try:
+            self.aCollection    = self.db[email]
+            return True
+        except TypeError as e:
+            traceback.format_exc()
+            return False
     ###################################################################################################################
     def _getRemainingStorage(self, email):
 
-        #return a list of 1 element(dictionary), chose dict element called 'storage'
-        #will return [{u'type': u'dropbox', u'metadata': []},{u'type': u'googledrive', u'metadata': []}], etc
+
         aList=[]
         storageList=self.aCollection.find({},{'_id':0,'type':1})
+        #return a list of 1 element(dictionary), chose dict element called 'storage'
+        #will return [{u'type': u'dropbox'},{u'type': u'googledrive'},{}]
         #pymongo cursor object cant be iterated more than once
 
         for storage in storageList:
@@ -88,18 +94,24 @@ class MongoDBWrapper:
                 #means this record is the foldertree, not storage record with field type
                 continue
             if storage['type'] == 'dropbox':
-                self.accessToken= self._getAccessToken(email)
-                s=self._getDropboxStorage(self.accessToken)
-                aList.append(("dropbox", s[0], s[1]))
-
+                try:
+                    self.accessToken= self._getAccessToken(email)
+                    s=self._getDropboxStorage(self.accessToken)
+                    aList.append(("dropbox", s[0], s[1]))
+                except Exception as e:
+                    print traceback.format_exc()
+                    return False
             elif storage['type'] == 'box':
                 raise NotImplementedError
 
             elif storage['type'] == 'googledrive':
-                self.credential= self._getCredential(email)
-                ss=self._getGoogleDriveStorage(self.credential)
-                aList.append(("googledrive", ss[0], ss[1] ))
-
+                try:
+                    self.credential= self._getCredential(email)
+                    ss=self._getGoogleDriveStorage(self.credential)
+                    aList.append(("googledrive", ss[0], ss[1] ))
+                except Exception as e:
+                    print traceback.format_exc()
+                    return False
         #itermitems() will generate a set of tuples eg. ('a', 1000), the key argument dictate
         #the function to compare the second value(1000), hence the function x[1]
         #return (key, value) tuple so put [0] to get the storage
@@ -109,7 +121,7 @@ class MongoDBWrapper:
         aList= sorted(aList, key= lambda x: x[1])
         print aList[-1][0], ' has largest remaining storage.'
         #element of aList is a tuple=(storage name, storage left, total storage)
-        #aList is a list of tuple e.g:('dropbox',123.45)
+        #aList is a list of tuple e.g:('dropbox',123.45, 300)
         return aList
 
     def _getAnyStorage(self):
@@ -122,7 +134,7 @@ class MongoDBWrapper:
 
 
     def _getAllVirtualPathList(self):
-        aListOfTuple=[]
+        aListOfList=[]
         storages=self.aCollection.find(
             {},{'_id':0,'metadata':1, 'type':1}
         )
@@ -133,12 +145,11 @@ class MongoDBWrapper:
             else:
                 if storage['type'] == 'dropbox':
                     for path in storage['metadata']:
-                        aListOfTuple.append((path['virtualPath'], storage['type']))
+                        aListOfList.append((path['virtualPath'], storage['type']))
                 elif storage['type']== 'googledrive':
-                    pprint.pprint(storage['metadata'])
                     for path in storage['metadata']:
-                            aListOfTuple.append((path['virtualPath'], storage['type'], path['fileID']))
-        return aListOfTuple
+                            aListOfList.append((path['virtualPath'], storage['type'], path['fileID']))
+        return aListOfList
 
 
 
@@ -164,7 +175,18 @@ class MongoDBWrapper:
                 {'type':chosenStorage},
                 {'$push':{'metadata':{'virtualPath':newVirtualPath}}}
             )
-
+        print "%s added" % newVirtualPath
+        pprint.pprint(list(self.aCollection.find(
+            {'type':chosenStorage},
+            {    '_id':0,
+                 'type':1,
+                 'metadata':{
+                     '$elemMatch':{
+                        'virtualPath':newVirtualPath
+                     }
+                 }
+            }
+        )))
     def _removePath(self, path, storage):
         test= self.aCollection.update(
             #if query is empty, can only update first storage, if path in second position in db, the query will not reach it
@@ -230,8 +252,13 @@ class MongoDBWrapper:
             return False
 
     def addStorage(self, storagetype, email):
+
         try:
             self.setCollection(email)
+            check=list(self.aCollection.find({'type':storagetype}))
+            if check:
+                print "fail to add storage: %s. it has already existed. returning false" % storagetype
+                return False
             newStorageRecord= {
                         'type'       :storagetype,
                         'metadata'   :[]
@@ -259,9 +286,22 @@ class MongoDBWrapper:
     def deleteStorage(self, storagetype, email):
         try:
             self.setCollection(email)
+            aList=list(self.aCollection.find(
+                {'type':storagetype},
+                {'metadata':1}
+            ))[0]
+            paths=[]
+            for key in aList:
+                if key=='metadata':
+                    for path in aList[key]:
+                        paths.append(path['virtualPath'].split('/')[-1])
+
+            returnString=','.join(paths)
+            print returnString
+            raw_input("pause")
             self.aCollection.remove({'type':storagetype})
             "%s deleted from mongodb" % storagetype
-            return True
+            return returnString
         except Exception as e:
             print traceback.format_exc()
             return False
@@ -274,20 +314,20 @@ class MongoDBWrapper:
             print "__aswin upload__"
             self.setCollection(email)
             fileSize= len(fileContent)
-            ##fileSize     = os.stat(fileLocation).st_size
-            #print "file size: ",fileSize, " bytes"
-            #cos of greedy first .*, the / will reach till just before last part of the path
-            #filename     = re.match(r".*/(.*)", fileLocation).group(1)
 
             #(storagename, quotaleft, totalquota)
-            aListofTuple=self._getRemainingStorage(email)
+            aListofList=self._getRemainingStorage(email)
+            if not aListofList:
+                print"fail to upload. user has not registered any storage to TCSA. returning False"
+                self.client.disconnect()
+                return False
             #-1 cause sorted in ascending order
-            if fileSize>(aListofTuple[-1][1]-self.STORAGE_LIMIT_BUFFER):
+            if fileSize>(aListofList[-1][1]-self.STORAGE_LIMIT_BUFFER):
                 print "upload fail due to file size larger than the largest available cloud storag, aborting upload operation..."
                 self.client.disconnect()
                 return False
 
-            chosenStorage=aListofTuple[-1][0]
+            chosenStorage=aListofList[-1][0]
             #todo
             #chosenStorage='dropbox'
             #NOTE
@@ -325,7 +365,7 @@ class MongoDBWrapper:
                     'fileID'     : file['id']
                 }
 
-                self._addNewVirtualPath(filePath, chosenStorage, newRecord)
+                self._addNewVirtualPath(filePath, 'googledrive', newRecord)
 
             self.client.disconnect()
             #shutil.rmtree(fileLocation)
@@ -361,6 +401,7 @@ class MongoDBWrapper:
                 if not eachStorage:
                     #this record is foldertree record
                     continue
+                print eachStorage
                 if 'metadata' in eachStorage:
                     #this record is the storage record that has the sought after file
                     print 'found record in %s' % eachStorage['type']
@@ -381,11 +422,12 @@ class MongoDBWrapper:
                         self.credential=self._getCredential(email)
                         wrapper=GoogleDriveWrapper(self.credential)
                         content= wrapper.downloadFile(fileID)
+
                     if content:
                         print "download successfull:\n%s\n" % content
                         return content
 
-            print 'no record found in %s\n returning False' % eachStorage['type']
+            print 'no record found in all storage\n returning False'
             return content
         except Exception as e:
             print traceback.format_exc()
@@ -423,99 +465,148 @@ class MongoDBWrapper:
 
     def download_metadata(self, email):
         print "__aswin download_metadata__"
-        self.setCollection(email)
-        metadata=list(self.aCollection.find(
-            {"foldertree":1},{"_id":0,"value":1}
-        ))
-        self.client.disconnect()
-        #print metadata
-        for item in metadata:
-            if item:
-                #list metadata contains element>0
-                #query return at least 1 record result
-                if item['value'] != "":
-                    #foldertree only have root folder
-                    print "item[value]=",item['value']
-                    return item['value']
-        return "NONE"
-
+        try:
+            self.setCollection(email)
+            metadata=list(self.aCollection.find(
+                {"foldertree":1},{"_id":0,"value":1}
+            ))
+            self.client.disconnect()
+            #print metadata
+            for item in metadata:
+                if item:
+                    #example of item is a record {"value":"assdfksl12"}
+                    #list metadata contains element>0
+                    #query return at least 1 record result
+                    if item['value'] != "":
+                        #foldertree only have root folder
+                        print "item[value]=",item['value']
+                        return item['value']
+            return "NONE"
+        except Exception as e:
+            print traceback.format_exc()
+            return False
 
 
     def delete(self, email, fileName):
-        print "__aswin delete__"
-        f='/TCSA/%s'%fileName
-        pathRecord=None
-        self.setCollection(email)
-        #get all path and their respective storage,including the path to be deleted
-        temp=self._getAllVirtualPathList()
-        for t in temp:
-            if t[0]==f:
-                #found the storage where file is stored
-                pathRecord=t
-                #remove this path in all path list
-                #temp.remove((f, virtualPathStorage))
-                #print 'virtualpathStorage found...'
-                break
-        if pathRecord[1]=='dropbox':
-            #ros function here
-            self.accessToken=self._getAccessToken(email)
-            wrapper=DropboxWrapper(self.accessToken)
-            wrapper.deleteFile(f)
+        try:
+            print "__aswin delete__"
+            f='/TCSA/%s'%fileName
+            pathRecord=None
+            self.setCollection(email)
+            #get all path and their respective storage,including the path to be deleted
+            temp=self._getAllVirtualPathList()
+            for t in temp:
+                if t[0]==f:
+                    #found the storage where file is stored
+                    pathRecord=t
+                    #remove this path in all path list
+                    #temp.remove((f, virtualPathStorage))
+                    #print 'virtualpathStorage found...'
+                    break
+            if pathRecord[1]=='dropbox':
+                #ros function here
+                self.accessToken=self._getAccessToken(email)
+                wrapper=DropboxWrapper(self.accessToken)
+                wrapper.deleteFile(f)
 
-        elif pathRecord[1]=='box':
-            raise NotImplementedError
+            elif pathRecord[1]=='box':
+                raise NotImplementedError
 
-        elif pathRecord[1]=='googledrive':
-            #ros function here
-            self.credential=self._getCredential(email)
-            wrapper=GoogleDriveWrapper(self.credential)
-            wrapper.deleteFile(pathRecord[2])
+            elif pathRecord[1]=='googledrive':
+                #ros function here
+                self.credential=self._getCredential(email)
+                wrapper=GoogleDriveWrapper(self.credential)
+                wrapper.deleteFile(pathRecord[2])
 
-        #delete virtualPath record in db
-        self._removePath(f, pathRecord[1])
-        print "file record [%s] deleted in the mongo database..." %f
-        self.client.disconnect()
-        return True
-
+            #delete virtualPath record in db
+            self._removePath(f, pathRecord[1])
+            print "file record [%s] deleted in the mongo database..." %f
+            self.client.disconnect()
+            return True
+        except Exception as e:
+            print traceback.format_exc()
+            return False
 
     def spreadData(self, email):
-        self.setCollection(email)
-        #storages will be a list of tuple(storagename, quotaleft,totalquota)
-        exceedRatioStorageList=[]
-        belowRatioStorageList=[]
-        storages=self._getRemainingStorage(email)
-        print storages
-        totalStorages   = sum([t[2] for t in storages])
-        totalUsage      = sum([t[2]-t[1] for t in storages])
-        ratio           = totalUsage/totalStorages
-        print ratio
-        for storage in storages:
-            usage=storage[2]-storage[1]
-            usageRatio=ratio*storage[2]
-            if usage>usageRatio:
-                print "%s exceed ratio" % storage[0]
-                exceedRatioStorageList.append((storage[0], usage, usageRatio))
-            else:
-                print "%s below ratio" % storage[0]
-                belowRatioStorageList.append((storage[0], storage[1]))
+        try:
+            self.setCollection(email)
+            #storages will be a list of tuple(storagename, quotaleft,totalquota)
+            exceedRatioStorageList=[]
+            belowRatioStorageList=[]
+            storages=self._getRemainingStorage(email)
+            print storages
+            totalStorages   = sum([t[2] for t in storages])
+            totalUsage      = sum([t[2]-t[1] for t in storages])
+            ratio           = totalUsage/totalStorages
+            print ratio
+            for storage in storages:
+                usage=storage[2]-storage[1]
+                usageRatio=ratio*storage[2]
+                if usage>usageRatio:
+                    print "%s exceed ratio\nusage=%s\nusagelimit(ratio)=%s" % (storage[0],"{:,}".format(usage),"{:,}".format(usageRatio))
+                    #storage name, storage amount used, storage size within ratio
+                    exceedRatioStorageList.append([storage[0], usage, usageRatio])
+                else:
+                    print "%s below ratio\nusage=%s\nusagelimit(ratio)=%s" % (storage[0], "{:,}".format(usage), "{:,}".format(usageRatio))
+                    #storage name, quota left
+                    belowRatioStorageList.append([storage[0], storage[1]])
+                    #sorted ascending order
+                    belowRatioStorageList=sorted(belowRatioStorageList, key= itemgetter(1))
 
-        for fullStorage in exceedRatioStorageList:
-            #bytes toBeRemoved
-            toBeRemoved= fullStorage[1]-fullStorage[2]
+            for fullStorage in exceedRatioStorageList:
+                #bytes toBeRemoved
+                toBeRemoved= fullStorage[1]-fullStorage[2]
 
-            #get file list and respective size in fullStorage
-            accessToken= self._getAccessToken(email)
-            wrapper=DropboxWrapper(accessToken=accessToken)
-            files= wrapper.getFileList()
-            pprint.pprint(files)
+                #get file list and respective size in fullStorage
+                accessToken= self._getAccessToken(email)
+                wrapper=DropboxWrapper(accessToken=accessToken)
+                files=wrapper.getFileList()
+                for i in xrange(len(files)-1,-1,-1):
+                    reObj= re.match(r'^/TCSA/.*', files[i][0])
+                    if reObj:
+                        print "this record in TCSA folder:%s, exclude it"% files[i][0]
+                        del files[i]
 
-            #print 'Top 10 biggest files:'
+                #sorted in ascending order
+                files= sorted(files, key= itemgetter(1))
+                if belowRatioStorageList:
+                    #exist storage that doesnt exceed ratio limit
+                    for j in xrange(len(belowRatioStorageList)-1, -1, -1):
+                        #create folder fromDropbox in googledrive
+                        if belowRatioStorageList[0][0]=='googledrive':
+                            self.credential=self._getCredential(email)
+                            wrapper= GoogleDriveWrapper(self.credential)
+                            fromDropboxMetadata= wrapper.createFolder('fromDropbox')
+                            fromDropboxFolderID= fromDropboxMetadata['id']
 
-            #for path, metadata in heapq.nlargest(10, files.items(), key=lambda x: x[1]['bytes']):
-            #    print 't%s: %d bytes' % (path, metadata['bytes'])
+                        self.accessToken=self._getAccessToken(email)
+                        dropboxWrapper= DropboxWrapper(self.accessToken)
+                        #while dropbox usage is larger that its allowed ratio and googledrive quotaLeft>0
+                        while exceedRatioStorageList[0][1]>exceedRatioStorageList[0][2] and belowRatioStorageList[j][1]>0:
+                            #download largest file(last item in list cause sorted ascending) from dropbox, keep the metadata
+                            filePath=files[-1][0]
+                            fileName= filePath.split('/')[-1]
+                            fileMetadata= dropboxWrapper.downloadFile(filePath)
+                            #upload this metadata to googledrive
+                            wrapper.uploadFileContent(fileName, filecontent=fileMetadata,parent_id=fromDropboxFolderID)
+                            #delete file in dropbox
+                            dropboxWrapper.deleteFile(filePath)
+                            #delete file entry in variable files
+                            exceedRatioStorageList[0][1]=exceedRatioStorageList[0][1]-files[-1][1]
+                            del files[-1]
+                        if exceedRatioStorageList[0][1]<=exceedRatioStorageList[0][2]:
+                            break
 
-            #break
 
+                #print 'Top 10 biggest files:'
+
+                #for path, metadata in heapq.nlargest(10, files.items(), key=lambda x: x[1]['bytes']):
+                #    print 't%s: %d bytes' % (path, metadata['bytes'])
+
+                #break
+        except Exception as e:
+            print traceback.format_exc()
+            return False
     def getTempFolderName(self, email):
         self.setCollection(email)
         aRecord=self.aCollection.find(
@@ -527,7 +618,9 @@ class MongoDBWrapper:
 if __name__ == '__main__':
     #only call these lines when this file is ran
     mongodb = MongoDBWrapper()
-    mongodb.spreadData('aswin.setiadi@gmail.com')
+    #mongodb.spreadData('aswin.setiadi@gmail.com')
+    #mongodb.addStorage('googledrive', 'aswin.setiadi@gmail.com')
+    mongodb.deleteStorage('googledrive','aswin.setiadi@gmail.com')
     #mongodb.delFile('aswin.setiadi@gmail.com','/animal/monkey.jpg')
     #mongodb.removePath('aswin.setiadi@gmail.com', 'dropbox', '/parent/path')
     #mongodb.getTempFolderName('aswin.setiadi@gmail.com')
@@ -540,11 +633,13 @@ if __name__ == '__main__':
     #mongodb.upload_metadata('aswin.setiadi@gmail.com', 'aswinsetiadi')
     #mongodb.download_metadata('aswin.setiadi@gmail.com')
     #mongodb.addStorage('dropbox','aswin.setiadi@gmail.com')
-    #mongodb.upload('aswin.setiadi@gmail.com', "abcd1234", "hello world")
+    #mongodb.upload('aswin.setiadi@gmail.com', "kajfdlajsdlfa", "kjalkfdjklads")
     #mongodb.delete('aswin.setiadi@gmail.com', 't')
-    #mongodb.download('aswin.setiadi@gmail.com', 'abcd1234')
+    #mongodb.download('aswin.setiadi@gmail.com', 'abcd123456')
     #mongodb.upload_metadata('aswin.setiadi@gmail.com', 'encrypted folder tree here')
     #mongodb.setCollection('aswin.setiadi@gmail.com')
     #mongodb._removePath('/985b155aa1d8941f61dc1a12c9dd9cd55e9994d5e770a6f5f7ac71c2e5590bc0.txt', 'googledrive')
     #print mongodb._getGoogleDriveFileID('/movies/comedy/monkey.jpg')
     #mongodb.deleteStorage('dropbox', 'aswin.setiadi@gmail.com')
+    #p='/aswin/setiadi/j.jpg'
+    #print p.split('/')[-1]

@@ -39,9 +39,14 @@ class GoogleDriveWrapper:
             'mimeType'  :'application/vnd.google-apps.folder',
             'parents'   :[{'id':parentFolderID}]
         }
-        folder= self.driveService.files().insert(body=body).execute()
-        print "returning whole folder metadata"
-        return folder
+
+        try:
+            folder= self.driveService.files().insert(body=body).execute()
+            print "returning whole folder metadata"
+            return folder
+        except errors.HttpError, error:
+            print 'An error occured: %s \n returning None' % error
+            return False
 
     def createTCSAFolder(self):
         #create TCSA folder in root folder
@@ -49,25 +54,11 @@ class GoogleDriveWrapper:
             'title'     :'TCSA',
             'mimeType'  :'application/vnd.google-apps.folder'
         }
-        folder= self.driveService.files().insert(body=body).execute()
-        print 'TCSA folder id: %s' % folder['id']
-        print "returning whole folder metadata"
-        return folder
-
-    def uploadFile(self, filePath, parent_id):
-        filename        = re.match(r".*/(.*)", filePath).group(1)
-        #if '.' not in filename:
-        #    filename=filename+'.txt'
-        media_body      = MediaFileUpload(filePath, resumable=True)
-        body={
-            'title'         : filename
-        }
-        if parent_id:
-            body['parents']=[{'id':parent_id}]
         try:
-            #file is a dictionary
-            file= self.driveService.files().insert(body=body, media_body=media_body).execute()
-            return file
+            folder= self.driveService.files().insert(body=body).execute()
+            print 'TCSA folder id: %s' % folder['id']
+            print "returning whole folder metadata"
+            return folder
         except errors.HttpError, error:
             print 'An error occured: %s \n returning None' % error
             return False

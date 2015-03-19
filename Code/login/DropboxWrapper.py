@@ -1,14 +1,17 @@
 __author__ = 'aswin'
 
 from dropbox.client import DropboxClient
-import pprint
+import traceback
+
 
 class DropboxWrapper:
 
     def __init__(self, accessToken):
-        self.client     = DropboxClient(accessToken)
+        try:
+            self.client     = DropboxClient(accessToken)
 
-
+        except Exception as e:
+            print traceback.format_exc()
     #Dropbox operation utilities~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     def getDropboxStorageSizeLeft(self):
@@ -93,38 +96,24 @@ class DropboxWrapper:
         :return                 : [filepath, filesize]
         '''
         if files is None:
-             files = {}
-
+            #files = {}
+            files=[]
         has_more = True
         while has_more:
             result = self.client.delta(cursor)
             cursor = result['cursor']
             has_more = result['has_more']
 
-        #raw_input("pause dropboxWrapper")
-        for lowercase_path, metadata in result['entries']:
-            if metadata is not None:
-                # no metadata indicates a deleted file record
-
-                files[lowercase_path] = metadata['size']
-            else:
-                # remove if present
-                files.pop(lowercase_path, None)
-
-        # in case this was a directory, delete everything under it
-        for other in files.keys():
-            if other.startswith(lowercase_path + '/'):
-                del files[other]
-
+            #raw_input("pause dropboxWrapper")
+            for lowercase_path, metadata in result['entries']:
+                if metadata is not None:
+                    # no metadata indicates a deleted file record
+                    if not metadata['is_dir']:
+                        #files[metadata['path']] = metadata['size']
+                        files.append((metadata['path'], metadata['bytes']))
         return files
 
 if __name__=='__main__':
-    #v=DropboxWrapper('QpgYDBNMAjIAAAAAAAAAUXlgq8MsLMwwyh7mtxIckd1PEGg6vrUf7RiLdniemrsE')
-    #v.downloadFile('/Getting Started.pdf')
-    #t={'aswin':"workhard!"}
-    #l={}
-    k=None
-    #if k:
-    #    print "yes"
-    #d= DropboxWrapper(Test().getAuthToken('aswin.setiadi@gmail.com'))
-    #d.deleteFile('/fruits/orange')
+    t=[]
+    for x in t:
+        print "hello"
