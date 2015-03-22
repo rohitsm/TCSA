@@ -333,12 +333,12 @@ def routes(app, login_manager):
 		print "session popped"
 		return redirect(url_for('index'))
 
-	# @app.errorhandler(404)
-	# def internal_error(exception):
-	# 	# app.logger.exception(exception)
-	# 	return render_template('404.html'), 404
+	@app.errorhandler(404)
+	def internal_error(exception):
+		# app.logger.exception(exception)
+		return render_template('404.html'), 404
 
-	# @app.errorhandler(500)
-	# def internal_error(exception):
-	# 	# app.logger.exception(exception)
-	# 	return render_template('500.html'), 500
+	@app.errorhandler(500)
+	def internal_error(exception):
+		# app.logger.exception(exception)
+		return render_template('500.html'), 500
