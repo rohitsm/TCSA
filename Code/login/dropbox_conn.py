@@ -110,6 +110,10 @@ def dropbox_disconnect():
     if set_dropbox_token(email, None):
         print "Disconnected Dropbox. remomved token from DB"
         return redirect(url_for('profile'))
+	
+	if (MongoDBWrapper().deleteStorage(storagetype='dropbox', email=email)):
+		print "Deleted Dropbox Account from MongoDB"	
+
 
     flash("Disconnect error, Try again")
     return redirect(url_for('profile'))

@@ -110,8 +110,8 @@ def testajax2():
 				session['user'] = p_email
 				print "ADDED SESSION!"
 				sess_em = session.get('user')
-				print "sess_em = ", sess_em
-				# login_user(user, remember = remember_me)
+				print "Sess_em = ", sess_em
+				login_user(user, remember = False)
 				# flash('You were successfully logged in')
 				return json.dumps({'status':'OK','email': p_email})
 		else: 
@@ -127,16 +127,20 @@ def testajax2():
 
 @app.route('/testupload', methods=['GET', 'POST'])
 def testupload():
+
+	#if 'user' not in session:
+	#	return json.dumps({'status':'NotOK', 'Error': 'No session found!'})
 	
 	if request.method == 'POST':
+		#p_email = session.get('user')
+		#print "\n\nSESSION EMAIL: ", p_email
 		req = request.json['req']
 		user_email = request.json['user_email']
 		print "req = ", req
 		print "user_email", user_email
-
-		p_email = session.get('user')
-		print "\n\nSESSION EMAIL : ". p_email
 		
+		p_email = session.get('user')
+		print "\n\nSESSION EMAIL: ", p_email
 		if req == 'upload':
 			# Gets encrypted file contents from plugin and sends to DB for saving
 			
@@ -183,8 +187,10 @@ def testupload():
 			print "\n==============END TEST UPLOAD_METADATA=============="
 
 			if (MongoDBWrapper().upload_metadata(email=user_email, metadata=metadata)):
+				print "SESSION BEFORE POPPING: ", session.get('user')
 				session.pop('user', None)
 				print "SESSION POPPED!"
+				logout_user()
 				return json.dumps({'status':'OK', 'user_email':user_email})
 			else:
 				return json.dumps({'status':'NotOK'})

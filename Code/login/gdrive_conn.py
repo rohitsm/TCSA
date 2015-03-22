@@ -255,6 +255,9 @@ def gdrive_disconnect():
 	if set_gdrive_token(email, None):
 		print "Disconnected Google Drive. removed from DB"
 		return redirect(url_for('profile'))
+		
+		if (MongoDBWrapper().deleteStorage(storagetype='googledrive', email=email)):
+			print "Deleted GDrive Account from MongoDB"  
 
 	flash("Disconnect error, Try again")
 	return redirect(url_for('profile'))
