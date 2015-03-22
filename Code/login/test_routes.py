@@ -105,9 +105,12 @@ def testajax2():
 
 			#Success; Redirect to profile page
 			else: 
-				session.pop('p_email', None)
-				print "to profile"
-				# session['user'] = p_email
+				#session.pop('p_email', None)
+				print "(Inside testajax2) to profile"
+				session['user'] = p_email
+				print "ADDED SESSION!"
+				sess_em = session.get('user')
+				print "sess_em = ", sess_em
 				# login_user(user, remember = remember_me)
 				# flash('You were successfully logged in')
 				return json.dumps({'status':'OK','email': p_email})
@@ -130,6 +133,9 @@ def testupload():
 		user_email = request.json['user_email']
 		print "req = ", req
 		print "user_email", user_email
+
+		p_email = session.get('user')
+		print "\n\nSESSION EMAIL : ". p_email
 		
 		if req == 'upload':
 			# Gets encrypted file contents from plugin and sends to DB for saving
@@ -177,6 +183,8 @@ def testupload():
 			print "\n==============END TEST UPLOAD_METADATA=============="
 
 			if (MongoDBWrapper().upload_metadata(email=user_email, metadata=metadata)):
+				session.pop('user', None)
+				print "SESSION POPPED!"
 				return json.dumps({'status':'OK', 'user_email':user_email})
 			else:
 				return json.dumps({'status':'NotOK'})
