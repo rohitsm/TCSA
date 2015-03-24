@@ -13,6 +13,7 @@ import ConfigParser
 #import shutil
 #import heapq
 from operator import itemgetter
+import zfec
 
 #ross library
 #from gdrive_conn import get_gdrive_credentials
@@ -112,10 +113,6 @@ class MongoDBWrapper:
                 except Exception as e:
                     print traceback.format_exc()
                     return False
-        #itermitems() will generate a set of tuples eg. ('a', 1000), the key argument dictate
-        #the function to compare the second value(1000), hence the function x[1]
-        #return (key, value) tuple so put [0] to get the storage
-        #chosenStorage= max(storageSizePair.iteritems(), key= lambda x: x[1])[0]
 
         #sorted in ascending order
         aList= sorted(aList, key= lambda x: x[1])
@@ -297,8 +294,6 @@ class MongoDBWrapper:
                         paths.append(path['virtualPath'].split('/')[-1])
 
             returnString=','.join(paths)
-            print returnString
-            raw_input("pause")
             self.aCollection.remove({'type':storagetype})
             "%s deleted from mongodb" % storagetype
             return returnString
@@ -328,7 +323,7 @@ class MongoDBWrapper:
                 return False
 
             chosenStorage=aListofList[-1][0]
-            #todo
+            #uncomment to manually chose storage
             #chosenStorage='dropbox'
             #NOTE
             #access token, credentials etc. already taken care by _getRemainingStorage()
@@ -617,29 +612,29 @@ class MongoDBWrapper:
 
 if __name__ == '__main__':
     #only call these lines when this file is ran
-    mongodb = MongoDBWrapper()
-    #mongodb.spreadData('aswin.setiadi@gmail.com')
-    #mongodb.addStorage('googledrive', 'aswin.setiadi@gmail.com')
-    mongodb.deleteStorage('googledrive','aswin.setiadi@gmail.com')
-    #mongodb.delFile('aswin.setiadi@gmail.com','/animal/monkey.jpg')
-    #mongodb.removePath('aswin.setiadi@gmail.com', 'dropbox', '/parent/path')
-    #mongodb.getTempFolderName('aswin.setiadi@gmail.com')
-    #mongodb.download('aswin.setiadi@gmail.com', 'abcd1234')
-    #mongodb._removePath('aswin.setiadi@gmail.com', '/fruits/orange/orange.jpg', 'dropbox')
-    #mongodb._addPath('test@test.com','box', '/fruits/purple/eggplant.jpg')
-    #print mongodb.getTempFolderName('aswin.setiadi@gmail.com')
-    #print mongodb._getRemainingStorage('aswin.setiadi@gmail.com')
-    #mongodb.deleteFolder('aswin.setiadi@gmail.com', '/abc')
-    #mongodb.upload_metadata('aswin.setiadi@gmail.com', 'aswinsetiadi')
-    #mongodb.download_metadata('aswin.setiadi@gmail.com')
-    #mongodb.addStorage('dropbox','aswin.setiadi@gmail.com')
-    #mongodb.upload('aswin.setiadi@gmail.com', "kajfdlajsdlfa", "kjalkfdjklads")
-    #mongodb.delete('aswin.setiadi@gmail.com', 't')
-    #mongodb.download('aswin.setiadi@gmail.com', 'abcd123456')
-    #mongodb.upload_metadata('aswin.setiadi@gmail.com', 'encrypted folder tree here')
-    #mongodb.setCollection('aswin.setiadi@gmail.com')
-    #mongodb._removePath('/985b155aa1d8941f61dc1a12c9dd9cd55e9994d5e770a6f5f7ac71c2e5590bc0.txt', 'googledrive')
-    #print mongodb._getGoogleDriveFileID('/movies/comedy/monkey.jpg')
-    #mongodb.deleteStorage('dropbox', 'aswin.setiadi@gmail.com')
-    #p='/aswin/setiadi/j.jpg'
-    #print p.split('/')[-1]
+    #mongodb = MongoDBWrapper()
+    #mongodb.deleteStorage('googledrive','aswin.setiadi@gmail.com')
+    aStringOri= 'YQDonaV/BlVyboCsI18Yfc2KrG4mTMhonX7Ujkdc98j56H8cDMdzalBfydSOnPuUbS8/HgdP5fOxjEoUrtK3iDNOSgUt6rvMc7ZUdDMNvCD4OVgXTQ5JEE/MfSyJtWB8G8b+M+UwinHkwFFYCfSeBwTtrE94H9aUGq+GzIy3jPmgPGKg1y5tKQJThCsK/2eHnfGgdpqM1I8Dd+Byuos/4f4VDiezUj6A8SdnmD57lgvixerLoXDmNNUSwu4LQ/Wu8m1VkIjmKq4ZTpgxfTySdk80hluKBohaqhqleOXlVqfxhKDwYvjuc2jpY3ewjbmwSYquHnKxzD1piZfyCXHdxFu/IqU1HYzMQtDzH5YWVOvMnsCQoboN9g+p4oDMjyiR8gPauDC3VELuDiN4srvgC0Xdh/k7jPpkqQsmUHbo925TZ6pKpVNAwVaYW2yeD7U92iHcKbspHbdpQ/EZl0lJmN56emy/Gg7iVd9ZBwA/peKduwk0kj4c3S/AbuGZeATSwIk/FYupEFrN9MeMHenBcAoYphISW89yTE4EaCqgA3Zb3RZiZZTQnj60G5z40Rtt6qnUGWbm5ms3809w2AwnmcYa8mRN5gMGcWpnsZDz9cfs6/SX0O/LEyXDantfbb5bZnMtzkNay5in8ZmepTBXXuLdQHQ7baV5WTRP14DpsNk=-'
+    if len(aStringOri) % 2 !=0:
+        #append 0 if string length is odd
+        aString=aStringOri+'0'
+        isOdd=True
+    else:
+        aString=aStringOri
+    #ceiling division
+    mid= (len(aString)-1)//2+1
+    #print mid
+    #string index is inclusive
+    sec1= aString[:mid]
+    sec2= aString[mid:]
+    print sec1+sec2
+    list= zfec.Encoder(2, 3).encode([sec1, sec2])
+    corrected= ''.join(zfec.Decoder(2,3).decode([list[0], list[2],], [0,2]))
+    if isOdd:
+        corrected=corrected[:-1]
+    if corrected==aStringOri:
+        print corrected
+        print True
+    else:
+        print corrected
+        print False

@@ -114,6 +114,4 @@ class DropboxWrapper:
         return files
 
 if __name__=='__main__':
-    t=[]
-    for x in t:
-        print "hello"
+    print min([1,2,3,4,5,6,7,8], key=lambda x:abs(x-6.5))
