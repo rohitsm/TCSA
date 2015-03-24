@@ -315,7 +315,7 @@ def routes(app, login_manager):
 				#print "user_info = ", user_info
 				#gd_email = user_info["email"]
 				#print "gd_email = ", type(gd_email)
-				gd_email = "hello World"
+				gd_email = "Google Drive"
 
 			return render_template('profile.html', user=session['user'], db_conn=real_name, gd_conn=gd_email)
 
