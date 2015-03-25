@@ -29,7 +29,7 @@ function validatePwd1(){
 }
 
 function validatePwd() {
-	/* 	Check if the two passphrases match */
+	/* 	Check if the two passwords match */
 
 	var pwd1 = document.forms["signupForm"]["Password1"].value;
 	var pwd2 = document.forms["signupForm"]["Password2"].value;
@@ -41,32 +41,7 @@ function validatePwd() {
 	return true;
 }
 
-function validatePassph1(){
-	/* Check if the passphrase has min length = 8	and is not null */
-
-	var pps1 = document.forms["signupForm"]["Passphrase1"].value;
-	if (pps1.length < 8){
-		alert("Passphrase must have minimum 5 characters!")
-		document.forms["signupForm"]["Passphrase1"].focus();
-		return false;
-	}
-}
-
-function validatePassphrase() {
-	/* 	Check if the two passphrases match */
-
-	var pps1 = document.forms["signupForm"]["Passphrase1"].value;
-	var pps2 = document.forms["signupForm"]["Passphrase2"].value;
-
-	if (pps1 != pps2){
-		alert("Passphrases don't match!")
-		document.forms["signupForm"]["Passphrase1"].focus();
-		return false;
-	}  
-	return true;
-}
-
 
 function validateForm() {
-	return !!(validateEmail() && validatePwd() && validatePassphrase());
+	return !!(validateEmail() && validatePwd());
 }

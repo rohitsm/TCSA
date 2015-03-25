@@ -12,16 +12,13 @@
     <title>TCSA Sign Up</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="/static/css/signup.css" rel="stylesheet">
+    <link href="../static/css/signup.css" rel="stylesheet">
 
     <!-- Custom JS for this template -->
     <script type="text/javascript" src="/static/js/signup.js"></script>
-
-    <!-- RECAPTCHA JS for this template -->
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
   </head>
 
@@ -52,15 +49,24 @@
         {% endif %}
       {% endwith %}
 
-      <form name="signupForm" onSubmit="return validateForm();" enctype="multipart/form-data" role="form" method="POST" action="/signup">
+      <form name="signupForm" onSubmit="return validateForm();" role="form" method="POST" action="/signup2">
         
         <div class="row marketing" id="form-bg">
-          <h3 id="form-header" class="text-center block-center">New User Registration!</h3>
+          <h3 id="form-header" class="text-center block-center">You're almost done!</h3>
           
           <div class="col-md-6 col-xs-6 col-md-offset-3 col-xs-offset-3">
+
+            <div class="form-group">
+              <input type="email" class="form-control" placeholder="{{email}}" value="{{email}}" name="Email" id="Email" disabled>
+            </div>
+
             <div class="form-group">
               <img src="{{ qrcode(qrdata) }}">
-              
+            </div>
+
+            <div class="form-group">
+              <label for="otp-code">Test your OTP</label>
+              <input type="text" class="form-control" placeholder="One-Time-Password" name="otp-code" id="otp-code" required autofocus>
             </div>
 
             <br><br>

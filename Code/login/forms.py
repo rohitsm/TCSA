@@ -5,7 +5,7 @@ from flask import session
 
 # Models
 from login import db
-from models import get_user_record, set_user_record, check_pass
+from models import get_user_record, set_user_record, check_pass, check_otp
 
 # Stage 0
 class SignupForm(Form):
@@ -41,10 +41,11 @@ class LoginForm_2(Form):
 	def __init__(self, *args, **kwargs):
 		Form.__init__(self, *args, **kwargs)
 
-	def authenticate(self, eml, passph):
-		# Checks if email and passphrase match in records		
-		user = get_user_record(eml)
-		if check_pass(user.passphrase, passph):
+	def authenticate(self, eml, otp_code):
+		# Redundant stuff. Delete this function later and directly call
+		# check_otp() directly
+
+		if (check_otp(eml, otp_code)):
 			return True
 		else:
 			return False
