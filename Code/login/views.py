@@ -19,6 +19,9 @@ from login import app
 from models import User, User_Profile, hash_pass
 from models import get_user_record, set_user_record
 
+#QR Code
+from login import QRcode
+
 # Dropbox Connectors
 from dropbox_conn import dropbox_connect
 
