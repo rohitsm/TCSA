@@ -64,6 +64,11 @@ def routes(app, login_manager):
 		
 		return render_template('index.html')
 
+	@app.route('/qrcode')
+	def qrcode():
+		qrdata = 'otpauth://totp/admin@tcsa.com?secret=E3QSKHOLB2YOYTH5'		
+		return render_template('signup2.html', qrdata=qrdata)
+
 	@app.route('/robots')
 	@app.route('/robots.txt')
 	def static_from_root():
