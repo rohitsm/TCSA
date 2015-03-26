@@ -39,7 +39,7 @@ body {
   /* To remove background image and restore background color to dark grey, uncomment
   first line and comment out the next two lines */
   /*background-color: #333;*/
-  background-image: url("../images/background1.jpg");
+  background-image: url("../images/background3.jpg");
   /*-webkit-background-size: cover;*/
 
   background-size: cover;
