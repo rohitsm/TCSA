@@ -71,6 +71,7 @@ def check_otp(email, otp_code):
 	print "otp_code = ", otp_code
 	print "otp_key = ", otp_key
 	print "totp.now() = ", totp.now()
+	print "TOTP provisioning_uri = ", totp.provisioning_uri(email) 
 
 	if totp.verify(otp_code):
 		print "totp.verify() = True"

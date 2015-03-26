@@ -230,9 +230,8 @@ def routes(app, login_manager):
 						print "Inside >> else check_otp(email, otp_code): <<"
 						# Generate QR Code
 						otp_key, qrcode_data = get_otp_key(email)
-						if (set_otp_key(email, otp_key)):
-							flash('One Time Password error! Try again!')
-							return render_template('signup2.html', email=email, qrcode_data=qrcode_data)
+						flash('One Time Password error! Try again!')
+						return render_template('signup2.html', email=email, qrcode_data=qrcode_data)
 	
 				else:
 					print "Inside >> else form_verify(): <<"
@@ -249,13 +248,15 @@ def routes(app, login_manager):
 				email = session['otp_email']
 				print "otp_email in session = ", email
 				otp_key, qrcode_data = get_otp_key(email)
-				if (set_otp_key(email, otp_key)):
-					flash('New account created successfully!')
-					return redirect(url_for('login'))
-				flash('Error error! Try again!')
-				return render_template('signup.html')
+				print "GET Signup2- within session"
+				flash('Try again!')
+				return render_template('signup2.html', email=email, qrcode_data=qrcode_data)
 			
+			# GET - Out of session
+			print "GET Signup2- Out of session"
 			return redirect(url_for('signup'))
+			
+			
 
 		except OSError:
 		# except Exception, e:
