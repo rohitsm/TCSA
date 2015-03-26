@@ -65,8 +65,9 @@ def check_otp(email, otp_code):
 
 	print "otp_code = ", otp_code
 	print "otp_key = ", otp_key
+	print "totp.now() = ", totp.now()
 
-	if (str(otp_code) == str(totp.now()) ):
+	if totp.verify(otp_code):
 		return True
 	return False
 
