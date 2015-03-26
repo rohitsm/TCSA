@@ -222,10 +222,12 @@ def routes(app, login_manager):
 				if form.verify(email):	# Email exists in records
 					print "(Signup2) Inside form.verify(email)"
 					if check_otp(email, otp_code):
+						print "Inside >> if check_otp(email, otp_code): <<"
 						flash('New account created successfully!')
 						return redirect(url_for('login'))
 
 					else:
+						print "Inside >> else check_otp(email, otp_code): <<"
 						# Generate QR Code
 						otp_key, qrcode_data = generate_otp(email)
 						if (set_otp_key(email, otp_key)):
@@ -233,6 +235,7 @@ def routes(app, login_manager):
 							return render_template('signup2.html', email=email, qrcode_data=qrcode_data)
 	
 				else:
+					print "Inside >> else form_verify(): <<"
 					# Email not found in records. Start again!
 					session.pop('otp_email', None)
 					flash('That email is already registered!')	
