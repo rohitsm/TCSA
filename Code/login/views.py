@@ -185,7 +185,7 @@ def routes(app, login_manager):
 
 		return render_template('signup.html')
 
-@app.route('/signup2', methods=['GET', "POST"])
+	@app.route('/signup2', methods=['GET', "POST"])
 	def signup2():
 		form = SignupForm()
 

@@ -13,6 +13,7 @@ pip install MySQL-python
 pip install Flask-Admin
 pip install Flask-Login
 pip install Flask-QRcode
+pip install pyotp
 
 # Third party packages
 pip install dropbox
