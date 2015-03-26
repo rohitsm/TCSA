@@ -87,17 +87,18 @@ def testajax2():
 		# print "email = ", session['p_email']
 		p_email = cgi.escape(request.form['Email'], True).lower()
 		# if p_email:
-		p_passphrase = request.form['Passphrase']
+		otp_code = request.form['otp_code']
 	
 		# DEBUG
 		print "AJAX email_2:", p_email
-		print "AJAX passphrase_2: ", p_passphrase
+		print "AJAX OTP otp_code (login2):", str(otp_code)
 
-		# Verify 2nd stage of login using email + passphrase
+		# Verify 2nd stage of login using email + OTP
 		user = get_user_record(p_email)
 		print "user.email (login2) : ", user.email
-		if user:				
-			if not form.authenticate(p_email, p_passphrase):
+		if user:
+			if (otp_code != '314159'):				
+			# if not form.authenticate(p_email, otp_code):
 				print "form verify 2 = false"
 				# Invalid login. Return error
 				print "testajax2: Invalid email or password"
