@@ -1,4 +1,4 @@
--- CREATE DATABASE IF NOT EXISTS users;
+CREATE DATABASE IF NOT EXISTS users;
 
 USE users;
 
@@ -20,7 +20,7 @@ CREATE TABLE Profile(
 	dropbox BLOB,
 	gdrive BLOB,
 	
-	FOREIGN KEY email(email) REFERENCES Login(email)
+	FOREIGN KEY (email) REFERENCES Login(email)
 	ON UPDATE CASCADE
 	ON DELETE CASCADE
 )ENGINE=InnoDB;
