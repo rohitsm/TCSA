@@ -185,10 +185,6 @@ def gdrive_connect():
 	# print "\n\nuser_info = ", json.dumps(user_info, indent=4, sort_keys=True)
 	return json.dumps(user_info)
 
-
-# Calling MongoDBWrapper 
-from MongoDBWrapper import *
-
 @app.route('/gdrive-auth-finish')
 def gdrive_auth_finish():
 	email = session.get('user')
@@ -208,6 +204,9 @@ def gdrive_auth_finish():
 		# Convert credentials to a JSON representation before storing
 		if set_gdrive_token(email, credentials.to_json()):
 			print "credentials added to DB: type", type(credentials)
+
+			# Calling MongoDBWrapper 
+			from MongoDBWrapper import *
 
 			# Simultaneously add record in MongoDBWrapper
 			if (MongoDBWrapper().addStorage('googledrive', email)):

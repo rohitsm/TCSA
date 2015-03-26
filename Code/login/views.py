@@ -197,7 +197,7 @@ def routes(app, login_manager):
 		form = SignupForm()
 
 		if 'otp_email' not in session:
-			flash('Session error! Try again!')
+			flash('Error! Try again!')
 			return redirect(url_for('signup'))
 
 		if 'user' in session:
@@ -322,7 +322,7 @@ def routes(app, login_manager):
 
 		# Check if login1 was completed
 		if 'email' not in session:
-			flash('Session error! Try again!')
+			flash('Error! Try again!')
 			return redirect(url_for('login'))
 
 		if 'user' in session:
