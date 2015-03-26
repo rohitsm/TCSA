@@ -45,8 +45,12 @@ def generate_otp(email):
 def get_otp_key(email):
 	print "get_otp_key"
 	user = get_user_record(email)
+	totp = pyotp.TOTP(user.otp_key)
+	qrcode_data = totp.provisioning_uri(email)
+
 	print "user.otp_key = ", user.otp_key
-	return user.otp_key
+	print "user.qrcode_data = ", qrcode_data
+	return (user.otp_key, qrcode_data)
 
 def set_otp_key(email, new_otp_key):
 	print "set_otp_key"
@@ -60,7 +64,8 @@ def check_otp(email, otp_code):
 		Verifies the client OTP against the server OTP
 	"""
 	print "Inside check_otp"
-	otp_key = get_otp_key(email)
+	otp_key, qrcode_data = get_otp_key(email)
+	print "DEBUG qrcode_data: ", qrcode_data
 	totp = pyotp.TOTP(otp_key)
 
 	print "otp_code = ", otp_code
@@ -68,7 +73,9 @@ def check_otp(email, otp_code):
 	print "totp.now() = ", totp.now()
 
 	if totp.verify(otp_code):
+		print "totp.verify() = True"
 		return True
+	print "totp.verify() = False"
 	return False
 
 # Account settings handlers

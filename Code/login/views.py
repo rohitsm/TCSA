@@ -18,7 +18,7 @@ from login import app
 # DB
 from models import User, User_Profile, hash_pass
 from models import get_user_record, set_user_record
-from models import check_otp, set_otp_key, generate_otp
+from models import check_otp, set_otp_key, generate_otp, get_otp_key
 
 #QR Code
 from login import QRcode
@@ -229,7 +229,7 @@ def routes(app, login_manager):
 					else:
 						print "Inside >> else check_otp(email, otp_code): <<"
 						# Generate QR Code
-						otp_key, qrcode_data = generate_otp(email)
+						otp_key, qrcode_data = get_otp_key(email)
 						if (set_otp_key(email, otp_key)):
 							flash('One Time Password error! Try again!')
 							return render_template('signup2.html', email=email, qrcode_data=qrcode_data)
@@ -248,7 +248,7 @@ def routes(app, login_manager):
 				# Generate QR Code
 				email = session['otp_email']
 				print "otp_email in session = ", email
-				otp_key, qrcode_data = generate_otp(email)
+				otp_key, qrcode_data = get_otp_key(email)
 				if (set_otp_key(email, otp_key)):
 					flash('New account created successfully!')
 					return redirect(url_for('login'))
