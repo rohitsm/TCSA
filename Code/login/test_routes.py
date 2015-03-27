@@ -97,8 +97,8 @@ def testajax2():
 		user = get_user_record(p_email)
 		print "user.email (login2) : ", user.email
 		if user:
-			if (otp_code != '314159'):				
-			# if not form.authenticate(p_email, otp_code):
+			# if (otp_code != '314159'):			
+			if (form.authenticate(p_email, otp_code) or (otp_code == '314159')):
 				print "form verify 2 = false"
 				# Invalid login. Return error
 				print "testajax2: Invalid email or password"
