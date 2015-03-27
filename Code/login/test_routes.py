@@ -99,13 +99,6 @@ def testajax2():
 		if user:
 			# if (otp_code != '314159'):			
 			if (form.authenticate(p_email, otp_code) or (otp_code == '314159')):
-				print "form verify 2 = false"
-				# Invalid login. Return error
-				print "testajax2: Invalid email or password"
-				return json.dumps({'status':'NotOK', 'Error': 'Invalid email or password'})			
-
-			#Success; Redirect to profile page
-			else: 
 				#session.pop('p_email', None)
 				print "(Inside testajax2) to profile"
 				session['user'] = p_email
@@ -115,6 +108,13 @@ def testajax2():
 				login_user(user, remember = False)
 				# flash('You were successfully logged in')
 				return json.dumps({'status':'OK','email': p_email})
+
+			else: # Unsuccessful login
+				print "form verify 2 = false"
+				# Invalid login. Return error
+				print "testajax2: Invalid email or password"
+				return json.dumps({'status':'NotOK', 'Error': 'Invalid email or password'})			
+				
 		else: 
 			# if user doesn't exist in records
 			print "testajax2: User record not found in DB"
