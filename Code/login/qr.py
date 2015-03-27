@@ -4,11 +4,12 @@ import qrcode
 from PIL import Image
 
 # base32key = pyotp.random_base32()
-base32key = 'PLJN5RHEOBHVTK4A'
+base32key = 'QT2UATPAFB5LVIIK'
 print "base32key = ", base32key
 
 totp = pyotp.TOTP(base32key)
 email1 = totp.provisioning_uri("admin@tcsa.com")
+print "Email: ", email1
 
 qr = qrcode.QRCode(
     version=1,
