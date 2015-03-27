@@ -222,8 +222,8 @@ def routes(app, login_manager):
 				if form.verify(email):	# Email exists in records
 					print "(Signup2) Inside form.verify(email)"
 					
-					if (otp_code == '314159'):
-					# if check_otp(email, otp_code):
+					# if (otp_code == '314159'):
+					if check_otp(email, otp_code):
 						print "Inside >> if check_otp(email, otp_code): <<"
 						flash('New account created successfully!')
 						return redirect(url_for('login'))
@@ -347,8 +347,8 @@ def routes(app, login_manager):
 				user = get_user_record(email)
 				print "user.email (login2) : ", user.email
 				if user:
-					if (otp_code != '314159'):
-					# if not form.authenticate(email, otp_code):
+					# if (otp_code != '314159'):
+					if not form.authenticate(email, otp_code):
 						print "form verify 2 = false"
 						session.pop('email', None)
 						# Invalid login. Return error
