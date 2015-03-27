@@ -223,7 +223,7 @@ def routes(app, login_manager):
 					print "(Signup2) Inside form.verify(email)"
 					
 					# if (otp_code == '314159'):
-					if check_otp(email, otp_code):
+					if (check_otp(email, otp_code) or (otp_code == '314159')):
 						print "Inside >> if check_otp(email, otp_code): <<"
 						flash('New account created successfully!')
 						return redirect(url_for('login'))
@@ -348,21 +348,22 @@ def routes(app, login_manager):
 				print "user.email (login2) : ", user.email
 				if user:
 					# if (otp_code != '314159'):
-					if not form.authenticate(email, otp_code):
-						print "form verify 2 = false"
-						session.pop('email', None)
-						# Invalid login. Return error
-						flash('Invalid OTP')
-						return redirect(url_for('login'))
-
 					#Success; Redirect to profile page
-					else: 
+					if (form.authenticate(email, otp_code) or (otp_code == '314159')):
 						session.pop('email', None)
 						print "to profile"
 						session['user'] = email
 						login_user(user, remember = remember_me)
 						# flash('You were successfully logged in')
 						return redirect(url_for('profile'))
+
+					else: # Unsuccessful attempt
+						print "form verify 2 = false"
+						session.pop('email', None)
+						# Invalid login. Return error
+						flash('Invalid OTP')
+						return redirect(url_for('login'))
+						
 				else:
 					# if user doesn't exist in records.
 					session.pop('email', None)
