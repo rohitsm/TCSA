@@ -12,13 +12,13 @@
     <title>TCSA Profile</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="../static/css/profile.css" rel="stylesheet">
+    <link href="/static/css/profile.css" rel="stylesheet">
 
     <!-- Custom JS for this template -->
-    <script type="text/javascript" src="../static/js/profile.js"></script>
+    <script type="text/javascript" src="/static/js/profile.js"></script>
   </head>
 
   <body>
@@ -81,7 +81,7 @@
               <strong>STATUS:</strong> <span class="label label-success">Connected</span>
     			    <br> <br>
                 <a href="{{ url_for('dropbox_disconnect') }}">
-                  <img src="../static/images/db_logo.png" alt="Disconnect Dropbox account" method="post" class="img-rounded">
+                  <img src="/static/images/db_logo.png" alt="Disconnect Dropbox account" method="post" class="img-rounded">
                   <br> <br>
                   Disconnect '{{db_conn}}' account
                 </a>
@@ -89,7 +89,7 @@
               <strong>STATUS:</strong> <span class="label label-danger">Not Connected</span>
               <br><br>
                 <a href="{{ url_for('dropbox_auth_start') }}">
-                  <img src="../static/images/db_logo_disconn.png" method="post" class="img-rounded">
+                  <img src="/static/images/db_logo_disconn.png" method="post" class="img-rounded">
                   <br> <br>
                   Connect your Dropbox account here!
                 </a>
@@ -106,7 +106,7 @@
               <strong>STATUS:</strong> <span class="label label-success">Connected</span>
               <br> <br>
                 <a href="{{ url_for('gdrive_disconnect') }}">
-                  <img src="../static/images/gd_logo.png" alt="Disconnect Google Drive account" method="post" class="img-rounded">
+                  <img src="/static/images/gd_logo.png" alt="Disconnect Google Drive account" method="post" class="img-rounded">
                   <br> <br>
                   Disconnect '{{gd_conn}}' account
                 </a>
@@ -114,7 +114,7 @@
               <strong>STATUS:</strong> <span class="label label-danger">Not Connected</span>
               <br><br>
                 <a href="{{ url_for('gdrive_auth_start') }}">
-                  <img src="../static/images/gd_logo_disconn.png" method="post" class="img-rounded">
+                  <img src="/static/images/gd_logo_disconn.png" method="post" class="img-rounded">
                   <br> <br>
                   Connect your Google Drive account here!
                 </a>
@@ -124,7 +124,7 @@
         </div>
         <div class="col-md-4">
           <div class="panel panel-primary text-center">
-            <div class="panel-heading">Dropbox
+            <div class="panel-heading">Coming soon!
             </div>
     			  <div class="panel-body">
     			    Connect your (Service_Name) account here!
@@ -146,8 +146,8 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="../static/js/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
    
   </body>
 </html>

@@ -6,7 +6,7 @@
 a,
 a:focus,
 a:hover {
-  color: #fff;
+  color: #428BCA ;
 }
 
 /* Custom default button */
@@ -18,12 +18,6 @@ a:hover {
   background-color: #fff;
   border: 1px solid #fff;
 }
-
-/*Custom CSS*/
-div#create-account{
-  padding: 50px;
-}
-
 a.masthead-brand{
   color: #FFF
 }
@@ -39,15 +33,15 @@ body {
   /* To remove background image and restore background color to dark grey, uncomment
   first line and comment out the next two lines */
   /*background-color: #333;*/
-  background-image: url("../images/background1.jpg");
+  background-image: url("../images/404.png");
   /*-webkit-background-size: cover;*/
-
+  /*margin-bottom: 60px;*/
   background-size: cover;
   /*background-repeat: no-repeat;*/
 
 }
 body {
-  color: #fff;
+  color: #000;
   text-shadow: 0 1px 3px rgba(0,0,0,.5);
   box-shadow: inset 0 0 100px rgba(0,0,0,.5);
 }
@@ -80,45 +74,6 @@ body {
 /* Padding for spacing */
 .inner {
   padding: 30px;
-}
-/* CSS for SignIn and Password area */
-
-.form-signin {
-  max-width: 330px;
-  padding: 15px;
-  margin: 0 auto;
-}
-.form-signin .form-signin-heading{
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  text-align: center;
-}
-.form-signin .checkbox {
-  margin-bottom: 10px;
-}
-.form-signin .checkbox {
-  font-weight: normal;
-}
-.form-signin .form-control {
-  position: relative;
-  height: auto;
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-          box-sizing: border-box;
-  padding: 10px;
-  font-size: 16px;
-}
-.form-signin .form-control:focus {
-  z-index: 2;
-}
-.form-signin input[type="email"] {
-  margin-bottom: -1px;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
-}
-.form-signin input[type="password"] {
-  margin-bottom: 10px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
 }
 
 
@@ -180,24 +135,28 @@ body {
   font-weight: bold;
 }
 
-div#btns{
-  padding: 10px;
-}
+
 /*
  * Footer
  */
 
 /* Custom page footer */
-.footer {
-  position: absolute;
-  padding-top: 19px;
+.footer{
+  position: fixed;
+  bottom: 0;
+  height: 60px;
+  /*padding-top: 19px;*/
   color: #777;
   width: 100%;
   border-top: 1px solid #e5e5e5;
 }
 .mastfoot {
-  color: #999; /* IE8 proofing */
-  color: rgba(255,255,255,.5);
+  color: #000; /* IE8 proofing */
+  color: rgba(8, 7, 7, 0.5);
+  position: fixed;
+  bottom: 0;
+  text-align: right;
+
 }
 
 /*footer{

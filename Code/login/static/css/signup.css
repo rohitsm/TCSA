@@ -86,18 +86,19 @@ h3#form-header{
 
 label#file-upload{
   padding-top: 15px;
-
 }
 
 div#ftr{
   color: #FFF;
 }
 
-
 a.masthead-brand{
   color: #FFF
 }
 
+div #appstore{
+  padding: 5px;
+}
 
 
 /* Responsive: Portrait tablets and up */

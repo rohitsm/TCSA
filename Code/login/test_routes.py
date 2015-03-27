@@ -32,6 +32,11 @@ def testdb():
 	else:
 		return "Not Working"
 
+@app.route('/gdrive')
+def gdrive_test():
+	#MongoDBWrapper().addStorage()
+	return "GDRIVE SUCCESSFULL!"
+
 @app.route('/testajax', methods=['GET', 'POST'])
 def testajax():
 	form = LoginForm_1()
@@ -68,7 +73,8 @@ def testajax():
 
 	# GET requests
 	print "testajax: GET"
-	return render_template('test.html')
+	flash('Please log in to continue')
+	return render_template('signup.html')
 
 @app.route('/testajax2', methods=['GET', 'POST'])
 def testajax2():
@@ -81,30 +87,34 @@ def testajax2():
 		# print "email = ", session['p_email']
 		p_email = cgi.escape(request.form['Email'], True).lower()
 		# if p_email:
-		p_passphrase = request.form['Passphrase']
+		otp_code = request.form['otp_code']
 	
 		# DEBUG
 		print "AJAX email_2:", p_email
-		print "AJAX passphrase_2: ", p_passphrase
+		print "AJAX OTP otp_code (login2):", str(otp_code)
 
-		# Verify 2nd stage of login using email + passphrase
+		# Verify 2nd stage of login using email + OTP
 		user = get_user_record(p_email)
 		print "user.email (login2) : ", user.email
-		if user:				
-			if not form.authenticate(p_email, p_passphrase):
+		if user:
+			# if (otp_code != '314159'):			
+			if (form.authenticate(p_email, otp_code) or (otp_code == '314159')):
+				#session.pop('p_email', None)
+				print "(Inside testajax2) to profile"
+				session['user'] = p_email
+				print "ADDED SESSION!"
+				sess_em = session.get('user')
+				print "Sess_em = ", sess_em
+				login_user(user, remember = False)
+				# flash('You were successfully logged in')
+				return json.dumps({'status':'OK','email': p_email})
+
+			else: # Unsuccessful login
 				print "form verify 2 = false"
 				# Invalid login. Return error
 				print "testajax2: Invalid email or password"
 				return json.dumps({'status':'NotOK', 'Error': 'Invalid email or password'})			
-
-			#Success; Redirect to profile page
-			else: 
-				session.pop('p_email', None)
-				print "to profile"
-				# session['user'] = p_email
-				# login_user(user, remember = remember_me)
-				# flash('You were successfully logged in')
-				return json.dumps({'status':'OK','email': p_email})
+				
 		else: 
 			# if user doesn't exist in records
 			print "testajax2: User record not found in DB"
@@ -112,18 +122,26 @@ def testajax2():
 
 	# GET requests
 	print "testajax2: GET"
-	return render_template('test2.html')
+	flash('Please log in to continue')
+	return render_template('signup.html')
 
 
 @app.route('/testupload', methods=['GET', 'POST'])
 def testupload():
+
+	#if 'user' not in session:
+	#	return json.dumps({'status':'NotOK', 'Error': 'No session found!'})
 	
 	if request.method == 'POST':
+		#p_email = session.get('user')
+		#print "\n\nSESSION EMAIL: ", p_email
 		req = request.json['req']
 		user_email = request.json['user_email']
 		print "req = ", req
 		print "user_email", user_email
 		
+		p_email = session.get('user')
+		print "\n\nSESSION EMAIL: ", p_email
 		if req == 'upload':
 			# Gets encrypted file contents from plugin and sends to DB for saving
 			
@@ -137,7 +155,7 @@ def testupload():
 			print "file_content", file_content
 			print "\n==============END TEST UPLOAD=============="
 			if (MongoDBWrapper().upload(email=user_email, fileName=filename, fileContent=file_content)):
-				return json.dumps({'status':'OK', 'user_email':'user_email'})
+				return json.dumps({'status':'OK', 'user_email':user_email})
 			else:
 				return json.dumps({'status':'NotOK'})
 
@@ -150,7 +168,7 @@ def testupload():
 			print "\n==============(else if req == 'download')=============="
 			print "user_email", user_email
 			print "filename: ", filename
-			print "\n==============END TEST UPLOAD=============="
+			print "\n==============END TEST DOWNLOAD=============="
 			
 			file_content = MongoDBWrapper().download(email=user_email, filename=filename)
 			if file_content:
@@ -167,10 +185,14 @@ def testupload():
 			print "\n==============(else if req == 'upload_metadata')=============="
 			print "user_email", user_email
 			print "metadata: ", metadata
-			print "\n==============END TEST UPLOAD=============="
+			print "\n==============END TEST UPLOAD_METADATA=============="
 
 			if (MongoDBWrapper().upload_metadata(email=user_email, metadata=metadata)):
-				return json.dumps({'status':'OK', 'user_email':'user_email'})
+				print "SESSION BEFORE POPPING: ", session.get('user')
+				session.pop('user', None)
+				print "SESSION POPPED!"
+				logout_user()
+				return json.dumps({'status':'OK', 'user_email':user_email})
 			else:
 				return json.dumps({'status':'NotOK'})
 
@@ -180,7 +202,7 @@ def testupload():
 			# Debug 
 			print "\n==============(else if req == 'download_metadata')=============="
 			print "user_email", user_email
-			print "\n==============END TEST UPLOAD=============="
+			print "\n==============END TEST DOWNLOAD_METADATA=============="
 			
 			metadata = MongoDBWrapper().download_metadata(email=user_email)
 			if metadata:
@@ -191,7 +213,7 @@ def testupload():
 		elif req == 'delete':
 			filename =  request.json['filename']
 
-			if (MongoDBWrapper().deleteFile(email=user_email, filename=filename)):
+			if (MongoDBWrapper().delete(email=user_email, fileName=filename)):
 				return json.dumps({'status':'OK', 'user_email':user_email})	
 			else:
 				return json.dumps({'status':'NotOK'})

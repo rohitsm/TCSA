@@ -20,9 +20,6 @@
     <!-- Custom JS for this template -->
     <script type="text/javascript" src="/static/js/signup.js"></script>
 
-    <!-- RECAPTCHA JS for this template -->
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-
   </head>
 
   <body>
@@ -52,41 +49,47 @@
         {% endif %}
       {% endwith %}
 
-      <form name="signupForm" onSubmit="return validateForm();" enctype="multipart/form-data" role="form" method="POST" action="/signup">
+      <form name="signupForm" onSubmit="return validateForm();" role="form" method="POST" action="/signup2">
         
         <div class="row marketing" id="form-bg">
-          <h3 id="form-header" class="text-center block-center">New User Registration!</h3>
+          <h3 id="form-header" class="text-center block-center">You're almost done!</h3>
           
           <div class="col-md-6 col-xs-6 col-md-offset-3 col-xs-offset-3">
+
             <div class="form-group">
-              <label for="EmailAddress">Choose your email address</label>
-              <input type="email" class="form-control" name="Email" placeholder="Enter email" onblur="validateEmail()" required>
-            </div>
-            <div class="form-group">
-              <label for="Password1">Create a password <small>(min. 5 characters)</small></label>
-              <input type="password" class="form-control" name="Password1" placeholder="Password" onblur="validatePwd1()" required>
+              <input type="email" class="form-control" placeholder="{{email}}" value="{{email}}" name="Email" id="Email" disabled>
             </div>
 
             <div class="form-group">
-              <label for="Password2">Confirm your password</label>
-              <input type="password" class="form-control" name="Password2" placeholder="Re-enter Password" onblur="validatePwd()" required>
+              <img src="{{ qrcode(qrcode_data) }}">
             </div>
 
             <div class="form-group">
-              <label id="file-upload" for="PB_Key">Upload your public key here </label>
-              <input class="btn btn-default" type="file"  name="PB_Key" required>
-            </div>  
-
-            <br>     
-            <!-- RECAPTCHA -->
-            <div class="g-recaptcha" data-sitekey="6LfCowITAAAAAMJshL909sV3cRZPJ92PQIqNetJN">
+              <label for="otp-code">Test your OTP</label>
+              <input type="text" class="form-control" placeholder="One-Time-Password" name="otp_code" id="otp_code" required autofocus>
             </div>
-            <br><br>
 
             <div class="form-group">
               <button type="submit" class="btn btn-danger col-md-offset-4 col-xs-offset-4">Submit</button>
             </div>
 
+            <!-- <br><br> -->
+
+            <div class="form-group">
+              <label for="otp-code">Get the Google Authenticator app for mobile</label>
+              <div class="row">
+                <div class="col-md-6">
+                  <a href="https://itunes.apple.com/sg/app/google-authenticator/id388497605">
+                    <img src="../static/images/app_store.png" class="img-rounded" id="appstore">
+                  </a>
+                </div>
+
+                <div class="col-md-6">
+                  <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2">
+                    <img src="../static/images/play_store.png" class="img-rounded" id="appstore"></div>
+                  </a>
+              </div>
+            </div>            
           </div>
         </div>
       </form>
