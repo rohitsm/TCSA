@@ -5,14 +5,10 @@
 
 *	_login/_ - Contains the related HTML and CSS code for the login page
 
-<<<<<<< HEAD
-*	**login** - Contains the related HTML and CSS code for the login page
-=======
 **STATUS:** Implemented and connected Dropbox API. 
 
 
 *	**login** - Contains the related HTML and CSS code for the login page
   *	Ross' Development Branch: `ross_v3`
   * Cleaning up and code restructuring in progress
->>>>>>> ross_v3
 

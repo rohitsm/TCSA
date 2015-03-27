@@ -19,6 +19,15 @@ a:hover {
   border: 1px solid #fff;
 }
 
+/*Custom CSS*/
+div#create-account{
+  padding: 50px;
+}
+
+a.masthead-brand{
+  color: #FFF
+}
+
 
 /*
  * Base structure
@@ -30,11 +39,11 @@ body {
   /* To remove background image and restore background color to dark grey, uncomment
   first line and comment out the next two lines */
   /*background-color: #333;*/
-  background-image: url("../images/background3.jpg");
+  background-image: url("../images/background1.jpg");
   /*-webkit-background-size: cover;*/
 
   background-size: cover;
-  background-repeat: no-repeat;
+  /*background-repeat: no-repeat;*/
 
 }
 body {
@@ -80,8 +89,7 @@ body {
   margin: 0 auto;
 }
 .form-signin .form-signin-heading{
-  margin-left: -100px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   text-align: center;
 }
 .form-signin .checkbox {
@@ -172,16 +180,27 @@ body {
   font-weight: bold;
 }
 
-
+div#btns{
+  padding: 10px;
+}
 /*
  * Footer
  */
 
+/* Custom page footer */
+.footer {
+  position: absolute;
+  padding-top: 19px;
+  color: #777;
+  width: 100%;
+  border-top: 1px solid #e5e5e5;
+}
 .mastfoot {
   color: #999; /* IE8 proofing */
   color: rgba(255,255,255,.5);
 }
 
+/*footer{
 
 /*
  * Affix and center
