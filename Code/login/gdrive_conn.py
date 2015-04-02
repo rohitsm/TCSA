@@ -27,6 +27,10 @@ from apiclient.discovery import build
 from oauth2client import client
 from oauth2client.client import Credentials
 
+# Calling MongoDBWrapper 
+from MongoDBWrapper import *
+
+
 GDRIVE_CLIENT_SECRET = app.config['GDRIVE_CLIENT_SECRET']
 GDRIVE_CLIENT_ID = app.config['GDRIVE_CLIENT_ID']
 
@@ -256,7 +260,6 @@ def gdrive_disconnect():
 		
 		if (MongoDBWrapper().deleteStorage(storagetype='googledrive', email=email)):
 			print "Deleted GDrive Account from MongoDB"  
-		
 		return redirect(url_for('profile'))
 
 	flash("Disconnect error, Try again")
