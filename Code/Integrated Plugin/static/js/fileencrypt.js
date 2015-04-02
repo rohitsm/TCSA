@@ -122,6 +122,7 @@ function upload (ciphertext, filename,username) {
           }
           else{
           	alert("Error");
+          	localStorage.setItem("metadata",metadata);
             window.location="index.html"; 
           }
         },    
