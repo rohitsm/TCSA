@@ -32,7 +32,7 @@ body #modal-dialog{
   color: #000;
 }
 
-.lead > .lead > a:nth-child(3){
+.lead > a:nth-child(3){
   color: #428BCA;
 }
 
