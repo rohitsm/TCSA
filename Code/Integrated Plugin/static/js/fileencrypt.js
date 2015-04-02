@@ -68,7 +68,7 @@ function encryptFile(blobs,filename){
 			}
 			reader.onloadend=function(e){
 				count2=count2+1;
-				encryptFile(e,filename);
+				encryptFile(blobs,filename);
 			}
 			
 			reader.onprogress = function() {          
