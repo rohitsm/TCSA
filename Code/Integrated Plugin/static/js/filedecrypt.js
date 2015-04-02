@@ -29,7 +29,7 @@ function download(useremail,filename){
 			decryptFileProcess(str);
           }
           else{
-            alert("Success but error in file decrypt");
+            alert("Success but error in file downloading");
             window.location="index.html";
           }
         },    

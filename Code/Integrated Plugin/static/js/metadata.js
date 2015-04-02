@@ -47,7 +47,7 @@ if(children.length!=0){
 else{
 	var encryptPath = password.substring(0,10) + currentPath ; 
    	encryptPath = Sha256.hash(encryptPath);
-	var user_email= "admin@tcsa.com"; //localStorage.getItem("username");
+	var user_email= sessionStorage.getItem("Email_ls");
 	var nodes= currentPath.split("/");
 	currentPath= nodes[0];
 	for(var i=1;i<nodes.length-1;i++){
