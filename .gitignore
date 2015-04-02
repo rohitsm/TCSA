@@ -3,11 +3,13 @@ Code/include/*
 Code/lib/*
 *.Python
 *.pyc
-<<<<<<< HEAD
+
 config.py
-=======
+
 config.py
 Test.py
+BoxWrapper.py
+auth.py
 tcsa.wsgi
 test.py
->>>>>>> ross_v3
+

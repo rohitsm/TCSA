@@ -48,7 +48,7 @@ CREATE TABLE Profile(
 	dropbox BLOB,
 	gdrive BLOB,
 	
-	FOREIGN KEY email(email) REFERENCES Login(email)
+	CONSTRAINT 'email_fk' FOREIGN KEY email(email) REFERENCES Login(email)
 	ON UPDATE CASCADE
 	ON DELETE CASCADE
 )ENGINE=InnoDB;

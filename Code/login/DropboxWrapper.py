@@ -9,7 +9,6 @@ class DropboxWrapper:
     def __init__(self, accessToken):
         try:
             self.client     = DropboxClient(accessToken)
-
         except Exception as e:
             print traceback.format_exc()
     #Dropbox operation utilities~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -18,14 +17,17 @@ class DropboxWrapper:
         #accInfo is a dict object
         #return tuple (quota left, total quota)
         #both or long type
-        accInfo     = self.client.account_info()
-        quota_info  = accInfo['quota_info']
-        #print "used: ", quota_info['normal']
-        quotaLeft   = quota_info['quota']-quota_info['shared']-quota_info['normal']
-        print "dropbox storage remaining: %s bytes" % quotaLeft
+        try:
+            accInfo     = self.client.account_info()
+            quota_info  = accInfo['quota_info']
+            #print "used: ", quota_info['normal']
+            quotaLeft   = quota_info['quota']-quota_info['shared']-quota_info['normal']
+            print "dropbox storage remaining: %s bytes" % quotaLeft
 
-        return (quotaLeft, quota_info['quota'])
-
+            return (quotaLeft, quota_info['quota'])
+        except Exception as e:
+            print traceback.format_exc()
+            return False
 
 
     def uploadFile(self, dropboxFilePath, fileContent):
@@ -81,6 +83,7 @@ class DropboxWrapper:
             "revision": 492341
         }
         '''
+
         response=self.client.file_delete(dropboxFilePath)
         if response:
             return response
@@ -115,3 +118,5 @@ class DropboxWrapper:
 
 if __name__=='__main__':
     print min([1,2,3,4,5,6,7,8], key=lambda x:abs(x-6.5))
+    if not None:
+        print False

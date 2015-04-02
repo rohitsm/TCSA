@@ -17,20 +17,31 @@ OAUTH_SCOPE  = 'https://www.googleapis.com/auth/drive'
 class GoogleDriveWrapper:
 
     def __init__(self, credential):
-        self.credential    = Credentials().new_from_json(credential)
-        self.http           = self.credential.authorize(httplib2.Http())
+        if isinstance(credential, basestring):
+            self.credential    = Credentials().new_from_json(credential)
+        else:
+            self.credential    = credential
 
-        #cos in the constructor, http argument is = None
-        self.driveService   = build('drive', 'v2', http=self.http)
+        try:
+            self.http           = self.credential.authorize(httplib2.Http())
 
-    #gDrive operation utilities
+            #cos in the constructor, http argument is = None
+            self.driveService   = build('drive', 'v2', http=self.http)
+        except Exception as e:
+            print traceback.format_exc()
+            return False
 
     def getStorageSizeLeft(self):
-        userAbout       = self.driveService.about().get().execute()
-        quota           = long(userAbout['quotaBytesTotal'])
-        storageRemaining= quota-long(userAbout['quotaBytesUsedAggregate'])
-        print 'gDrive storage remaining: %s bytes' % storageRemaining
-        return (storageRemaining,quota)
+        #return tuple (remaining storage, total storage size/ quota)
+        try:
+            userAbout       = self.driveService.about().get().execute()
+            quota           = long(userAbout['quotaBytesTotal'])
+            storageRemaining= quota-long(userAbout['quotaBytesUsedAggregate'])
+            #print 'gDrive storage remaining: %s bytes' % storageRemaining
+            return (storageRemaining,quota)
+        except Exception as e:
+            print traceback.format_exc()
+            return False
 
     #by default from argument parentFolderID, folder will be created inside root
     def createFolder(self, folderName, parentFolderID='root'):
@@ -42,25 +53,26 @@ class GoogleDriveWrapper:
 
         try:
             folder= self.driveService.files().insert(body=body).execute()
-            print "returning whole folder metadata"
+            #print "returning whole folder metadata"
             return folder
         except errors.HttpError, error:
-            print 'An error occured: %s \n returning None' % error
+            print 'An error occured in GoogleDriveWrapper createFolder function: %s \n returning False' % error
             return False
 
     def createTCSAFolder(self):
         #create TCSA folder in root folder
         body={
             'title'     :'TCSA',
-            'mimeType'  :'application/vnd.google-apps.folder'
+            'mimeType'  :'application/vnd.google-apps.folder',
+            'parents'   :[{'id':'root'}]
         }
         try:
             folder= self.driveService.files().insert(body=body).execute()
-            print 'TCSA folder id: %s' % folder['id']
-            print "returning whole folder metadata"
+            #print 'TCSA folder id: %s' % folder['id']
+            #print "returning whole folder metadata"
             return folder
         except errors.HttpError, error:
-            print 'An error occured: %s \n returning None' % error
+            print 'An error occured to create TCSA folder: %s \n returning None' % error
             return False
 
     def uploadFileContent(self, filename, filecontent, parent_id):
@@ -70,8 +82,8 @@ class GoogleDriveWrapper:
         body={
             'title' :filename
         }
-        if parent_id:
-            body['parents']=[{'id':parent_id}]
+
+        body['parents']=[{'id':parent_id}]
         try:
             fileMetadata= self.driveService.files().insert(body=body, media_body=media_body).execute()
             return fileMetadata
@@ -106,6 +118,8 @@ class GoogleDriveWrapper:
             print 'An error occurred: %s' % error
             return False
 
+if __name__=="__main__":
+    print isinstance("a string", basestring)
 
 #aswin= GoogleDriveWrapper('aswin.setiadi@gmail.com')
 #aswin.initDriveService()
