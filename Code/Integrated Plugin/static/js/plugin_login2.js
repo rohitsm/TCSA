@@ -21,8 +21,8 @@ $(document).ready(function(){
 
 	$("form#login_form").submit(function(event){
 		console.log("Hello World2!");
-		var passphrase = $("input#Passphrase").val();
-		console.log(local_email + passphrase);
+		var otp_code = $("input#otp_code").val();
+		console.log(local_email + otp_code);
 		event.preventDefault();
 		console.log("Was preventDefault() called: " + event.isDefaultPrevented());
 		
@@ -30,7 +30,7 @@ $(document).ready(function(){
 			url	: "https://cloudstag.me/testajax2",
 			type: "POST",
 			data: { 'Email' : local_email,
-					'Passphrase': passphrase
+					'otp_code': otp_code
 			},
 			contentType: "application/x-www-form-urlencoded; charset=UTF-8", 
 			crossOrigin: true,
