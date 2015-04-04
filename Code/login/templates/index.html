@@ -11,10 +11,10 @@
     <title>TCSA</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="/static/css/index.css" rel="stylesheet">
+    <link href="../static/css/index.css" rel="stylesheet">
 
   </head>
 
@@ -23,13 +23,40 @@
       <div class="site-wrapper-inner">
         <div class="cover-container">
           <div class="masthead clearfix">
-            <div class="inner">
-              <h3 id="page-header"><a class="masthead-brand" href="{{url_for('profile')}}">TCSA Inc.</a></h3>
-              <ul class="nav masthead-nav">
-                <h3 class="masthead-brand">Cloud Storage Aggregator</h3>
-              </ul>
+            <div class="inner text-center">
+              <h2 id="page-header"><a class="masthead-brand">Cloud Storage Aggregator</h2>
+              <h3><small><em>A project under the <a href="http://pdcc.ntu.edu.sg/sands">Sands research</a> group</em></small></h3>
             </div>
           </div>
+
+          <!-- Modal Code -->
+
+          <div class="form-signin text-center">
+            <div class="modal fade" id="myModal">
+              <div class="modal-dialog" id="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Woah! Hang on... Crossroad ahead!</h4>
+                  </div>
+                  <div class="modal-body">
+                    <p class="lead">
+                      If you were looking for the <strong>Sands Research group's</strong> page, please note that it has been relocated to <br><a href=" http://pdcc.ntu.edu.sg/sands/">http://pdcc.ntu.edu.sg/sands</a>
+                    </p>
+
+                    <p><small><em>(They were kind enough to let us freeload on their server for the Cloud Storage Aggregator project).</em></small></p>
+                    <br>
+
+                    <p>If you weren't looking for Sands, simply ignore this message.</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Ignore and proceed to cloudstag.me!</button>
+                  </div>
+                </div><!-- /.modal-content -->
+              </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+
+          <!-- End Modal Code -->
 
           
           <div class="form-signin text-center">
@@ -44,15 +71,15 @@
               </a></h2>
           </div> 
 
-          <!-- Copyright and Footer-->
+        </div><!-- cover-container -->
+        <!-- Copyright and Footer-->
 
           <footer>
             <div class="mastfoot inner">
-              Copyright © 2014 The TCSA Project. All rights reserved
+              Copyright © Cloud Storage Aggregator | A project under the <a href="http://pdcc.ntu.edu.sg/sands">Sands research</a> group.
             </div>  
           </footer>
-
-        </div><!-- cover-container -->
+        
       </div><!-- site-wrapper-inner -->
     </div><!-- site-wrapper -->
     <!-- Bootstrap core JavaScript
@@ -60,5 +87,8 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
+    <!-- Custom JS for modal  -->
+    <script src="/static/js/modal.js"></script>
+
   </body>
 </html>

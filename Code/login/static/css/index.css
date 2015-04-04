@@ -28,6 +28,15 @@ a.masthead-brand{
   color: #FFF
 }
 
+body #modal-dialog{
+  color: #000;
+}
+
+.lead > a:nth-child(3){
+  color: #428BCA;
+}
+
+
 
 /*
  * Base structure
@@ -51,7 +60,6 @@ body {
   text-shadow: 0 1px 3px rgba(0,0,0,.5);
   box-shadow: inset 0 0 100px rgba(0,0,0,.5);
 }
-
 
 .form-group .form-signin-heading{
   text-align: center;
@@ -160,7 +168,7 @@ body {
 
 @media (min-width: 768px) {
   .masthead-brand {
-    float: left;
+    float: center;
   }
   .masthead-nav {
     float: right;

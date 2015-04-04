@@ -6,7 +6,7 @@
 a,
 a:focus,
 a:hover {
-  color: #428BCA ;
+  color: #FFF ;
 }
 
 /* Custom default button */
@@ -115,7 +115,7 @@ body {
 
 @media (min-width: 768px) {
   .masthead-brand {
-    float: left;
+    float: center;
   }
   .masthead-nav {
     float: right;
