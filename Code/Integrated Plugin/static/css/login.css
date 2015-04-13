@@ -24,10 +24,6 @@ div#create-account{
   padding: 50px;
 }
 
-h2#form-h2{
-  margin-left: -60px;
-}
-
 a.masthead-brand{
   color: #FFF
 }
@@ -164,7 +160,7 @@ body {
 
 @media (min-width: 768px) {
   .masthead-brand {
-    float: left;
+    float: center;
   }
   .masthead-nav {
     float: right;

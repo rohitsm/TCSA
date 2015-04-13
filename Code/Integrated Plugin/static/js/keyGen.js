@@ -34,7 +34,7 @@ $(document).ready(function(){
 		     	alert(hashedTxt);
 		     	//document.cookie="password="+hashedTxt;
 		   		sessionStorage.setItem("password",hashedTxt);
-		   		window.location="viewer.html";
+		   		window.location="getMetadata.html";
 		     }
 		}
 	});
