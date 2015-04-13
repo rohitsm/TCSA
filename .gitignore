@@ -8,4 +8,4 @@ Apache\ configs\ and\ SSL\ certs/*
 config.py
 tcsa.wsgi
 test.py
-Code/Integrated\ Plugin.pem
+Code/CloudStag.pem
