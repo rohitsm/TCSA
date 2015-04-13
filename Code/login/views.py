@@ -418,9 +418,8 @@ def routes(app, login_manager):
 	"""
 	Download the Chrome extension (.crx file)
 	"""
-		filename = 
-		return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
-
+		filename = 'CloudStag.crx'
+		return send_from_directory(app.static_folder, filename, as_attachment=True)
 
 	@app.route('/logout')
 	@login_required

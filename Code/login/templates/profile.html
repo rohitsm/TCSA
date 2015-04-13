@@ -54,7 +54,7 @@
       <div class="container text-center">
         <h3>Hello, {{user}}!</h3>
         <p>The TCSA User Portal</p>
-        <p><a class="btn btn-danger btn-lg" href="#" onclick="setEmail_ls('{{user}}')" role="button">Install plugin &raquo;</a></p>
+        <p><a class="btn btn-danger btn-lg" href="{{url_for('download_plugin')}}" role="button">Install plugin &raquo;</a></p>
       </div>
       <!-- Flash messages -->
       {% with messages = get_flashed_messages() %}
