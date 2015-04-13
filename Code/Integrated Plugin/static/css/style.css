@@ -1,0 +1,56 @@
+body {
+  /*font-family: 'Arvo', serif;*/
+  font-size: 16px;
+  line-height: 1.5em;
+  /*color: #1c4c51; */
+  margin: 5%;
+}
+
+td {
+  vertical-align:middle;
+  padding-left:10px;
+}
+
+a.haha{
+  padding: 10px;
+}
+
+div.contextMenuField{
+  padding: 10px;
+}
+
+div.status {
+  padding: 10px;
+}
+
+th {
+  text-align:left;
+  padding-left:10px;
+}
+
+img {
+    max-height: 25px;  
+    max-width: 25px;  
+}
+
+.selected_item a {
+  background: #25547B;
+  text-shadow: 0px 0px 0px #0B5FA5;
+}
+
+ 
+/* Excel Documents links */
+a[href$='.xls'], a[href$='.csv'], a[href$='.xlw'], a[href$='.xlt'] {
+  background:transparent url(../images/excel.png) center left no-repeat;
+  display:inline-block;
+  padding-left:20px;
+  line-height:15px;
+}
+ 
+/* Word Document Links */
+a[href$='.doc'], a[href$='.rtf'], a[href$='.wps'], a[href$='.txt'] {
+  background:transparent url(../images/word.png) center left no-repeat;
+  display:inline-block;
+  padding-left:20px;
+  line-height:15px;
+}
