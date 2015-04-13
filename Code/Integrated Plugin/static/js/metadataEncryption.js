@@ -53,7 +53,7 @@ function encryptMeta(blobs){
         
 		}
 		else{
-			alert("ciphertext metadata= "+ciphertext);
+			// alert("ciphertext metadata= "+ciphertext);
 		    //ciphertext="";
 		    useremail=sessionStorage.getItem("Email_ls");
 		    uploadMetadata(useremail,ciphertext);
