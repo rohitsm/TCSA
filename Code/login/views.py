@@ -415,9 +415,9 @@ def routes(app, login_manager):
 
 	@app.route('/download')
 	def download_plugin():
-	"""
-	Download the Chrome extension (.crx file)
-	"""
+		"""
+		Download the Chrome extension (.crx file)
+		"""
 		filename = 'CloudStag.crx'
 		return send_from_directory(app.static_folder, filename, as_attachment=True)
 
