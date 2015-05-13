@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
 
-  "name": "Cloud Storage",
-  "description": "This extension demonstrates a browser action with kittens.",
+  "name": "Cloud Stag",
+  "description": "This extension works with cloudstag.me",
   "version": "1.0",
 
   "background": {

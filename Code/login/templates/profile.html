@@ -17,8 +17,6 @@
     <!-- Custom styles for this template -->
     <link href="/static/css/profile.css" rel="stylesheet">
 
-    <!-- Custom JS for this template -->
-    <script type="text/javascript" src="/static/js/profile.js"></script>
   </head>
 
   <body>
@@ -28,7 +26,7 @@
         <div class="navbar-header">          
           <h3 id="page-header"><a class="masthead-brand" href="{{url_for('profile')}}"><em>Cloud Stag</em></a></h3>
         </div>
-        <div id="navbar" class="navbar-collapse collapse">
+        <div id="navbar" >
           <div class="navbar-form navbar-right">
             <div class="form-group">
               <h4 id="welcome"> Welcome </h4>
@@ -54,8 +52,43 @@
       <div class="container text-center">
         <h3>Hello, {{user}}!</h3>
         <p>The TCSA User Portal</p>
-        <p><a class="btn btn-danger btn-lg" href="#" onclick="setEmail_ls('{{user}}')" role="button">Install plugin &raquo;</a></p>
+        <p><a class="btn btn-danger btn-lg" href="{{url_for('download_plugin')}}" role="button">Download plugin &raquo;</a></p>
+        <p><small><a href="#" onclick="install()">Installation Instructions</a></small></p>
       </div>
+    </div>
+
+    <!-- Begin Modal Code -->
+        <div class="form-signin ">
+            <div class="modal fade" id="myModal">
+              <div class="modal-dialog" id="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title text-center">Installation Instructions:</h4>
+                  </div>
+                  <div class="modal-body text-left">
+                    <ol>
+                      <li>Download the CloudStag extension for Google Chrome</li>
+                      <br>
+                      <li>In the address bar, type: <code>chrome://extensions/</code></li>
+                      <br>
+                      <li>Drag and the drop the CloudStag extension (CRX file) onto the Extensions page to install it</li>
+                      <br>
+                      <li>Confirm the installation and you're ready to go!</li>
+                    </ol>                    
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Dismiss!</button>
+                  </div>
+                </div><!-- /.modal-content -->
+              </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+
+          <!-- End Modal Code -->
+
+
+
+        
       <!-- Flash messages -->
       {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -150,6 +183,8 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
+    <!-- Custom JS for this template -->
+    <script type="text/javascript" src="/static/js/profile.js"></script>
    
   </body>
 </html>

@@ -413,6 +413,13 @@ def routes(app, login_manager):
 
 			return render_template('profile.html', user=session['user'], db_conn=real_name, gd_conn=gd_email)
 
+	@app.route('/download')
+	def download_plugin():
+		"""
+		Download the Chrome extension (.crx file)
+		"""
+		filename = 'CloudStag.crx'
+		return send_from_directory(app.static_folder, filename, as_attachment=True)
 
 	@app.route('/logout')
 	@login_required
