@@ -3,7 +3,7 @@
 This is the central repository for the TCSA Project.
 
 ### Project Supervisor ###
-Dr. Anwitaman Datta (anwitaman@ntu.edu.sg)
+[Dr. Anwitaman Datta](http://www.ntu.edu.sg/home/anwitaman/)
 
 ### Project contributors ###
 
@@ -11,8 +11,10 @@ Dr. Anwitaman Datta (anwitaman@ntu.edu.sg)
 * AYE PHYU PHYU AUNG (AYEPHYUP001@e.ntu.edu.sg)
 * ROHIT MENON (ROHIT008@e.ntu.edu.sg)
 
-* SILIVANXAY PHETSOUVANH "BUI" (SILIVANX1@e.ntu.edu.sg) -- Advisor
-
 ### Helpful links ###
 
 * [Learn Markdown](https://help.github.com/articles/markdown-basics/)
+
+### License ###
+[MIT](https://github.com/rohitsm/TCSA/blob/master/LICENSE)
+Copyright (c) 2014 [Rohit Menon](www.rohitsm.com)
