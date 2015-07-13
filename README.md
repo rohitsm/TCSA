@@ -1,6 +1,8 @@
 # Transparent Cloud Storage Aggregator #
 
-This is the central repository for the TCSA Project.
+This is the central repository for the TCSA Project.*
+
+*Preliminary upload. Cleanup required in some areas (embarassingly major in some others). 
 
 ### Project Supervisor ###
 [Dr. Anwitaman Datta](http://www.ntu.edu.sg/home/anwitaman/)
